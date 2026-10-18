@@ -350,7 +350,6 @@ function generateLink() {
       
     </div>
   `;
-  }, 1000);
 }
 
 function copyLink() {
@@ -448,55 +447,6 @@ function copyLink() {
   });
 })();
 
-Window.toggleCustomImageInput = toggleCustomImageInput;
+window.toggleCustomImageInput = toggleCustomImageInput;
 window.generateLink = generateLink;
 window.copyLink = copyLink;
-
-//=========Điều kiện========
-if (!document.querySelector('meta[name="author"][content="Devpan"]'))
-  document.body.innerHTML = "";
-/* removed redirect */
-
-//=========Chặn F12 chuột phải========
-document.addEventListener("keydown", function (e) {
-  if (
-    e.key === "F12" ||
-    (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
-    (e.ctrlKey && e.key === "U")
-  ) {
-    e.preventDefault();
-    /* removed redirect */
-  }
-});
-/* removed contextmenu */
-
-//======Bảo trì=====
-const img = new Image();
-img.src = "../assets/anh/er/rainlove.png";
-img.style.display = "none";
-img.onload = () =>
-  Object.assign(img.style, {
-    display: "block",
-    maxWidth: "100%",
-    height: "auto",
-  });
-img.onerror = () => {
-  const overlay = document.createElement("div");
-  overlay.innerHTML = "Hệ thống đang bảo trì";
-  Object.assign(overlay.style, {
-    position: "fixed",
-    inset: 0,
-    zIndex: 9999,
-    background: "rgba(20, 20, 20, 0.97)",
-    color: "#fff",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    font: "bold 48px Arial",
-    padding: "10%",
-  });
-  document.body.append(overlay);
-};
-
-/* removed domain check */}
