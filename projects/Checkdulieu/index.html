@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm tra trùng lặp dữ liệu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Panbap/fonts@new/fonts.css">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <h1><i class="fas fa-file-search"></i> Kiểm tra trùng lặp dữ liệu</h1>
+    <h2>Hỗ trợ: .txt, .docx, .xlsx, .pdf</h2>
+
+    <div id="dropZone" class="drop-zone">
+        <p>Kéo thả file vào đây hoặc nhấn để chọn</p>
+        <input type="file" id="fileInput" accept=".txt, .docx, .xlsx, .pdf">
+    </div>
+
+    <button onclick="checkDuplicate()">
+        <i class="fas fa-search"></i> Kiểm tra
+    </button>
+
+    <div class="result" id="result"></div>
+
+    <button onclick="downloadFile()" style="display: none;" id="downloadButton">
+        <i class="fas fa-download"></i> Tải file đã xử lý
+    </button>
+
+    <!-- Đọc file DOCX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <!-- Đọc file PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <!-- Đọc và ghi file Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+
+    <script src="./script.js"></script>
+
+</body>
+
+</html>

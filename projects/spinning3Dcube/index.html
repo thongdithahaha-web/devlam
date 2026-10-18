@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Spinning Cube - DevPan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Playpen Sans', cursive, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
+            color: #fff;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 20px rgba(236, 72, 153, 0.3);
+        }
+
+        .scene {
+            width: 220px;
+            height: 220px;
+            perspective: 800px;
+            margin: 30px auto;
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: spin 16s infinite linear;
+            cursor: grab;
+        }
+
+        .cube:active {
+            cursor: grabbing;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border: 2px solid rgba(236, 72, 153, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.4), inset 0 0 20px rgba(139, 92, 246, 0.3);
+            border-radius: 16px;
+            user-select: none;
+            transition: transform 0.5s ease;
+        }
+
+        .cube-face img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+        }
+
+        .cube-face.front  { transform: rotateY(  0deg) translateZ(110px); }
+        .cube-face.back   { transform: rotateY(180deg) translateZ(110px); }
+        .cube-face.right  { transform: rotateY( 90deg) translateZ(110px); }
+        .cube-face.left   { transform: rotateY(-90deg) translateZ(110px); }
+        .cube-face.top    { transform: rotateX( 90deg) translateZ(110px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(110px); }
+
+        @keyframes spin {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(360deg); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.4);
+        }
+
+        .back-link {
+            margin-top: 25px;
+            color: #9ca3af;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #ec4899;
+        }
+    </style>
+</head>
+<body>
+    <h1>✨ Khối Lập Phương 3D Tình Yêu ✨</h1>
+
+    <div class="scene">
+        <div class="cube" id="cube">
+            <div class="cube-face front">💖 I Love You</div>
+            <div class="cube-face back">🌸 Yêu Thương</div>
+            <div class="cube-face right">⭐ Mãi Mãi</div>
+            <div class="cube-face left">💌 Hạnh Phúc</div>
+            <div class="cube-face top">✨ Gắn Kết</div>
+            <div class="cube-face bottom">🌙 Bình Yên</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="toggleSpin()">Tạm dừng / Tiếp tục</button>
+        <button class="btn" onclick="speedUp()">Quay nhanh hơn</button>
+        <button class="btn" onclick="resetSpeed()">Tốc độ chuẩn</button>
+    </div>
+
+    <a href="../../index.html" class="back-link">⬅ Quay về trang chủ Lovely</a>
+
+    <script>
+        const cube = document.getElementById('cube');
+        let spinning = true;
+        let speed = 16;
+
+        function toggleSpin() {
+            spinning = !spinning;
+            cube.style.animationPlayState = spinning ? 'running' : 'paused';
+        }
+
+        function speedUp() {
+            speed = Math.max(4, speed / 2);
+            cube.style.animationDuration = speed + 's';
+        }
+
+        function resetSpeed() {
+            speed = 16;
+            cube.style.animationDuration = speed + 's';
+        }
+    </script>
+</body>
+</html>

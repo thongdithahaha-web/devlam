@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kéo Búa Bao - Modern Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --win: #22c55e;
+            --loss: #ef4444;
+            --draw: #f59e0b;
+            --bg: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Bảng điểm */
+        .scoreboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 1rem;
+        }
+
+        .score-item span {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .score-item strong {
+            font-size: 1.2rem;
+        }
+
+        /* Khu vực chiến đấu */
+        .battle-arena {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .choice-display {
+            flex: 1;
+        }
+
+        .emoji-vibe {
+            font-size: 4rem;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .label {
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 10px;
+            opacity: 0.6;
+        }
+
+        .vs {
+            font-weight: 900;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 1.5rem;
+        }
+
+        /* Thông báo kết quả */
+        .status-text {
+            height: 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+
+        /* Nút bấm */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .btn-choice {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 1.2rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-choice:hover:not(:disabled) {
+            background: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-choice:active { transform: scale(0.9); }
+        .btn-choice:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Lịch sử ván đấu */
+        .history {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        .history-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dot-win { background: var(--win); box-shadow: 0 0 10px var(--win); }
+        .dot-loss { background: var(--loss); }
+        .dot-draw { background: var(--draw); }
+
+        .new-game-btn {
+            margin-top: 1.5rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Animation */
+        @keyframes shake {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        .shaking {
+            animation: shake 0.2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>Kéo Búa Bao</h1>
+
+        <div class="scoreboard">
+            <div class="score-item">
+                <span>BẠN</span>
+                <strong id="yCount">0</strong>
+            </div>
+            <div class="score-item">
+                <span>HÒA</span>
+                <strong id="dCount">0</strong>
+            </div>
+            <div class="score-item">
+                <span>AI</span>
+                <strong id="aCount">0</strong>
+            </div>
+        </div>
+
+        <div class="status-text" id="statusText">Sẵn sàng chưa?</div>
+
+        <div class="battle-arena">
+            <div class="choice-display">
+                <div id="playerEmoji" class="emoji-vibe">✊</div>
+                <div class="label">Bạn</div>
+            </div>
+            
+            <div class="vs">VS</div>
+
+            <div class="choice-display">
+                <div id="aiEmoji" class="emoji-vibe">✊</div>
+                <div class="label">AI</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-choice" onclick="playGame('rock')" id="btn-rock" title="Búa">✊</button>
+            <button class="btn-choice" onclick="playGame('paper')" id="btn-paper" title="Bao">✋</button>
+            <button class="btn-choice" onclick="playGame('scissors')" id="btn-scissors" title="Kéo">✌️</button>
+        </div>
+
+        <div class="history" id="historyLog">
+            </div>
+
+        <button class="new-game-btn" onclick="resetGame()">Đặt lại điểm số</button>
+    </div>
+
+    <script>
+        const emojiMap = {
+            rock: '✊',
+            paper: '✋',
+            scissors: '✌️'
+        };
+
+        let scores = { player: 0, ai: 0, draw: 0 };
+        let history = [];
+        let isPlaying = false;
+
+        function playGame(playerChoice) {
+            if (isPlaying) return;
+            isPlaying = true;
+            
+            const choices = ['rock', 'paper', 'scissors'];
+            const aiChoice = choices[Math.floor(Math.random() * 3)];
+            
+            // UI setup
+            const playerEmojiEl = document.getElementById('playerEmoji');
+            const aiEmojiEl = document.getElementById('aiEmoji');
+            const statusText = document.getElementById('statusText');
+            const buttons = document.querySelectorAll('.btn-choice');
+
+            // Vô hiệu hóa nút
+            buttons.forEach(b => b.disabled = true);
+            statusText.textContent = "Đang oẳn tù tì...";
+            statusText.style.color = "white";
+
+            // Hiệu ứng rung
+            playerEmojiEl.classList.add('shaking');
+            aiEmojiEl.classList.add('shaking');
+            playerEmojiEl.textContent = '✊';
+            aiEmojiEl.textContent = '✊';
+
+            setTimeout(() => {
+                // Dừng rung
+                playerEmojiEl.classList.remove('shaking');
+                aiEmojiEl.classList.remove('shaking');
+                
+                // Hiển thị lựa chọn thật
+                playerEmojiEl.textContent = emojiMap[playerChoice];
+                aiEmojiEl.textContent = emojiMap[aiChoice];
+
+                // Tính kết quả
+                const result = getResult(playerChoice, aiChoice);
+                updateScore(result);
+                displayResult(result);
+                
+                // Mở lại nút
+                buttons.forEach(b => b.disabled = false);
+                isPlaying = false;
+            }, 1000);
+        }
+
+        function getResult(p, a) {
+            if (p === a) return 'draw';
+            if ((p === 'rock' && a === 'scissors') || 
+                (p === 'paper' && a === 'rock') || 
+                (p === 'scissors' && a === 'paper')) {
+                return 'player';
+            }
+            return 'ai';
+        }
+
+        function updateScore(result) {
+            if (result === 'player') scores.player++;
+            else if (result === 'ai') scores.ai++;
+            else scores.draw++;
+
+            document.getElementById('yCount').textContent = scores.player;
+            document.getElementById('aCount').textContent = scores.ai;
+            document.getElementById('dCount').textContent = scores.draw;
+
+            // Cập nhật lịch sử (tối đa 5 ván)
+            history.push(result);
+            if (history.length > 8) history.shift();
+            renderHistory();
+        }
+
+        function displayResult(result) {
+            const statusText = document.getElementById('statusText');
+            if (result === 'player') {
+                statusText.textContent = "BẠN THẮNG! 🎉";
+                statusText.style.color = "var(--win)";
+            } else if (result === 'ai') {
+                statusText.textContent = "AI THẮNG RỒI 🤖";
+                statusText.style.color = "var(--loss)";
+            } else {
+                statusText.textContent = "HÒA NHA! 🤝";
+                statusText.style.color = "var(--draw)";
+            }
+        }
+
+        function renderHistory() {
+            const log = document.getElementById('historyLog');
+            log.innerHTML = '';
+            history.forEach(res => {
+                const dot = document.createElement('div');
+                dot.className = `history-dot dot-${res}`;
+                log.appendChild(dot);
+            });
+        }
+
+        function resetGame() {
+            scores = { player: 0, ai: 0, draw: 0 };
+            history = [];
+            document.getElementById('yCount').textContent = '0';
+            document.getElementById('aCount').textContent = '0';
+            document.getElementById('dCount').textContent = '0';
+            document.getElementById('statusText').textContent = "Đã làm mới!";
+            document.getElementById('historyLog').innerHTML = '';
+            document.getElementById('playerEmoji').textContent = '✊';
+            document.getElementById('aiEmoji').textContent = '✊';
+        }
+    </script>
+</body>
+</html>

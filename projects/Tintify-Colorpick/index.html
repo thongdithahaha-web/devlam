@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Website Tintify - nơi chia sẻ tình yêu thương.">
+    <title>Tintify - ColorPicker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Panbap/fonts@new/fonts.css">
+    <link rel="icon" href="https://github.com/Panbap/anh/blob/main/icon1.png?raw=true" type="image/png">
+    <link rel="stylesheet" href="./assets/styles.css">
+</head>
+
+<body>
+
+    <div class="tabs">
+        <button class="tab-button active" id="tabColor">Single Color</button>
+        <button class="tab-button" id="tabGradient">Gradient Color</button>
+    </div>
+
+    <section id="sectionColor" class="active">
+
+        <h2>Background Color</h2>
+
+        <div class="buttons">
+            <button id="colorBtn" class="color-btn" style="gap: 10px;">
+                <span id="colorText">#4e5d76</span>
+                <input id="colorPicker" type="color" value="#4e5d76" class="color-picker" />
+            </button>
+        </div>
+
+        <div class="copy_code" id="colorCopyCode">
+            <div class="copyBtn" title="Copy CSS code">
+                <img src="./assets/note.svg" alt="Copy icon" />
+            </div>
+            <p id="colorCode">
+                background: #4e5d76;
+            </p>
+        </div>
+    </section>
+
+    <section id="sectionGradient">
+
+        <h2>Background Color</h2>
+
+        <div class="buttons">
+            <button id="gradBtn1" class="color-btn" style="gap: 10px;">
+                <span id="gradText1">#082a3d</span>
+                <input id="gradPicker1" type="color" value="#082a3d" class="color-picker" />
+            </button>
+            <button id="gradBtn2" class="color-btn" style="gap: 10px;">
+                <span id="gradText2">#4e5d76</span>
+                <input id="gradPicker2" type="color" value="#4e5d76" class="color-picker" />
+            </button>
+        </div>
+
+        <div class="copy_code" id="gradCopyCode">
+            <div class="copyBtn" title="Copy CSS code">
+                <img src="./assets/note.svg" alt="Copy icon" />
+            </div>
+            <p id="gradColorCode">
+                background: linear-gradient(to right, #082a3d, #4e5d76);
+            </p>
+        </div>
+    </section>
+
+    <div id="toast" class="toast">Đã copy thành công!</div>
+
+    <script src="./assets/script.js"></script>
+</body>
+
+</html>
