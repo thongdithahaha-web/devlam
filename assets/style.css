@@ -385,6 +385,51 @@ header {
     color: var(--accent-pink);
 }
 
+.card-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-btn {
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-heading);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.card-btn-use {
+    background: var(--accent-gradient);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+}
+
+.card-btn-use:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.5);
+    color: #ffffff;
+}
+
+.card-btn-dl {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.card-btn-dl:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
 .action-btn {
     background: rgba(255, 255, 255, 0.08);
     color: var(--text-main);

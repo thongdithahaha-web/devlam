@@ -19,12 +19,12 @@ function getItemDescription(item) {
 
 function getItemUseLink(item) {
     const link = item.paymentLinksss || item.paymentLinkssss || item.paymentLinkss || item.paymentLinks || item.demoLink || item.link;
-    return (link && link !== "#") ? link : null;
+    return (link && link !== "#") ? link : './inputs/flower.html';
 }
 
 function getItemDownloadLink(item) {
     const link = item.downloadLink || item.paymentLink;
-    return (link && link !== "#") ? link : null;
+    return (link && link !== "#") ? link : './download/taive.html?id=update';
 }
 
 function getItemImage(item) {
@@ -158,17 +158,32 @@ function createCardHTML(product, type) {
     card.className = "card";
     const imageUrl = getItemImage(product);
     const description = getItemDescription(product);
+    const useUrl = getItemUseLink(product);
+    const downloadUrl = getItemDownloadLink(product);
+
+    const isGenerator = useUrl.includes('/inputs/') || useUrl.includes('/input/');
+    const isGame = (product.category || '').toLowerCase().includes('game') || product.price === 'Chơi';
+    const useText = isGenerator ? 'Tạo link' : (isGame ? 'Chơi ngay' : 'Mở');
+    const useIcon = isGenerator ? 'fa-wand-magic-sparkles' : (isGame ? 'fa-gamepad' : 'fa-arrow-up-right-from-square');
+    const priceDisplay = isGame ? 'Miễn phí' : (product.price || 'Miễn phí');
 
     card.innerHTML = `
-        <div class="card-img-wrapper">
+        <div class="card-img-wrapper" onclick="openDetailModal('${encodeURIComponent(product.name)}', '${type}')" style="cursor: pointer;">
             <span class="badge">${product.category || (type === 'app' ? 'App' : 'Web')}</span>
             <img src="${imageUrl}" alt="${product.name}" loading="lazy" onerror="this.src='./assets/anh/loves.jpg'" />
         </div>
-        <h3>${product.name}</h3>
+        <h3 onclick="openDetailModal('${encodeURIComponent(product.name)}', '${type}')" style="cursor: pointer;" title="${product.name}">${product.name}</h3>
         <p>${description}</p>
         <div class="card-footer">
-            <span class="price-tag">${product.price || 'Miễn phí'}</span>
-            <button class="action-btn" onclick="openDetailModal('${encodeURIComponent(product.name)}', '${type}')">Mở</button>
+            <span class="price-tag">${priceDisplay}</span>
+            <div class="card-actions-group">
+                <a href="${useUrl}" target="_blank" class="card-btn card-btn-use" title="${useText}">
+                    <i class="fa-solid ${useIcon}"></i> ${useText}
+                </a>
+                <a href="${downloadUrl}" target="_blank" class="card-btn card-btn-dl" title="Tải mã nguồn">
+                    <i class="fa-solid fa-download"></i> Tải code
+                </a>
+            </div>
         </div>
     `;
     return card;
@@ -210,12 +225,15 @@ function openDetailModal(encodedName, type) {
 
     const useUrl = getItemUseLink(product);
     const downloadUrl = getItemDownloadLink(product);
-    const buttonText = product.buttonText || 'Mở / Sử Dụng';
+    const isGenerator = useUrl.includes('/inputs/') || useUrl.includes('/input/');
+    const isGame = (product.category || '').toLowerCase().includes('game') || product.price === 'Chơi';
+    const buttonText = product.buttonText || (isGenerator ? 'Tạo Link Hiệu Ứng' : (isGame ? 'Chơi Game Ngay' : 'Mở / Xem Dự Án'));
+    const useIcon = isGenerator ? 'fa-wand-magic-sparkles' : (isGame ? 'fa-gamepad' : 'fa-rocket');
 
     if (useUrl) {
         linksContainer.innerHTML += `
             <a href="${useUrl}" target="_blank" class="btn-use">
-                <i class="fa-solid fa-rocket"></i> ${buttonText}
+                <i class="fa-solid ${useIcon}"></i> ${buttonText}
             </a>
         `;
     }
@@ -223,14 +241,17 @@ function openDetailModal(encodedName, type) {
     if (downloadUrl) {
         linksContainer.innerHTML += `
             <a href="${downloadUrl}" target="_blank" class="btn-download">
-                <i class="fa-solid fa-download"></i> Tải Source / File
+                <i class="fa-solid fa-download"></i> Tải Mã Nguồn (${product.name})
             </a>
         `;
     }
 
-    if (!useUrl && !downloadUrl) {
-        linksContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">Đang cập nhật tính năng</p>`;
-    }
+    // Direct fast link to master zip
+    linksContainer.innerHTML += `
+        <a href="./downloads/all/devpan-all-projects.zip" download class="btn-download" style="background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.4); margin-top: 4px;">
+            <i class="fa-solid fa-file-zipper"></i> Tải Trọn Bộ Tất Cả Dự Án (ZIP)
+        </a>
+    `;
 
     document.getElementById("detail-modal").style.display = "flex";
 }

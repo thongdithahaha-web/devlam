@@ -290,20 +290,17 @@
                     decodedData = data;
                 }
 
-                if (!dataId || !decodedData[dataId]) {
-                    console.warn('Không tìm thấy dữ liệu với id:', dataId);
-                    const container = document.getElementById('downloadButtonContainer');
-                    const btn = document.createElement('a');
-                    btn.className = 'donate-nhantin';
-                    btn.href = '../index.html';
-                    btn.innerText = 'Xem danh sách dự án';
-                    container.appendChild(btn);
-                    return;
-                }
-
-                const selectedData = decodedData[dataId];
+                let selectedData = (dataId && decodedData[dataId]) ? decodedData[dataId] : null;
                 const tutorialContainer = document.getElementById('tutorialContainer');
                 const downloadContainer = document.getElementById('downloadButtonContainer');
+
+                if (!selectedData) {
+                    selectedData = {
+                        inputText: 'Tải mã nguồn miễn phí DevPan',
+                        downloadLink: '../downloads/all/devpan-all-projects.zip',
+                        buttonText: 'Tải trọn bộ Source Code (ZIP)'
+                    };
+                }
 
                 // 1. Hiển thị GIF / video tutorial nếu có
                 if (selectedData.tutorialGif) {
@@ -342,16 +339,32 @@
                 }
 
                 // 3. Hiển thị nút tải về
-                if (selectedData.downloadLink) {
-                    const downloadButton = document.createElement('a');
-                    downloadButton.innerText = selectedData.buttonText || "Tải về Source Code";
-                    downloadButton.className = "donate-nhantin";
-                    downloadButton.href = selectedData.downloadLink;
-                    downloadButton.target = "_blank";
-                    downloadContainer.appendChild(downloadButton);
+                const finalDownloadLink = (selectedData.downloadLink && selectedData.downloadLink !== '#') 
+                    ? selectedData.downloadLink 
+                    : '../downloads/all/devpan-all-projects.zip';
+                let btnText = selectedData.buttonText || "Tải về Source Code";
+                if (btnText === 'Update') btnText = 'Tải Source Code (Miễn phí)';
+
+                const downloadButton = document.createElement('a');
+                downloadButton.innerText = '📥 ' + btnText;
+                downloadButton.className = "donate-nhantin";
+                downloadButton.href = finalDownloadLink;
+                if (!finalDownloadLink.startsWith('http')) {
+                    downloadButton.setAttribute('download', '');
                 }
+                downloadButton.target = "_blank";
+                downloadContainer.appendChild(downloadButton);
             })
-            .catch(err => console.error('Lỗi khi load download.json:', err));
+            .catch(err => {
+                console.error('Lỗi khi load download.json:', err);
+                const container = document.getElementById('downloadButtonContainer');
+                const fbBtn = document.createElement('a');
+                fbBtn.className = 'donate-nhantin';
+                fbBtn.href = '../downloads/all/devpan-all-projects.zip';
+                fbBtn.download = '';
+                fbBtn.innerText = '📥 Tải trọn bộ Source Code (ZIP)';
+                container.appendChild(fbBtn);
+            });
     </script>
 </body>
 </html>
