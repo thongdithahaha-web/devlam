@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xóa Nền Ảnh</title>
+  <link rel="icon" href="https://github.com/Panbap/anh/blob/main/icon1.png?raw=true" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Mali", cursive;
+      background: linear-gradient(135deg, #d4e8ff, #fff3eb);
+      color: #305f7a;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      color: #0b324d;
+    }
+
+    .main-container {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* RIGHT PANEL */
+    .right-panel {
+      flex: 1 1 300px;
+      max-width: 400px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(199, 107, 57, 0.15);
+    }
+
+    .right-panel input[type="file"] {
+      padding: 10px 12px;
+      border: 2px dashed #95cbf7;
+      background: #e6f5ff;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      transition: border 0.3s ease;
+    }
+
+    .right-panel input[type="file"]:hover {
+      border-color: #3982c7;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px;
+    }
+
+    .controls label {
+      display: flex;
+      flex-direction: column;
+      font-size: 1rem;
+      color: #305c7a;
+    }
+
+    .controls .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .controls .row label,
+    .controls .row input[type="range"],
+    .controls .row button {
+      flex: 1;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #032953;
+    }
+
+    input[type="file"] {
+      color: #032953;
+      background-color: #f0f0f0;
+      border: 2px solid #032953;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* Chrome, Safari */
+    input[type="file"]::-webkit-file-upload-button {
+      background-color: #032953;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Firefox */
+    input[type="file"]::file-selector-button {
+      background-color: #032953;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Button style với hiệu ứng đổ bóng */
+    button {
+      background-color: #0a3c50;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 8px rgba(57, 123, 199, 0.4);
+      margin-top: 10px;
+      font-family: "Mali", cursive;
+    }
+
+    button:hover {
+      background-color: #072736;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(22, 76, 156, 0.6);
+    }
+
+    /* LEFT PANEL */
+    .left-panel {
+      flex: 2 1 500px;
+      max-width: 800px;
+      text-align: center;
+    }
+
+    .left-panel p {
+      font-size: 14px;
+      font-style: italic;
+      color: #427fa8;
+      margin-bottom: 15px;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      max-width: 600px;
+      border-radius: 12px;
+      background: repeating-conic-gradient(#72b8f1 0% 25%, transparent 0% 50%) 50% / 20px 20px;
+      box-shadow: 0 6px 15px rgba(199, 107, 57, 0.2);
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><circle cx="4" cy="4" r="4" fill="%23032953"/></svg>') 4 4, auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .left-panel,
+      .right-panel {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Xóa Nền Ảnh</h1>
+
+  <div class="main-container">
+    <!-- ✅ LEFT panel: Canvas and Tip -->
+    <div class="left-panel">
+      <p><em>Mẹo: Tải hình ảnh của bạn lên, nhấp vào nền, và điều chỉnh để làm mờ viền cho mượt mà hơn.</em>
+      </p>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <!-- ✅ RIGHT panel: Controls -->
+    <div class="right-panel">
+      <input type="file" id="fileInput">
+
+      <label>Độ dung sai: <span id="tolValue">35</span></label>
+      <input type="range" id="tol" min="0" max="50" value="35">
+
+      <label>Mờ viền: <span id="featherValue">20</span></label>
+      <input type="range" id="feather" min="0" max="50" value="20">
+
+      <div class="controls">
+
+        <div class="row">
+          <button id="resetBtn">Reset</button>
+          <button id="downloadBtn">Download PNG</button>
+        </div>
+
+        <div class="row">
+          <button id="undoBtn">Hoàn tác</button>
+          <button id="redoBtn">Làm lại</button>
+        </div>
+
+        <div class="row">
+          <button id="drawBtn">✏️</button>
+          <label>Color: <input type="color" id="colorPicker" value="#000000"></label>
+          <button id="eraseBtn">🧽</button>
+
+        </div>
+      </div>
+
+      <label>Kích thước: <span id="brushValue">10</span></label>
+      <input type="range" id="brushSize" min="1" max="50" value="10">
+    </div>
+
+    <script src="../assets/removebg.js"></script>
+
+</body>
+
+</html>
