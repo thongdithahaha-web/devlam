@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tải về Source Code - DevPan</title>
+    <link rel="icon" href="../assets/icon1.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Mali", cursive;
+            background: linear-gradient(135deg, #f6d365, #fda085);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            padding: 25px 30px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            max-width: 420px;
+            width: 90%;
+            animation: fadeInUp 0.8s ease;
+            margin: 20px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #ff6f61;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        p {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .donate-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .donate-button, .donate-nhantin {
+            padding: 14px 32px;
+            background: linear-gradient(90deg, #ff6f61, #ff3b2e);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: "Mali", cursive;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(255, 111, 97, 0.3);
+        }
+
+        .donate-button:hover, .donate-nhantin:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .popup {
+            background: #fff;
+            padding: 30px 25px;
+            border-radius: 20px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            animation: scaleIn 0.4s ease;
+            margin: 20px;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .popup h2 {
+            color: #ff6f61;
+            margin-bottom: 10px;
+        }
+
+        .stk-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .stk-info {
+            text-align: center;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .stk {
+            background: #ffe6e0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            user-select: all;
+            font-size: 16px;
+            color: #ff3b2e;
+        }
+
+        .copy-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #ff6f61;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.3s;
+            font-family: "Mali", cursive;
+        }
+
+        .copy-btn:hover {
+            background: #ff3b2e;
+            transform: translateY(-2px);
+        }
+
+        .popup button.close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .popup button.close:hover {
+            color: #ff6f61;
+        }
+
+        #tutorialContainer {
+            margin-top: 15px;
+        }
+
+        .back-home {
+            margin-top: 20px;
+            display: inline-block;
+            font-size: 13px;
+            color: #888;
+            text-decoration: none;
+        }
+
+        .back-home:hover {
+            color: #ff6f61;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>💖 Tải về Source Code 💖</h1>
+        <p>Nếu bạn thấy dự án này hữu ích, hãy ủng hộ để mình có thêm động lực sáng tạo các mã nguồn mới nhé!</p>
+
+        <div class="donate-wrap">
+            <button class="donate-button" onclick="openPopup()">Ủng hộ tác giả ☕</button>
+            <div id="downloadButtonContainer"></div>
+        </div>
+
+        <div id="tutorialContainer"></div>
+
+        <div>
+            <a href="../index.html" class="back-home">⬅ Quay về trang chủ Lovely</a>
+        </div>
+    </div>
+
+    <!-- Popup Donate -->
+    <div class="popup-overlay" id="donatePopup">
+        <div class="popup">
+            <button class="close" onclick="closePopup()">×</button>
+            <h2>❤️ Ủng hộ tác giả ❤️</h2>
+            <div class="stk-section">
+                <div class="stk-info">
+                    <div><strong>Ngân Hàng:</strong> ACB Bank</div>
+                    <div><strong>Chủ Tài Khoản:</strong> Phan Quốc Đạt</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div class="stk" id="stk1">STK: 42515647</div>
+                    <button class="copy-btn" onclick="copySTK('stk1')">Copy</button>
+                </div>
+                <div style="text-align:center;">
+                    <img src="../assets/bank.png" alt="QR code ủng hộ" style="width:180px; height:auto; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.15);">
+                    <p style="font-size:13px; color:#555; margin-top:8px;">Quét mã QR để ủng hộ nhé!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openPopup() {
+            document.getElementById('donatePopup').classList.add('active');
+        }
+
+        function closePopup() {
+            document.getElementById('donatePopup').classList.remove('active');
+        }
+
+        function copySTK(id) {
+            const fullText = document.getElementById(id).innerText;
+            const stkNumber = fullText.replace(/^STK:\s*/, '').trim();
+            navigator.clipboard.writeText(stkNumber).then(() => {
+                alert('Đã copy số tài khoản: ' + stkNumber);
+            });
+        }
+
+        // Lấy id từ URL (?id=...)
+        const params = new URLSearchParams(window.location.search);
+        const dataId = params.get('id');
+
+        fetch('../assets/download.json')
+            .then(response => response.json())
+            .then(data => {
+                let decodedData = {};
+                if (data.encodedData) {
+                    try {
+                        const binaryStr = atob(data.encodedData);
+                        const bytes = new Uint8Array(binaryStr.length);
+                        for (let i = 0; i < binaryStr.length; i++) {
+                            bytes[i] = binaryStr.charCodeAt(i);
+                        }
+                        const jsonStr = new TextDecoder('utf-8').decode(bytes);
+                        decodedData = JSON.parse(jsonStr);
+                    } catch (e) {
+                        decodedData = JSON.parse(decodeURIComponent(escape(atob(data.encodedData))));
+                    }
+                } else {
+                    decodedData = data;
+                }
+
+                if (!dataId || !decodedData[dataId]) {
+                    console.warn('Không tìm thấy dữ liệu với id:', dataId);
+                    const container = document.getElementById('downloadButtonContainer');
+                    const btn = document.createElement('a');
+                    btn.className = 'donate-nhantin';
+                    btn.href = '../index.html';
+                    btn.innerText = 'Xem danh sách dự án';
+                    container.appendChild(btn);
+                    return;
+                }
+
+                const selectedData = decodedData[dataId];
+                const tutorialContainer = document.getElementById('tutorialContainer');
+                const downloadContainer = document.getElementById('downloadButtonContainer');
+
+                // 1. Hiển thị GIF / video tutorial nếu có
+                if (selectedData.tutorialGif) {
+                    const caption = document.createElement('p');
+                    caption.innerText = "🎬 Hướng dẫn sử dụng";
+                    caption.style.fontWeight = "bold";
+                    caption.style.color = "#ff6f61";
+                    caption.style.marginTop = "20px";
+                    tutorialContainer.appendChild(caption);
+
+                    const link = document.createElement('a');
+                    link.href = selectedData.tutorialLink || "#";
+                    link.target = "_blank";
+
+                    const tutorialImg = document.createElement('img');
+                    tutorialImg.src = selectedData.tutorialGif;
+                    tutorialImg.alt = "Hướng dẫn";
+                    tutorialImg.style.width = "100%";
+                    tutorialImg.style.maxWidth = "280px";
+                    tutorialImg.style.marginTop = "8px";
+                    tutorialImg.style.borderRadius = "12px";
+                    tutorialImg.style.boxShadow = "0 5px 15px rgba(0,0,0,0.15)";
+
+                    link.appendChild(tutorialImg);
+                    tutorialContainer.appendChild(link);
+                }
+
+                // 2. Thêm ghi chú nếu có
+                if (selectedData.inputText) {
+                    const textPara = document.createElement('p');
+                    textPara.innerText = selectedData.inputText;
+                    textPara.style.fontWeight = "bold";
+                    textPara.style.color = "#ff6f61";
+                    textPara.style.marginTop = "12px";
+                    tutorialContainer.appendChild(textPara);
+                }
+
+                // 3. Hiển thị nút tải về
+                if (selectedData.downloadLink) {
+                    const downloadButton = document.createElement('a');
+                    downloadButton.innerText = selectedData.buttonText || "Tải về Source Code";
+                    downloadButton.className = "donate-nhantin";
+                    downloadButton.href = selectedData.downloadLink;
+                    downloadButton.target = "_blank";
+                    downloadContainer.appendChild(downloadButton);
+                }
+            })
+            .catch(err => console.error('Lỗi khi load download.json:', err));
+    </script>
+</body>
+</html>
