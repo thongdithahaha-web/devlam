@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="author" content="Devpan">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="Lovely – nơi chia sẻ yêu thương." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="keywords" content="lập trình, thiết kế web, javascript, html, css">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Lovely – nơi chia sẻ yêu thương.">
+    <meta property="og:description" content="Nơi lan tỏa kiến thức và tình yêu.">
+
+    <title>Lovely - Vũ trụ tình yêu & Source Code</title>
+    <link rel="icon" href="./assets/icon1.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">
+                <img src="./assets/icon1.png" alt="Logo">
+                <span>Lovely</span>
+            </a>
+            <div class="header-actions">
+                <div class="explore-dropdown-wrapper">
+                    <button class="explore-btn" onclick="toggleExploreMenu()">
+                        <i class="fa-solid fa-compass"></i> Khám phá <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+                    </button>
+                    <div class="explore-menu" id="explore-menu">
+                        <button class="menu-item active" onclick="selectExploreCategory('all', this)"><i class="fa-solid fa-border-all"></i> Tất cả</button>
+                        <button class="menu-item" onclick="selectExploreCategory('Trái tim', this)"><i class="fa-solid fa-heart" style="color: var(--accent-pink);"></i> Trái tim</button>
+                        <button class="menu-item" onclick="selectExploreCategory('Tình yêu', this)"><i class="fa-solid fa-heart" style="color: var(--accent-pink);"></i> Tình Yêu</button>
+                        <button class="menu-item" onclick="selectExploreCategory('Cặp đôi', this)"><i class="fa-solid fa-heart" style="color: var(--accent-pink);"></i> Cặp đôi</button>
+                        <button class="menu-item" onclick="selectExploreCategory('Thiệp', this)"><i class="fa-solid fa-heart" style="color: var(--accent-pink);"></i> Thiệp</button>
+                        <button class="menu-item" onclick="selectExploreCategory('Sinh nhật', this)"><i class="fa-solid fa-heart" style="color: var(--accent-pink);"></i> Sinh nhật</button>
+                        <button class="menu-item" onclick="selectExploreCategory('App', this)"><i class="fa-solid fa-gamepad" style="color: var(--accent-purple);"></i> App</button>
+                        <button class="menu-item" onclick="selectExploreCategory('Tool', this)"><i class="fa-solid fa-gamepad" style="color: var(--accent-purple);"></i> Tool</button>
+                        <button class="menu-item" onclick="selectExploreCategory('Game', this)"><i class="fa-solid fa-gamepad" style="color: var(--accent-purple);"></i> Game</button>
+                        <button class="menu-item" onclick="selectExploreCategory('Khác', this)"><i class="fa-solid fa-ellipsis"></i> Khác</button>
+                    </div>
+                </div>
+
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Tìm kiếm..." id="search-box" />
+                </div>
+                <button id="donate-btn" class="donate-btn">☕ Ủng hộ</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h1>Chào mừng bạn đến với vũ trụ tình yêu ❤️</h1>
+        <p>Web gửi gắm yêu thương và phần mềm tiện ích.</p>
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('web')"><i class="fa-solid fa-globe"></i> Web</button>
+            <button class="tab-btn" onclick="switchTab('app')"><i class="fa-solid fa-mobile-screen-button"></i> App / Game</button>
+        </div>
+    </div>
+
+    <main class="container">
+        <section id="web-section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fa-solid fa-globe"></i> Website</h2>
+            </div>
+            <div class="grid-container" id="web-grid"></div>
+            <div class="pagination" id="web-pagination"></div>
+        </section>
+
+        <section id="app-section" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fa-solid fa-laptop-code" style="color: var(--accent-purple);"></i> App / Game</h2>
+            </div>
+            <div class="grid-container" id="app-grid"></div>
+            <div class="pagination" id="app-pagination"></div>
+        </section>
+    </main>
+
+    <!-- Modal Chi tiết -->
+    <div id="detail-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal-btn" onclick="closeModal('detail-modal')">&times;</button>
+            <h2 id="modal-title">Tên Sản Phẩm</h2>
+            <p id="modal-desc">Mô tả chi tiết sản phẩm...</p>
+            <p><strong>Tác giả: </strong><span id="modal-author">DevPan</span></p>
+            <div class="modal-actions" id="modal-links"></div>
+        </div>
+    </div>
+
+    <!-- Modal Donate -->
+    <div id="donate-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal-btn" onclick="closeModal('donate-modal')">&times;</button>
+            <h2>Ủng Hộ Tác Giả ☕</h2>
+            <div class="qr-container">
+                <img src="./assets/bank.png" alt="Mã QR Chuyển Khoản ACB" class="qr-image" />
+            </div>
+            <p>Ngân hàng: <strong>ACB Bank</strong></p>
+            <p>STK: <strong>4251 5647</strong></p>
+            <p>Chủ TK: <strong>Phan Quốc Đạt</strong></p>
+            <p style="font-size: 0.8rem; margin-top: 10px; color: var(--text-muted);">Quét mã QR để mời tác giả ly cà phê nhé!</p>
+        </div>
+    </div>
+
+    <!-- Floating Contact Widget -->
+    <div id="contact-widget">
+        <div class="widget-tooltip" id="widget-tooltip">
+            <span id="tooltip-text">Nhắn cho mình nhé! 💖</span>
+            <button class="tooltip-close-btn" onclick="closeTooltip(event)">&times;</button>
+        </div>
+        <div class="widget-menu" id="widget-menu">
+            <a href="https://zalo.me/0948339082" target="_blank" class="zalo"><i class="fa-solid fa-comment"></i><span>Zalo</span></a>
+            <a href="https://www.facebook.com/people/Dev-Pan/61571915535119/" target="_blank" class="fb"><i class="fa-brands fa-facebook-f"></i><span>Facebook</span></a>
+            <a href="https://www.tiktok.com/@panbap369" target="_blank"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+            <a href="https://www.youtube.com/@Panbap369/videos" target="_blank" class="yt"><i class="fa-brands fa-youtube"></i><span>YouTube</span></a>
+            <button class="widget-close-item" onclick="closeWidget()"><i class="fa-solid fa-xmark"></i> Tắt nút này</button>
+        </div>
+        <div class="widget-btn" onclick="toggleWidgetMenu()"><i class="fa-solid fa-headset"></i></div>
+    </div>
+
+    <footer>
+        &copy; 2026 DevPan. Nơi hội tụ những Source Code chất lượng.
+    </footer>
+
+    <script src="./assets/app.js"></script>
+</body>
+
+</html>

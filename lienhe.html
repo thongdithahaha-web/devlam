@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevPan - Liên Hệ & Dịch Vụ</title>
+    <link rel="icon" href="./assets/icon1.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #030712;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #60a5fa;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .aurora {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: blur(120px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            border-radius: 50%;
+            animation: move 25s infinite alternate;
+        }
+
+        .b1 { background: #1e40af; top: -10%; left: -10%; }
+        .b2 { background: #701a75; bottom: -10%; right: -10%; animation-delay: -7s; }
+
+        @keyframes move {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(15%, 15%) scale(1.1); }
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 40px 25px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.8s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, var(--accent), #c026d3);
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+            object-fit: cover;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 5px;
+        }
+
+        .badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .section-label {
+            display: block;
+            text-align: left;
+            font-size: 0.8rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 30px 0 15px 10px;
+            font-weight: 700;
+        }
+
+        .links-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            padding: 18px 20px;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .link-card i {
+            font-size: 1.4rem;
+            width: 40px;
+            color: var(--accent);
+        }
+
+        .link-card div { flex: 1; }
+        .link-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 2px; }
+        .link-card p { font-size: 0.8rem; color: #94a3b8; }
+
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02) translateX(5px);
+            border-color: var(--accent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-box span {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .stat-box label {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #4b5563;
+            font-size: 0.8rem;
+        }
+
+        .back-home {
+            margin-top: 15px;
+            display: inline-block;
+            font-size: 13px;
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .back-home:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="aurora">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="profile-header">
+            <img src="./assets/icon1.png" alt="DevPan" class="avatar">
+            <h1>DevPan <i class="fas fa-check-circle" style="color: #38bdf8; font-size: 1.2rem;"></i></h1>
+            <span class="badge">Fullstack Developer AI</span>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span>100+</span>
+                <label>Dự án hoàn thiện</label>
+            </div>
+            <div class="stat-box">
+                <span>5/5 ⭐</span>
+                <label>Lượt Đánh giá</label>
+            </div>
+        </div>
+
+        <span class="section-label">Kết nối với mình</span>
+        <div class="links-list">
+            <a href="https://www.facebook.com/people/Dev-Pan/61571915535119/" target="_blank" class="link-card">
+                <i class="fab fa-facebook"></i>
+                <div>
+                    <h3>Facebook</h3>
+                    <p>Cập nhật tin tức mới nhất</p>
+                </div>
+                <i class="fas fa-arrow-right" style="font-size: 0.7rem; width: auto; opacity: 0.3;"></i>
+            </a>
+            <a href="https://zalo.me/0948339082" target="_blank" class="link-card">
+                <i class="fas fa-comment-dots"></i>
+                <div>
+                    <h3>Zalo</h3>
+                    <p>Trao đổi công việc</p>
+                </div>
+                <i class="fas fa-arrow-right" style="font-size: 0.7rem; width: auto; opacity: 0.3;"></i>
+            </a>
+            <a href="https://www.tiktok.com/@panbap369" target="_blank" class="link-card">
+                <i class="fab fa-tiktok"></i>
+                <div>
+                    <h3>TikTok</h3>
+                    <p>Video demo & thủ thuật web</p>
+                </div>
+                <i class="fas fa-chevron-right" style="font-size: 0.7rem; width: auto; opacity: 0.3;"></i>
+            </a>
+            <a href="https://www.youtube.com/@Panbap369/videos" target="_blank" class="link-card">
+                <i class="fab fa-youtube"></i>
+                <div>
+                    <h3>YouTube</h3>
+                    <p>Hướng dẫn lập trình chuyên sâu</p>
+                </div>
+                <i class="fas fa-chevron-right" style="font-size: 0.7rem; width: auto; opacity: 0.3;"></i>
+            </a>
+        </div>
+
+        <span class="section-label">Dịch vụ Web VIP</span>
+        <div class="links-list">
+            <div class="link-card">
+                <i class="fas fa-code"></i>
+                <div>
+                    <h3>Thiết kế Landing Page</h3>
+                    <p>Tối ưu chuyển đổi, giao diện hiện đại</p>
+                </div>
+            </div>
+            <div class="link-card">
+                <i class="fas fa-bolt"></i>
+                <div>
+                    <h3>Tối ưu tốc độ Web</h3>
+                    <p>Đạt điểm 100 PageSpeed Insights</p>
+                </div>
+            </div>
+            <div class="link-card">
+                <i class="fas fa-shield-halved"></i>
+                <div>
+                    <h3>Bảo mật hệ thống</h3>
+                    <p>Chống DDoS và bảo vệ dữ liệu</p>
+                </div>
+            </div>
+            <div class="link-card">
+                <i class="fas fa-mobile-screen-button"></i>
+                <div>
+                    <h3>Tối ưu tốc độ Load</h3>
+                    <p>Tăng trải nghiệm người dùng tối đa</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 DEVPAN PORTFOLIO</p>
+            <p>DESIGNED FOR THE DIGITAL ELITE</p>
+            <a href="./index.html" class="back-home">⬅ Về trang chủ Lovely</a>
+        </footer>
+    </div>
+</body>
+
+</html>
