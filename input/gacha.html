@@ -17,7 +17,7 @@
 <body>
     <div id="Devpan"></div>
 
-<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h2> Nhập thông điệp</h2><form id="dataForm"><div id="textsContainer"><div class="input-group"><label>Text 1</label><input type="text" name="text" value="Xin chào!"><button type="button" class="remove-btn"><i class="fa-solid fa-trash-can"></i></button></div></div><div class="button-group"><button type="button" id="addTextBtn"><i class="fa-solid fa-plus"></i> Thêm text</button><button type="submit">Tạo link <i class="fa-solid fa-paper-plane"></i></button></div></form><p style="text-align:center; font-weight: bold; color: #ff7675;">Kết quả của bạn:</p><div class="link-output"><input type="text" id="outputLink" readonly placeholder="Link của bạn sẽ hiện ở đây..." /><div class="link-actions"><a id="viewLink" class="view-link" target="_blank"><i class="fa-solid fa-eye"></i> Xem trang </a><button type="button" id="copyBtn" class="copy-btn"><i class="fa-solid fa-copy"></i> Copy </button></div></div><!-- Nút chuyển sang Donate và tạo QR --><div class="donate-container"><div class="donate-message"> “Website này được vận hành bằng đam mê (duy trì server 💻). Nếu bạn thấy hữu ích, một chút Donate từ bạn sẽ là nguồn tiếp sức lớn để mình tiếp tục phát triển!” ☕❤️ </div><div class="button-group"><button type="button" class="btn-donate" onclick="openDonateModal()">Donate</button><button type="button" class="btn-donate" onclick="window.location.href='https://lovelys2.vercel.app/QRtraitim/index.html'">Tạo QR</button></div></div><footer class="site-footer"><p>© 2025 <b>DevPan</b>. A personal creation. <span>❤️</span></p></footer></div><div id="donateModal" class="modal-overlay"><div class="modal-content"><span class="close-btn-dn" onclick="closeDonateModal()">&times;</span><h3 class="modal-title">Ủng hộ mình</h3><p style="font-size: 13px; color: #777; margin-bottom: 15px;">Quét mã để mời mình một ly cà phê nhé!</p><div class="qr-code-wrapper"><img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" alt="Mã QR Donate"></div><div class="bank-info-box"><div class="bank-details"><strong>Ngân Hàng:</strong> ACB Bank <br><strong>Chủ TK:</strong> PHAN QUỐC ĐẠT </div><div class="stk-copy-row"><span id="stk-number">42515647</span><button class="btn-copy-dn" onclick="copySTK()">Copy</button></div></div></div></div>
+<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h2> Nhập thông điệp</h2><form id="dataForm"><div id="textsContainer"><div class="input-group"><label>Text 1</label><input type="text" name="text" value="Xin chào!"><button type="button" class="remove-btn"><i class="fa-solid fa-trash-can"></i></button></div></div><div class="button-group"><button type="button" id="addTextBtn"><i class="fa-solid fa-plus"></i> Thêm text</button><button type="submit">Tạo link <i class="fa-solid fa-paper-plane"></i></button></div></form><p style="text-align:center; font-weight: bold; color: #ff7675;">Kết quả của bạn:</p><div class="link-output"><input type="text" id="outputLink" readonly placeholder="Link của bạn sẽ hiện ở đây..." /><div class="link-actions"><a id="viewLink" class="view-link" target="_blank"><i class="fa-solid fa-eye"></i> Xem trang </a><button type="button" id="copyBtn" class="copy-btn"><i class="fa-solid fa-copy"></i> Copy </button></div></div><footer class="site-footer"><p>© 2025 <b>DevPan</b>. A personal creation. <span>❤️</span></p></footer></div>
 
     <script>
         // Loading screen fadeout
@@ -28,34 +28,7 @@
             }, 300);
         });
 
-        // Donate Modal Handlers
-        const donateModal = document.getElementById('donateModal');
-        function openDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'flex';
-                document.body.classList.add('modal-open');
-            }
-        }
-        function closeDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'none';
-                document.body.classList.remove('modal-open');
-            }
-        }
-        function copySTK() {
-            const stk = document.getElementById('stk-number')?.innerText || '42515647';
-            navigator.clipboard.writeText(stk).then(() => {
-                const btn = document.querySelector('.btn-copy-dn');
-                if (btn) {
-                    const old = btn.innerText;
-                    btn.innerText = 'Đã Copy!';
-                    setTimeout(() => { btn.innerText = old; }, 2000);
-                }
-            });
-        }
-        window.addEventListener('click', (e) => {
-            if (e.target === donateModal) closeDonateModal();
-        });
+        
     </script>
     <script src="./js/gacha.js"></script>
 </body>

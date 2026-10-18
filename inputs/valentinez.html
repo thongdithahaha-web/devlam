@@ -17,9 +17,7 @@
 <body>
     <div id="Devpan"></div>
 
-<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h2>Nhập nội dung</h2><div class="box"><label>Tiêu đề</label><input id="title" placeholder="Chào Công Chúa"><label style="margin-top:8px">Mật mã (4 số) bỏ trống để hiển thị trái tim</label><input id="pass" maxlength="4" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')"><div id="passError" class="error"></div></div><div class="box"><label>Lời chúc</label><textarea id="msg" rows="3"></textarea></div><div class="box"><label>Ảnh kỷ niệm</label><label for="upload-imgbb" class="custom-upload-button">📷 Upload ảnh</label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden><textarea id="images" style="display:none;"></textarea><div id="thumbs"></div></div><div class="box"><label>🎵 Nhạc nền</label><select id="music"><option value="n/a.mp3">Nhac nền</option><option value="n/k.mp3">Kho Báu</option><option value="n/e.mp3">Lễ đường</option><option value="n/c.mp3">Chạm vào mây</option><option value="n/s.mp3">Happy birthday</option><option value="n/g.mp3">Không Thời Gian</option><option value="n/t.mp3">Từng Ngày Yêu Em</option><option value="n/d.mp3">Tình Yêu Giữa Mùa Đông</option></select></div><button class="btn-create" onclick="generateLink()">TẠO LINK</button><div id="result"></div><!-- Nút chuyển sang Donate và tạo QR --><div class="donate-container"><div class="donate-message"> “Website này được vận hành bằng đam mê (duy trì server 💻). Nếu bạn thấy hữu ích, một chút Donate từ bạn sẽ là nguồn tiếp sức lớn để mình tiếp tục phát triển!” ☕❤️ </div><div class="button-group"><button type="button" class="btn-donate" onclick="openDonateModal()">Donate</button><button type="button" class="btn-donate" onclick="window.location.href='https://lovelys2.vercel.app/QRtraitim/index.html'">Tạo QR</button></div></div><p class="footer-note">@2025 Devpan - Handmade with love for your girl 🤍</p></div><div id="captcha-popup"><div><h3>Vui lòng nhập CAPTCHA</h3><div class="captcha-container"><span id="captcha-code">A1B2C</span><button id="refresh-captcha" title="Đổi mã khác">🔄</button></div><input type="text" id="captcha-input" placeholder="Nhập mã xác thực..." autocomplete="off" maxlength="6" /><div id="captcha-error"></div><button id="captcha-submit">Xác nhận</button></div></div><div id="donateModal" class="modal-overlay"><div class="modal-content"><span class="close-btn-dn" onclick="closeDonateModal()">&times;</span><h3 class="modal-title">Ủng hộ mình</h3><p style="font-size: 13px; color: #777; margin-bottom: 15px;">Quét mã để ủng hộ mình nhé!</p><div class="qr-code-wrapper"><img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" alt="Mã QR Donate"></div><div class="bank-info-box"><div class="bank-details"><strong>Ngân Hàng:</strong> ACB Bank <br><strong>Chủ TK:</strong> PHAN QUỐC ĐẠT </div><div class="stk-copy-row"><span id="stk-number">42515647</span><button class="btn-copy-dn" onclick="copySTK()">Copy</button></div></div></div></div>
-
-    <script>
+<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h2>Nhập nội dung</h2><div class="box"><label>Tiêu đề</label><input id="title" placeholder="Chào Công Chúa"><label style="margin-top:8px">Mật mã (4 số) bỏ trống để hiển thị trái tim</label><input id="pass" maxlength="4" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')"><div id="passError" class="error"></div></div><div class="box"><label>Lời chúc</label><textarea id="msg" rows="3"></textarea></div><div class="box"><label>Ảnh kỷ niệm</label><label for="upload-imgbb" class="custom-upload-button">📷 Upload ảnh</label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden><textarea id="images" style="display:none;"></textarea><div id="thumbs"></div></div><div class="box"><label>🎵 Nhạc nền</label><select id="music"><option value="n/a.mp3">Nhac nền</option><option value="n/k.mp3">Kho Báu</option><option value="n/e.mp3">Lễ đường</option><option value="n/c.mp3">Chạm vào mây</option><option value="n/s.mp3">Happy birthday</option><option value="n/g.mp3">Không Thời Gian</option><option value="n/t.mp3">Từng Ngày Yêu Em</option><option value="n/d.mp3">Tình Yêu Giữa Mùa Đông</option></select></div><button class="btn-create" onclick="generateLink()">TẠO LINK</button><div id="result"></div><p class="footer-note">@2025 Devpan - Handmade with love for your girl 🤍</p></div><div id="captcha-popup"><div><h3>Vui lòng nhập CAPTCHA</h3><div class="captcha-container"><span id="captcha-code">A1B2C</span><button id="refresh-captcha" title="Đổi mã khác">🔄</button></div><input type="text" id="captcha-input" placeholder="Nhập mã xác thực..." autocomplete="off" maxlength="6" /><div id="captcha-error"></div><button id="captcha-submit">Xác nhận</button></div></div>>
         // Loading screen fadeout
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -28,34 +26,7 @@
             }, 300);
         });
 
-        // Donate Modal Handlers
-        const donateModal = document.getElementById('donateModal');
-        function openDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'flex';
-                document.body.classList.add('modal-open');
-            }
-        }
-        function closeDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'none';
-                document.body.classList.remove('modal-open');
-            }
-        }
-        function copySTK() {
-            const stk = document.getElementById('stk-number')?.innerText || '42515647';
-            navigator.clipboard.writeText(stk).then(() => {
-                const btn = document.querySelector('.btn-copy-dn');
-                if (btn) {
-                    const old = btn.innerText;
-                    btn.innerText = 'Đã Copy!';
-                    setTimeout(() => { btn.innerText = old; }, 2000);
-                }
-            });
-        }
-        window.addEventListener('click', (e) => {
-            if (e.target === donateModal) closeDonateModal();
-        });
+        
     </script>
     <script src="./app/valentinez.js"></script>
 </body>

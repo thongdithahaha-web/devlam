@@ -17,7 +17,7 @@
 <body>
     <div id="Devpan"></div>
 
-<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h2>Làm Quà Tặng Nàng</h2><div class="input-box"><label>Thông điệp đầu (Ví dụ: Bó hoa tặng nàng)</label><!-- <i class="fa-solid fa-wand-magic-sparkles"></i> --><input id="input-special" placeholder="Nhập điều bất ngờ..." /></div><div class="input-box"><label>Tiêu đề thư</label><!-- <i class="fa-solid fa-heart"></i> --><input id="input-title" placeholder="Gửi người thương..." /></div><div class="input-box"><label>Lời nhắn nhủ</label><!-- <i class="fa-solid fa-pen-nib"></i> --><textarea id="input-content" placeholder="Viết những lời tình tứ nhất..."></textarea></div><div class="input-box"><label>Ký tên</label><!-- <i class="fa-solid fa-signature"></i> --><input id="input-sign" placeholder="Ký tên anh..." /></div><!-- Ô thêm ảnh kỷ niệm bay lên & Trigger Captcha --><div class="input-box"><label>Ảnh kỷ niệm (Bay lên)</label><label for="upload-imgbb" class="custom-upload-button"> Chọn hoặc Upload ảnh </label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden><textarea id="input-images" style="display:none;"></textarea><div id="preview-thumbs"></div></div><div class="input-box"><label>Nhạc nền</label><!-- <i class="fa-solid fa-music"></i> --><select id="input-music" style="padding-left: 45px;"><option value="n/a.mp3">Nhạc nền</option><option value="n/k.mp3">Kho Báu</option><option value="n/e.mp3">Lễ đường</option><option value="n/c.mp3">Chạm vào mây</option><option value="n/s.mp3">Happy birthday</option><option value="n/g.mp3">Không Thời Gian</option><option value="n/t.mp3">Từng Ngày Yêu Em</option><option value="n/d.mp3">Tình Yêu Giữa Mùa Đông</option></select></div><button id="btn-go">Tạo Link <i class="fa-solid fa-paper-plane"></i></button><div id="result-area"><span class="result-label"><i class="fa-solid fa-circle-check"></i> Đã tạo link thành công!</span><div class="link-wrapper"><input id="output-link" readonly value="" /></div><div class="action-btns"><button class="btn-action btn-view" id="btn-view"><i class="fa-solid fa-eye"></i> Xem trang </button><button class="btn-action btn-copy" id="btn-copy"><i class="fa-solid fa-copy"></i> Copy </button></div></div><div class="donate-container"><div class="donate-message"> “Website này được vận hành bằng đam mê (duy trì server 💻). Nếu bạn thấy hữu ích, một chút Donate từ bạn sẽ là nguồn tiếp sức lớn để mình tiếp tục phát triển!” ☕❤️ </div><div class="button-group"><button type="button" class="btn-donate" onclick="openDonateModal()">Donate</button><button type="button" class="btn-donate" onclick="window.location.href='https://lovelys2.vercel.app/QRtraitim/index.html'">Tạo QR</button></div></div><p class="footer-note">@2025 Devpan - Handmade with love for your girl 🤍</p></div><!-- Captcha Popup --><div id="captcha-popup"><div id="captcha-box"><h3>Xác thực Captcha</h3><span id="captcha-code">A1B2C</span><input type="text" id="captcha-input" placeholder="Nhập mã xác thực..." autocomplete="off" /><div id="captcha-error"></div><div><button id="captcha-submit">Xác nhận</button><button id="refresh-captcha">🔄 Đổi</button></div></div></div><!-- Donate Modal --><div id="donateModal" class="modal-overlay"><div class="modal-content"><span class="close-btn-dn" onclick="closeDonateModal()">&times;</span><h3 class="modal-title">Ủng hộ mình</h3><p style="font-size: 13px; color: #777; margin-bottom: 15px;">Quét mã để mời mình một ly cà phê nhé!</p><div class="qr-code-wrapper"><img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" alt="Mã QR Donate"></div><div class="bank-info-box"><div class="bank-details"><strong>Ngân Hàng:</strong> ACB Bank <br><strong>Chủ TK:</strong> PHAN QUỐC ĐẠT </div><div class="stk-copy-row"><span id="stk-number">42515647</span><button class="btn-copy-dn" onclick="copySTK()">Copy</button></div></div></div></div>
+<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h2>Làm Quà Tặng Nàng</h2><div class="input-box"><label>Thông điệp đầu (Ví dụ: Bó hoa tặng nàng)</label><!-- <i class="fa-solid fa-wand-magic-sparkles"></i> --><input id="input-special" placeholder="Nhập điều bất ngờ..." /></div><div class="input-box"><label>Tiêu đề thư</label><!-- <i class="fa-solid fa-heart"></i> --><input id="input-title" placeholder="Gửi người thương..." /></div><div class="input-box"><label>Lời nhắn nhủ</label><!-- <i class="fa-solid fa-pen-nib"></i> --><textarea id="input-content" placeholder="Viết những lời tình tứ nhất..."></textarea></div><div class="input-box"><label>Ký tên</label><!-- <i class="fa-solid fa-signature"></i> --><input id="input-sign" placeholder="Ký tên anh..." /></div><!-- Ô thêm ảnh kỷ niệm bay lên & Trigger Captcha --><div class="input-box"><label>Ảnh kỷ niệm (Bay lên)</label><label for="upload-imgbb" class="custom-upload-button"> Chọn hoặc Upload ảnh </label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden><textarea id="input-images" style="display:none;"></textarea><div id="preview-thumbs"></div></div><div class="input-box"><label>Nhạc nền</label><!-- <i class="fa-solid fa-music"></i> --><select id="input-music" style="padding-left: 45px;"><option value="n/a.mp3">Nhạc nền</option><option value="n/k.mp3">Kho Báu</option><option value="n/e.mp3">Lễ đường</option><option value="n/c.mp3">Chạm vào mây</option><option value="n/s.mp3">Happy birthday</option><option value="n/g.mp3">Không Thời Gian</option><option value="n/t.mp3">Từng Ngày Yêu Em</option><option value="n/d.mp3">Tình Yêu Giữa Mùa Đông</option></select></div><button id="btn-go">Tạo Link <i class="fa-solid fa-paper-plane"></i></button><div id="result-area"><span class="result-label"><i class="fa-solid fa-circle-check"></i> Đã tạo link thành công!</span><div class="link-wrapper"><input id="output-link" readonly value="" /></div><div class="action-btns"><button class="btn-action btn-view" id="btn-view"><i class="fa-solid fa-eye"></i> Xem trang </button><button class="btn-action btn-copy" id="btn-copy"><i class="fa-solid fa-copy"></i> Copy </button></div></div><p class="footer-note">@2025 Devpan - Handmade with love for your girl 🤍</p></div><!-- Captcha Popup --><div id="captcha-popup"><div id="captcha-box"><h3>Xác thực Captcha</h3><span id="captcha-code">A1B2C</span><input type="text" id="captcha-input" placeholder="Nhập mã xác thực..." autocomplete="off" /><div id="captcha-error"></div><div><button id="captcha-submit">Xác nhận</button><button id="refresh-captcha">🔄 Đổi</button></div></div></div><!-- Donate Modal -->
 
     <script>
         // Loading screen fadeout
@@ -28,34 +28,7 @@
             }, 300);
         });
 
-        // Donate Modal Handlers
-        const donateModal = document.getElementById('donateModal');
-        function openDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'flex';
-                document.body.classList.add('modal-open');
-            }
-        }
-        function closeDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'none';
-                document.body.classList.remove('modal-open');
-            }
-        }
-        function copySTK() {
-            const stk = document.getElementById('stk-number')?.innerText || '42515647';
-            navigator.clipboard.writeText(stk).then(() => {
-                const btn = document.querySelector('.btn-copy-dn');
-                if (btn) {
-                    const old = btn.innerText;
-                    btn.innerText = 'Đã Copy!';
-                    setTimeout(() => { btn.innerText = old; }, 2000);
-                }
-            });
-        }
-        window.addEventListener('click', (e) => {
-            if (e.target === donateModal) closeDonateModal();
-        });
+        
     </script>
     <script src="./app/flower.js"></script>
 </body>

@@ -319,21 +319,15 @@ function generateLink() {
 
   const baseURL = "https://lovecodes2.vercel.app/lovex";
   const fullURL = `${baseURL}/rainz.html?id=${encodeURIComponent(encoded)}`;
-  const donateBox = document.getElementById("donateBox");
   const linkOutput = document.getElementById("linkOutput");
   const qrBox = document.getElementById("qrBox");
   const qrContainer = document.getElementById("qrcode");
 
-  donateBox.style.display = "block";
   linkOutput.innerHTML = "";
-  qrBox.style.display = "none";
-  qrContainer.innerHTML = "";
+  if (qrBox) qrBox.style.display = "none";
+  if (qrContainer) qrContainer.innerHTML = "";
 
-  setTimeout(() => {
-    donateBox.style.display = "none";
-
-    // Tạo cấu trúc hiển thị mới
-    linkOutput.innerHTML = `
+  linkOutput.innerHTML = `
     <p style="text-align: center; font-weight: bold; color: #ff6e75; margin-bottom: 12px;">
       ✅ Link của bạn đã sẵn sàng!
     </p>

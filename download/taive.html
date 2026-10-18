@@ -213,58 +213,20 @@
 
     <div class="container">
         <h1>💖 Tải về Source Code 💖</h1>
-        <p>Nếu bạn thấy dự án này hữu ích, hãy ủng hộ để mình có thêm động lực sáng tạo các mã nguồn mới nhé!</p>
+        <p>Nhấp vào nút bên dưới để tải mã nguồn dự án về máy của bạn hoàn toàn miễn phí!</p>
 
-        <div class="donate-wrap">
-            <button class="donate-button" onclick="openPopup()">Ủng hộ tác giả ☕</button>
+        <div style="margin: 20px 0;">
             <div id="downloadButtonContainer"></div>
         </div>
 
         <div id="tutorialContainer"></div>
 
         <div>
-            <a href="../index.html" class="back-home">⬅ Quay về trang chủ Lovely</a>
-        </div>
-    </div>
-
-    <!-- Popup Donate -->
-    <div class="popup-overlay" id="donatePopup">
-        <div class="popup">
-            <button class="close" onclick="closePopup()">×</button>
-            <h2>❤️ Ủng hộ tác giả ❤️</h2>
-            <div class="stk-section">
-                <div class="stk-info">
-                    <div><strong>Ngân Hàng:</strong> ACB Bank</div>
-                    <div><strong>Chủ Tài Khoản:</strong> Phan Quốc Đạt</div>
-                </div>
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <div class="stk" id="stk1">STK: 42515647</div>
-                    <button class="copy-btn" onclick="copySTK('stk1')">Copy</button>
-                </div>
-                <div style="text-align:center;">
-                    <img src="../assets/bank.png" alt="QR code ủng hộ" style="width:180px; height:auto; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.15);">
-                    <p style="font-size:13px; color:#555; margin-top:8px;">Quét mã QR để ủng hộ nhé!</p>
-                </div>
-            </div>
+            <a href="../index.html" class="back-home">⬅ Quay về trang chủ DevPan</a>
         </div>
     </div>
 
     <script>
-        function openPopup() {
-            document.getElementById('donatePopup').classList.add('active');
-        }
-
-        function closePopup() {
-            document.getElementById('donatePopup').classList.remove('active');
-        }
-
-        function copySTK(id) {
-            const fullText = document.getElementById(id).innerText;
-            const stkNumber = fullText.replace(/^STK:\s*/, '').trim();
-            navigator.clipboard.writeText(stkNumber).then(() => {
-                alert('Đã copy số tài khoản: ' + stkNumber);
-            });
-        }
 
         // Lấy id từ URL (?id=...)
         const params = new URLSearchParams(window.location.search);

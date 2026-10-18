@@ -17,7 +17,7 @@
 <body>
     <div id="Devpan"></div>
 
-<div class="container"><h1>Nhập dữ liệu</h1><div class="input-group"><label for="message">Nhập lời chúc:</label><small><strong>Hướng dẫn:</strong> Mỗi ô là 1 câu. Bạn có thể thêm nhiều ô.</small><div id="messagesContainer"><div class="input-wrapper"><input type="text" class="message" value="Chúc mừng" placeholder="Nhập lời chúc..."></div><div class="input-wrapper"><input type="text" class="message" value="sinh nhật" placeholder="Nhập lời chúc..."></div><div class="input-wrapper"><input type="text" class="message" value="bạn yêu" placeholder="Nhập lời chúc..."></div></div><button type="button" id="addMessageBtn">➕ Thêm câu</button></div><label class="select-group" for="gif">Ảnh GIF (chọn sẵn):</label><select id="gif" onchange="toggleCustomImageInput()"><option value="">Không chọn</option><option value="a/h1.gif">Happy Birthday</option><option value="a/h2.gif">Happy Birthday1</option><option value="a/h3.gif">Happy Birthday2</option><option value="a/i1.gif">I love you1</option><option value="a/i2.gif">I love you2</option><option value="a/m1.gif">I miss you</option><option value="a/1.gif">Hi</option></select><div id="customImageGroup"><label for="customImage">Chọn ảnh của bạn:</label><input style="display:none;" type="text" id="customImage" placeholder="VD: https://devpan.com/your.jpg" /><small class="optional-note">Nếu bạn chọn ảnh GIF, ô này sẽ bị bỏ qua.</small><br><label for="upload-imgbb" class="custom-upload-button">📷 Upload ảnh</label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden></div><div id="preview"></div><div id="gifPreview" class="gif-preview" style="display:none; text-align:center; margin-top:15px;"><p>Ảnh bạn đã chọn:</p><img id="gifImage" alt="GIF Preview" class="gif-image" style="max-width: 50%; border-radius: 8px; box-shadow: 0 0 8px #ff66aa99;" /></div><label for="music">Chọn nhạc nền:</label><select id="music"><option value="">-- Không chọn --</option><option value="n/a.mp3">Nhac nền</option><option value="n/k.mp3">Kho Báu</option><option value="n/e.mp3">Lễ đường</option><option value="n/c.mp3">Chạm vào mây</option><option value="n/s.mp3">Happy birthday</option><option value="n/g.mp3">Không Thời Gian</option><option value="n/t.mp3">Từng Ngày Yêu Em</option><option value="n/d.mp3">Tình Yêu Giữa Mùa Đông</option></select><label for="rainText">Chữ nền:</label><input type="text" id="rainText" placeholder="VD: I LOVE U" value="I LOVE YOU"><small class="optional-note">Bạn có thể nhập một câu, ví dụ: HAPPY BIRTHDAY 🎉</small><label for="rainColor">Màu chữ nền:</label><input type="color" id="rainColor" value="#f584b7"><small class="optional-note">Chọn màu chữ rơi (mặc định hồng #f584b7)</small><button class="generate-btn" onclick="generateLink()">Tạo Link</button><div id="donateBox" style="display: none;" class="donate-box"><p>Ủng hộ tác giả ❤️</p><!-- <img src="https://github.com/Panbap/anh/blob/main/qr1.png?raw=true" alt="Mã QR Donate" class="qr-image" /> --><!-- <img src="./assets/heart1.png" alt="Mã QR Donate" class="qr-image" /> --></div><div id="linkOutput"></div><div id="qrBox"><div id="qrcode" style="display: inline-block;"></div></div><div id="captcha-popup"><div><h3>Vui lòng nhập CAPTCHA</h3><div style="margin:15px 0; display: flex; align-items: center; gap: 10px;"><span id="captcha-code"></span><button id="refresh-captcha" title="Làm mới CAPTCHA">🔄</button></div><input type="text" id="captcha-input" placeholder="Nhập mã xác thực.." autocomplete="off" /><div id="captcha-error"></div><div class="button-wrapper"><button id="captcha-submit">Gửi mã</button></div></div></div><!-- Nút chuyển sang Donate và tạo QR --><div class="donate-container"><div class="donate-message"> “Website này được vận hành bằng đam mê (duy trì server 💻). Nếu bạn thấy hữu ích, một chút Donate từ bạn sẽ là nguồn tiếp sức lớn để mình tiếp tục phát triển!” ☕❤️ </div><div class="button-group"><button type="button" class="btn-donate" onclick="openDonateModal()">Donate</button><button type="button" class="btn-donate" onclick="window.location.href='https://lovelys2.vercel.app/QRtraitim/index.html'">Tạo QR</button></div></div></div>
+<div class="container"><h1>Nhập dữ liệu</h1><div class="input-group"><label for="message">Nhập lời chúc:</label><small><strong>Hướng dẫn:</strong> Mỗi ô là 1 câu. Bạn có thể thêm nhiều ô.</small><div id="messagesContainer"><div class="input-wrapper"><input type="text" class="message" value="Chúc mừng" placeholder="Nhập lời chúc..."></div><div class="input-wrapper"><input type="text" class="message" value="sinh nhật" placeholder="Nhập lời chúc..."></div><div class="input-wrapper"><input type="text" class="message" value="bạn yêu" placeholder="Nhập lời chúc..."></div></div><button type="button" id="addMessageBtn">➕ Thêm câu</button></div><label class="select-group" for="gif">Ảnh GIF (chọn sẵn):</label><select id="gif" onchange="toggleCustomImageInput()"><option value="">Không chọn</option><option value="a/h1.gif">Happy Birthday</option><option value="a/h2.gif">Happy Birthday1</option><option value="a/h3.gif">Happy Birthday2</option><option value="a/i1.gif">I love you1</option><option value="a/i2.gif">I love you2</option><option value="a/m1.gif">I miss you</option><option value="a/1.gif">Hi</option></select><div id="customImageGroup"><label for="customImage">Chọn ảnh của bạn:</label><input style="display:none;" type="text" id="customImage" placeholder="VD: https://devpan.com/your.jpg" /><small class="optional-note">Nếu bạn chọn ảnh GIF, ô này sẽ bị bỏ qua.</small><br><label for="upload-imgbb" class="custom-upload-button">📷 Upload ảnh</label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden></div><div id="preview"></div><div id="gifPreview" class="gif-preview" style="display:none; text-align:center; margin-top:15px;"><p>Ảnh bạn đã chọn:</p><img id="gifImage" alt="GIF Preview" class="gif-image" style="max-width: 50%; border-radius: 8px; box-shadow: 0 0 8px #ff66aa99;" /></div><label for="music">Chọn nhạc nền:</label><select id="music"><option value="">-- Không chọn --</option><option value="n/a.mp3">Nhac nền</option><option value="n/k.mp3">Kho Báu</option><option value="n/e.mp3">Lễ đường</option><option value="n/c.mp3">Chạm vào mây</option><option value="n/s.mp3">Happy birthday</option><option value="n/g.mp3">Không Thời Gian</option><option value="n/t.mp3">Từng Ngày Yêu Em</option><option value="n/d.mp3">Tình Yêu Giữa Mùa Đông</option></select><label for="rainText">Chữ nền:</label><input type="text" id="rainText" placeholder="VD: I LOVE U" value="I LOVE YOU"><small class="optional-note">Bạn có thể nhập một câu, ví dụ: HAPPY BIRTHDAY 🎉</small><label for="rainColor">Màu chữ nền:</label><input type="color" id="rainColor" value="#f584b7"><small class="optional-note">Chọn màu chữ rơi (mặc định hồng #f584b7)</small><button class="generate-btn" onclick="generateLink()">Tạo Link</button><div id="linkOutput"></div><div id="qrBox"><div id="qrcode" style="display: inline-block;"></div></div><div id="captcha-popup"><div><h3>Vui lòng nhập CAPTCHA</h3><div style="margin:15px 0; display: flex; align-items: center; gap: 10px;"><span id="captcha-code"></span><button id="refresh-captcha" title="Làm mới CAPTCHA">🔄</button></div><input type="text" id="captcha-input" placeholder="Nhập mã xác thực.." autocomplete="off" /><div id="captcha-error"></div><div class="button-wrapper"><button id="captcha-submit">Gửi mã</button></div></div></div></div>
 
     <script>
         // Loading screen fadeout
@@ -28,34 +28,7 @@
             }, 300);
         });
 
-        // Donate Modal Handlers
-        const donateModal = document.getElementById('donateModal');
-        function openDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'flex';
-                document.body.classList.add('modal-open');
-            }
-        }
-        function closeDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'none';
-                document.body.classList.remove('modal-open');
-            }
-        }
-        function copySTK() {
-            const stk = document.getElementById('stk-number')?.innerText || '42515647';
-            navigator.clipboard.writeText(stk).then(() => {
-                const btn = document.querySelector('.btn-copy-dn');
-                if (btn) {
-                    const old = btn.innerText;
-                    btn.innerText = 'Đã Copy!';
-                    setTimeout(() => { btn.innerText = old; }, 2000);
-                }
-            });
-        }
-        window.addEventListener('click', (e) => {
-            if (e.target === donateModal) closeDonateModal();
-        });
+        
     </script>
     <script src="./app/rainlove.js"></script>
 </body>

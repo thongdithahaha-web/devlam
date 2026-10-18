@@ -17,7 +17,7 @@ body{font-family:"Mali",cursive;background:linear-gradient(to bottom,#fff0f6,#ff
 <body>
     <div id="Devpan"></div>
 
-<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h1>Nhập thông điệp</h1><div class="input-group"><label>Tiêu đề:</label><input type="text" id="title" placeholder="Chúc mừng 20-10" /></div><div class="input-group"><label>Các câu lời chúc:</label><div id="messageInputsContainer"><div class="message-input-item"><input type="text" class="msg-input" placeholder="Lời chúc 1..." /></div><div class="message-input-item"><input type="text" class="msg-input" placeholder="Lời chúc 2..." /></div></div><button type="button" class="btn-add-msg" onclick="addMessageInput()" title="Thêm ô lời chúc">+</button></div><div class="input-group"><label>Thêm ảnh (tối đa được 4 ảnh):</label><label for="upload-imgbb" class="custom-upload-button">📷 Upload ảnh</label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden></div><div class="input-group" style="display: none;"><label>Nhập danh sách link ảnh (mỗi dòng một ảnh):</label><textarea id="imageTextarea" rows="5" placeholder="./assets/a1.jpg&#10;./assets/a2.jpg"></textarea><div class="note">💡 Mỗi ảnh bên dưới có nút ❌ để xóa khỏi danh sách.</div></div><div id="preview"></div><button class="generate-btn" onclick="generateLink()">Tạo link</button><div id="output" class="output-group" style="display: none;"><label>Link của bạn:</label><div class="output-wrapper"><input type="text" id="linkOutput" readonly></div><div class="action-group"><a id="btnView" href="#" target="_blank" class="btn-sub btn-view">Xem trang</a><button id="btnCopyBottom" onclick="copyLink(this)" class="btn-sub btn-copy">Copy</button></div></div><div id="captcha-popup"><div><h3>Vui lòng nhập CAPTCHA</h3><div style="margin:15px 0; display: flex; align-items: center; gap: 10px;"><span id="captcha-code"></span><button id="refresh-captcha" title="Làm mới CAPTCHA">🔄</button></div><input type="text" id="captcha-input" placeholder="Nhập mã xác thực.." autocomplete="off" /><div id="captcha-error"></div><button id="captcha-submit">Xác nhận</button></div></div><!-- Nút chuyển sang Donate và tạo QR --><div class="donate-container"><div class="donate-message"> “Website này được vận hành bằng đam mê (duy trì server 💻). Nếu bạn thấy hữu ích, một chút Donate từ bạn sẽ là nguồn tiếp sức lớn để mình tiếp tục phát triển!” ☕❤️ </div><div class="button-group"><button type="button" class="btn-donate" onclick="openDonateModal()">Donate</button><button type="button" class="btn-donate" onclick="window.location.href='https://lovelys2.vercel.app/QRtraitim/index.html'">Tạo QR</button></div></div><footer class="site-footer"><p>© 2025 DevPan. A personal creation.❤️</p></footer></div><div id="donateModal" class="modal-overlay"><div class="modal-content"><span class="close-btn-dn" onclick="closeDonateModal()">&times;</span><h3 class="modal-title">Ủng hộ mình</h3><p style="font-size: 13px; color: #777; margin-bottom: 15px;">Quét mã để ủng hộ mình nhé!</p><div class="qr-code-wrapper"><img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" alt="Mã QR Donate"></div><div class="bank-info-box"><div class="bank-details"><strong>Ngân Hàng:</strong> ACB Bank <br><strong>Chủ TK:</strong> PHAN QUỐC ĐẠT </div><div class="stk-copy-row"><span id="stk-number">42515647</span><button class="btn-copy-dn" onclick="copySTK()">Copy</button></div></div></div></div>
+<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h1>Nhập thông điệp</h1><div class="input-group"><label>Tiêu đề:</label><input type="text" id="title" placeholder="Chúc mừng 20-10" /></div><div class="input-group"><label>Các câu lời chúc:</label><div id="messageInputsContainer"><div class="message-input-item"><input type="text" class="msg-input" placeholder="Lời chúc 1..." /></div><div class="message-input-item"><input type="text" class="msg-input" placeholder="Lời chúc 2..." /></div></div><button type="button" class="btn-add-msg" onclick="addMessageInput()" title="Thêm ô lời chúc">+</button></div><div class="input-group"><label>Thêm ảnh (tối đa được 4 ảnh):</label><label for="upload-imgbb" class="custom-upload-button">📷 Upload ảnh</label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden></div><div class="input-group" style="display: none;"><label>Nhập danh sách link ảnh (mỗi dòng một ảnh):</label><textarea id="imageTextarea" rows="5" placeholder="./assets/a1.jpg&#10;./assets/a2.jpg"></textarea><div class="note">💡 Mỗi ảnh bên dưới có nút ❌ để xóa khỏi danh sách.</div></div><div id="preview"></div><button class="generate-btn" onclick="generateLink()">Tạo link</button><div id="output" class="output-group" style="display: none;"><label>Link của bạn:</label><div class="output-wrapper"><input type="text" id="linkOutput" readonly></div><div class="action-group"><a id="btnView" href="#" target="_blank" class="btn-sub btn-view">Xem trang</a><button id="btnCopyBottom" onclick="copyLink(this)" class="btn-sub btn-copy">Copy</button></div></div><div id="captcha-popup"><div><h3>Vui lòng nhập CAPTCHA</h3><div style="margin:15px 0; display: flex; align-items: center; gap: 10px;"><span id="captcha-code"></span><button id="refresh-captcha" title="Làm mới CAPTCHA">🔄</button></div><input type="text" id="captcha-input" placeholder="Nhập mã xác thực.." autocomplete="off" /><div id="captcha-error"></div><button id="captcha-submit">Xác nhận</button></div></div><footer class="site-footer"><p>© 2025 DevPan. A personal creation.❤️</p></footer></div>
 
     <script>
         // Loading screen fadeout
@@ -28,34 +28,7 @@ body{font-family:"Mali",cursive;background:linear-gradient(to bottom,#fff0f6,#ff
             }, 300);
         });
 
-        // Donate Modal Handlers
-        const donateModal = document.getElementById('donateModal');
-        function openDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'flex';
-                document.body.classList.add('modal-open');
-            }
-        }
-        function closeDonateModal() {
-            if (donateModal) {
-                donateModal.style.display = 'none';
-                document.body.classList.remove('modal-open');
-            }
-        }
-        function copySTK() {
-            const stk = document.getElementById('stk-number')?.innerText || '42515647';
-            navigator.clipboard.writeText(stk).then(() => {
-                const btn = document.querySelector('.btn-copy-dn');
-                if (btn) {
-                    const old = btn.innerText;
-                    btn.innerText = 'Đã Copy!';
-                    setTimeout(() => { btn.innerText = old; }, 2000);
-                }
-            });
-        }
-        window.addEventListener('click', (e) => {
-            if (e.target === donateModal) closeDonateModal();
-        });
+        
     </script>
     <script src="./app/skygifts.js"></script>
 </body>

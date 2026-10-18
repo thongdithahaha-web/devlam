@@ -327,11 +327,6 @@ function renderCustomGrid(gridId, list, type) {
     list.forEach(item => grid.appendChild(createCardHTML(item, type)));
 }
 
-const donateBtn = document.getElementById("donate-btn");
-if (donateBtn) {
-    donateBtn.onclick = () => document.getElementById("donate-modal").style.display = "flex";
-}
-
 function toggleWidgetMenu() {
     const menu = document.getElementById("widget-menu");
     const tooltip = document.getElementById("widget-tooltip");
