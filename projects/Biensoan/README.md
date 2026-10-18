@@ -2,7 +2,7 @@
 
 > ⚡ Trình biên soạn HTML, CSS, JavaScript chạy trực tiếp trên trình duyệt.
 
-🌐 **Live Demo:** https://panbap.github.io/Biensoan/
+🌐 **Live Demo:** https://devlekimlam.github.io/Biensoan/
 
 ---
 
@@ -65,7 +65,7 @@ index.html
 
 hoặc truy cập trực tiếp:
 
-👉 https://panbap.github.io/Biensoan/
+👉 https://devlekimlam.github.io/Biensoan/
 
 ---
 
@@ -92,7 +92,7 @@ Bạn có thể nâng cấp thêm:
 Nếu bạn thấy project này hữu ích, bạn có thể ủng hộ mình một ly cà phê ☕ để mình có thêm động lực phát triển 🚀
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" alt="Donate QR" width="200"/>
+  <img src="https://raw.githubusercontent.com/devlekimlam/Donate/refs/heads/main/bank.png" alt="Donate QR" width="200"/>
 </p>
 
 <p align="center">
@@ -122,7 +122,7 @@ MIT License
 
 ## ❤️ Credits
 
-Made with 💖 by Panbap
+Made with 💖 by devlekimlam
 
 ---
 

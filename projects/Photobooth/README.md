@@ -2,7 +2,7 @@
 
 > 🎞️ Ứng dụng chụp ảnh trực tiếp trên trình duyệt – nhanh, tiện và không cần cài đặt.
 
-🌐 **Live Demo:** https://panbap.github.io/Photobooth/
+🌐 **Live Demo:** https://devlekimlam.github.io/Photobooth/
 
 ---
 
@@ -59,7 +59,7 @@ Photobooth/
 ### 1. Clone repo
 
 ```bash
-git clone https://github.com/Panbap/Photobooth.git
+git clone https://github.com/devlekimlam/Photobooth.git
 cd Photobooth
 ```
 
@@ -73,7 +73,7 @@ index.html
 
 hoặc sử dụng trực tiếp:
 
-👉 https://panbap.github.io/Photobooth/
+👉 https://devlekimlam.github.io/Photobooth/
 
 ---
 
@@ -115,7 +115,7 @@ hoặc sử dụng trực tiếp:
 Nếu bạn thấy project hữu ích, hãy ủng hộ mình ☕  
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/devlekimlam/Donate/refs/heads/main/bank.png" width="200"/>
 </p>
 
 ---
@@ -137,7 +137,7 @@ MIT License
 
 ## ❤️ Credits
 
-Made with 💖 by **Panbap**
+Made with 💖 by **devlekimlam**
 
 ---
 

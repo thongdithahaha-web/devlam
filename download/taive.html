@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tải về Source Code - DevPan</title>
+    <title>Tải về Source Code - DevLam</title>
     <link rel="icon" href="../assets/icon1.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -222,7 +222,7 @@
         <div id="tutorialContainer"></div>
 
         <div>
-            <a href="../index.html" class="back-home">⬅ Quay về trang chủ DevPan</a>
+            <a href="../index.html" class="back-home">⬅ Quay về trang chủ DevLam</a>
         </div>
     </div>
 
@@ -258,8 +258,8 @@
 
                 if (!selectedData) {
                     selectedData = {
-                        inputText: 'Tải mã nguồn miễn phí DevPan',
-                        downloadLink: '../downloads/all/devpan-all-projects.zip',
+                        inputText: 'Tải mã nguồn miễn phí DevLam',
+                        downloadLink: '../downloads/all/devlam-all-projects.zip',
                         buttonText: 'Tải trọn bộ Source Code (ZIP)'
                     };
                 }
@@ -303,7 +303,7 @@
                 // 3. Hiển thị nút tải về
                 const finalDownloadLink = (selectedData.downloadLink && selectedData.downloadLink !== '#') 
                     ? selectedData.downloadLink 
-                    : '../downloads/all/devpan-all-projects.zip';
+                    : '../downloads/all/devlam-all-projects.zip';
                 let btnText = selectedData.buttonText || "Tải về Source Code";
                 if (btnText === 'Update') btnText = 'Tải Source Code (Miễn phí)';
 
@@ -322,7 +322,7 @@
                 const container = document.getElementById('downloadButtonContainer');
                 const fbBtn = document.createElement('a');
                 fbBtn.className = 'donate-nhantin';
-                fbBtn.href = '../downloads/all/devpan-all-projects.zip';
+                fbBtn.href = '../downloads/all/devlam-all-projects.zip';
                 fbBtn.download = '';
                 fbBtn.innerText = '📥 Tải trọn bộ Source Code (ZIP)';
                 container.appendChild(fbBtn);

@@ -2,7 +2,7 @@
  * ======================================
  * File: js
  * Description: Handles main user interface logic
- * Author: Devpan
+ * Author: devlekimlam
  * Created: 2026-01-01
  * ======================================
  */

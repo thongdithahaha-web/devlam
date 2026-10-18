@@ -1,5 +1,5 @@
 /**
- * DevPan Canvas Background Remover
+ * DevLam Canvas Background Remover
  * Pure Client-Side Implementation with Magic Wand Flood-Fill, Feathering, Brush, and Undo/Redo
  */
 

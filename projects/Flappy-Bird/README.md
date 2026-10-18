@@ -2,7 +2,7 @@
 
 > 🎮 Game Flappy Bird chạy trực tiếp trên trình duyệt – đơn giản nhưng cực gây nghiện.
 
-🌐 **Live Demo:** https://panbap.github.io/Flappy-Bird/
+🌐 **Live Demo:** https://devlekimlam.github.io/Flappy-Bird/
 
 ---
 
@@ -57,7 +57,7 @@ Flappy-Bird/
 ### 1. Clone repo
 
 ```bash
-git clone https://github.com/Panbap/Flappy-Bird.git
+git clone https://github.com/devlekimlam/Flappy-Bird.git
 cd Flappy-Bird
 ```
 
@@ -71,7 +71,7 @@ index.html
 
 hoặc chơi trực tiếp tại:
 
-👉 https://panbap.github.io/Flappy-Bird/
+👉 https://devlekimlam.github.io/Flappy-Bird/
 
 ---
 
@@ -105,7 +105,7 @@ hoặc chơi trực tiếp tại:
 Nếu bạn thấy project hữu ích, hãy ủng hộ mình ☕  
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/devlekimlam/Donate/refs/heads/main/bank.png" width="200"/>
 </p>
 
 ---
@@ -127,7 +127,7 @@ MIT License
 
 ## ❤️ Credits
 
-Made with 💖 by **Panbap**
+Made with 💖 by **devlekimlam**
 
 ---
 

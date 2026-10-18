@@ -2,11 +2,11 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8" />
-    <meta name="author" content="Devpan">
+    <meta name="author" content="devlekimlam">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tạo Lời Chúc - Bắn Pháo Hoa</title>
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Playpen+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://github.com/Panbap/anh/blob/main/icon1.png?raw=true" type="image/png">
+    <link rel="icon" href="https://github.com/devlekimlam/anh/blob/main/icon1.png?raw=true" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     <script src="../assets/keypan.js"></script>
@@ -15,7 +15,7 @@
     </style>
 </head>
 <body>
-    <div id="Devpan"></div>
+    <div id="devlekimlam"></div><div id="Devpan" style="display:none"></div>
 
 <div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h2>Tạo thông điệp</h2><div class="box"><label>Nhập lời chúc</label><br><div id="textListBox"></div><button onclick="addTextField()" class="add-btn"> ➕ Thêm lời chúc </button></div><div class="box" style="text-align:center;"><label for="upload-imgbb" class="custom-upload-button">📷 Upload ảnh</label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden><textarea id="image" rows="4" placeholder="Nhập link ảnh tại đây..." style="display:none;"></textarea><div id="preview"></div></div><div style="display: flex; justify-content: center; margin-top: 20px;"><button id="createLinkBtn" onclick="createLink()">Tạo Link</button></div><div id="resultBox"><input id="generatedLink" readonly placeholder="Link sẽ xuất hiện ở đây..."><div class="result-buttons"><a id="viewBtn" target="_blank"><i class="fa-solid fa-eye"></i> Xem trang </a><button id="copyBtn" onclick="copyLink()"><i class="fa-solid fa-copy"></i> Copy </button></div></div></div></div><!-- CAPTCHA --><div id="captcha-popup"><div id="captcha-box"><div id="captcha-code"></div><input type="text" id="captcha-input" placeholder="Nhập CAPTCHA"><div id="captcha-error"></div><button id="captcha-submit">Xác nhận</button><button id="refresh-captcha">🔄</button></div>
 

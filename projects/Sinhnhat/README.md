@@ -1,5 +1,5 @@
 # Sinhnhat
-Site: https://panbap.github.io/Sinhnhat/
+Site: https://devlekimlam.github.io/Sinhnhat/
 
 ## Table of Contents
 1. [Giới Thiệu](#giới-thiệu)
@@ -18,7 +18,7 @@ Hãy xem video hướng dẫn chi tiết về cách sử dụng và triển khai
 
 ## Donate
 Nếu bạn thấy dự án này hữu ích và muốn đóng góp để hỗ trợ chúng tôi tiếp tục phát triển, bạn có thể ủng hộ qua các phương thức sau:
-- **Donate tôi**: https://panbap.github.io/Donate/donate.html
+- **Donate tôi**: https://devlekimlam.github.io/Donate/donate.html
 - **PayPal**:
 
 Chúng tôi rất trân trọng mọi sự đóng góp của bạn!
@@ -27,7 +27,7 @@ Chúng tôi rất trân trọng mọi sự đóng góp của bạn!
 
 Nếu bạn có câu hỏi, phản hồi hoặc yêu cầu hỗ trợ, vui lòng liên hệ với chúng tôi qua:
 
-- **Tiktok**: https://www.tiktok.com/@panbap369
+- **Tiktok**: https://www.tiktok.com/@devlekimlam
 
 Cảm ơn bạn đã quan tâm đến dự án của chúng tôi!
 

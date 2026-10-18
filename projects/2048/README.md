@@ -2,7 +2,7 @@
 
 > 🎮 Game 2048 chạy trực tiếp trên trình duyệt – đơn giản nhưng cực kỳ gây nghiện và mang tính chiến thuật cao.
 
-🌐 **Live Demo:** https://panbap.github.io/2048/
+🌐 **Live Demo:** https://devlekimlam.github.io/2048/
 
 ---
 
@@ -57,7 +57,7 @@ Người chơi di chuyển các ô số trên bảng 4x4 để ghép các số g
 Nếu bạn thấy project hữu ích, hãy ủng hộ mình ☕  
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/devlekimlam/Donate/refs/heads/main/bank.png" width="200"/>
 </p>
 
 ---
@@ -66,7 +66,7 @@ Nếu bạn thấy project hữu ích, hãy ủng hộ mình ☕
 ### 1. Clone repo
 
 ```bash
-git clone https://github.com/Panbap/2048.git
+git clone https://github.com/devlekimlam/2048.git
 cd 2048
 ```
 
@@ -80,7 +80,7 @@ index.html
 
 hoặc chơi trực tiếp tại:
 
-👉 https://panbap.github.io/2048/
+👉 https://devlekimlam.github.io/2048/
 
 ---
 
@@ -112,7 +112,7 @@ MIT License
 
 Inspired by the original **2048**
 
-Made with 💖 by **Panbap**
+Made with 💖 by **devlekimlam**
 
 ---
 

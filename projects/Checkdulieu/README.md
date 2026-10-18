@@ -3,7 +3,7 @@
 Ứng dụng web giúp kiểm tra và phát hiện các dòng trùng lặp trong tài liệu văn bản. Hỗ trợ các định dạng phổ biến: `.txt`, `.docx`, `.xlsx`, `.pdf`.
 
 ## 🚀 Demo
-https://panbap.github.io/Checkdulieu/
+https://devlekimlam.github.io/Checkdulieu/
 
 ## 📁 Hỗ Trợ Định Dạng File
 - 📄 TXT

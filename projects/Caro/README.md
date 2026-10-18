@@ -2,7 +2,7 @@
 
 > 🎮 Game Cờ Caro (5 in a row) chạy trực tiếp trên trình duyệt – đơn giản, dễ chơi và mang tính chiến thuật cao.
 
-🌐 **Live Demo:** https://panbap.github.io/Caro/
+🌐 **Live Demo:** https://devlekimlam.github.io/Caro/
 
 ---
 
@@ -59,7 +59,7 @@ Caro/
 ### 1. Clone repo
 
 ```bash
-git clone https://github.com/Panbap/Caro.git
+git clone https://github.com/devlekimlam/Caro.git
 cd Caro
 ```
 
@@ -73,7 +73,7 @@ index.html
 
 hoặc chơi trực tiếp tại:
 
-👉 https://panbap.github.io/Caro/
+👉 https://devlekimlam.github.io/Caro/
 
 ---
 
@@ -91,7 +91,7 @@ hoặc chơi trực tiếp tại:
 Nếu bạn thấy project hữu ích, hãy ủng hộ mình ☕  
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/devlekimlam/Donate/refs/heads/main/bank.png" width="200"/>
 </p>
 
 ---
@@ -113,7 +113,7 @@ MIT License
 
 ## ❤️ Credits
 
-Made with 💖 by **Panbap**
+Made with 💖 by **devlekimlam**
 
 ---
 

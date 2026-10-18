@@ -2,7 +2,7 @@
 
 > 🎮 Game Kéo Búa Bao chạy trực tiếp trên trình duyệt – đơn giản, vui nhộn và mang tính may rủi.
 
-🌐 **Live Demo:** https://panbap.github.io/keobuabao/
+🌐 **Live Demo:** https://devlekimlam.github.io/keobuabao/
 
 ---
 
@@ -61,7 +61,7 @@ keobuabao/
 Nếu bạn thấy project hữu ích, hãy ủng hộ mình ☕  
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/devlekimlam/Donate/refs/heads/main/bank.png" width="200"/>
 </p>
 
 ---
@@ -71,7 +71,7 @@ Nếu bạn thấy project hữu ích, hãy ủng hộ mình ☕
 ### 1. Clone repo
 
 ```bash
-git clone https://github.com/Panbap/keobuabao.git
+git clone https://github.com/devlekimlam/keobuabao.git
 cd keobuabao
 ```
 
@@ -85,7 +85,7 @@ index.html
 
 hoặc chơi trực tiếp tại:
 
-👉 https://panbap.github.io/keobuabao/
+👉 https://devlekimlam.github.io/keobuabao/
 
 ---
 
@@ -115,7 +115,7 @@ MIT License
 
 ## ❤️ Credits
 
-Made with 💖 by **Panbap**
+Made with 💖 by **devlekimlam**
 
 ---
 

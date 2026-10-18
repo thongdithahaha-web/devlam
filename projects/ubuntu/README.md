@@ -2,7 +2,7 @@
 
 > 📚 Tổng hợp tài liệu, kinh nghiệm và thủ thuật sử dụng Ubuntu dành cho developer & người dùng Linux.
 
-🌐 **Website:** https://panbap.github.io/ubuntu/
+🌐 **Website:** https://devlekimlam.github.io/ubuntu/
 
 ---
 
@@ -69,7 +69,7 @@ cd ubuntu
 
 Hoặc truy cập trực tiếp qua GitHub Pages:
 
-👉 https://panbap.github.io/ubuntu/
+👉 https://devlekimlam.github.io/ubuntu/
 
 ---
 

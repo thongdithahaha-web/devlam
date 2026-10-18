@@ -3,14 +3,14 @@
 Trò chơi **Caro (Tic-Tac-Toe)** cổ điển kết hợp với **Trí tuệ nhân tạo (AI)**. Người chơi có thể đấu với AI thông minh sử dụng thuật toán **Minimax**.  
 Giao diện đơn giản, dễ chơi, có thống kê trận đấu và hỗ trợ nhập tên người chơi.
 
-![screenshot](https://raw.githubusercontent.com/Panbap/js/main/icon/TicTacToe-preview.png)
+![screenshot](https://raw.githubusercontent.com/devlekimlam/js/main/icon/TicTacToe-preview.png)
 
 ---
 
 ## 🚀 Demo
 
 🔗 Truy cập demo trực tuyến:  
-👉 [panbap.github.io/Tic-Tac-Toe](https://panbap.github.io/Tic-Tac-Toe)
+👉 [devlekimlam.github.io/Tic-Tac-Toe](https://devlekimlam.github.io/Tic-Tac-Toe)
 
 Hoặc tải về và mở `index.html` bằng trình duyệt.
 
@@ -55,7 +55,7 @@ bash
 Copy
 Edit
 Clone repository
-git clone https://github.com/Panbap/js.git
+git clone https://github.com/devlekimlam/js.git
 
 Di chuyển vào thư mục game
 cd js/game

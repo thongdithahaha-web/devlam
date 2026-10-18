@@ -2,7 +2,7 @@
 
 > 🤔 Ứng dụng gợi ý món ăn ngẫu nhiên – giải quyết câu hỏi muôn thuở: *“Hôm nay ăn gì?”*
 
-🌐 **Live Demo:** https://panbap.github.io/Homnayangi/
+🌐 **Live Demo:** https://devlekimlam.github.io/Homnayangi/
 
 ---
 
@@ -59,7 +59,7 @@ Homnayangi/
 ### 1. Clone repo
 
 ```bash
-git clone https://github.com/Panbap/Homnayangi.git
+git clone https://github.com/devlekimlam/Homnayangi.git
 cd Homnayangi
 ```
 
@@ -73,7 +73,7 @@ index.html
 
 hoặc dùng trực tiếp tại:
 
-👉 https://panbap.github.io/Homnayangi/
+👉 https://devlekimlam.github.io/Homnayangi/
 
 ---
 
@@ -107,7 +107,7 @@ hoặc dùng trực tiếp tại:
 Nếu bạn thấy project hữu ích, hãy ủng hộ mình ☕  
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" width="200"/>
+  <img src="https://raw.githubusercontent.com/devlekimlam/Donate/refs/heads/main/bank.png" width="200"/>
 </p>
 
 ---
@@ -129,7 +129,7 @@ MIT License
 
 ## ❤️ Credits
 
-Made with 💖 by **Panbap**
+Made with 💖 by **devlekimlam**
 
 ---
 

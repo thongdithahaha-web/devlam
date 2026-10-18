@@ -1,5 +1,5 @@
 /**
- * DevPan Portal Main Script - Clean & Standalone
+ * DevLam Portal Main Script - Clean & Standalone
  * Supports full offline/local execution without domain locks
  */
 
@@ -218,7 +218,7 @@ function openDetailModal(encodedName, type) {
 
     document.getElementById("modal-title").textContent = product.name;
     document.getElementById("modal-desc").textContent = getItemDescription(product);
-    document.getElementById("modal-author").textContent = product.author || "DevPan";
+    document.getElementById("modal-author").textContent = product.author || "devlekimlam";
 
     const linksContainer = document.getElementById("modal-links");
     linksContainer.innerHTML = "";
@@ -248,7 +248,7 @@ function openDetailModal(encodedName, type) {
 
     // Direct fast link to master zip
     linksContainer.innerHTML += `
-        <a href="./downloads/all/devpan-all-projects.zip" download class="btn-download" style="background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.4); margin-top: 4px;">
+        <a href="./downloads/all/devlam-all-projects.zip" download class="btn-download" style="background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.4); margin-top: 4px;">
             <i class="fa-solid fa-file-zipper"></i> Tải Trọn Bộ Tất Cả Dự Án (ZIP)
         </a>
     `;

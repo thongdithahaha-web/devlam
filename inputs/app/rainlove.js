@@ -16,7 +16,7 @@ function addMessage(value = "") {
     wrapper.remove();
   });
 }
-const rent = atob("ZGV2cGFuLnZlcmNlbC5hcHA=");
+const rent = atob("ZGV2bGFtLnZlcmNlbC5hcHA=");
 addMessageBtn.addEventListener("click", () => addMessage());
 
 const customImageInput = document.getElementById("customImage");

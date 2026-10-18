@@ -14,7 +14,7 @@
 
 ## 🖥 Demo
 
-Truy cập bản demo tại: https://panbap.github.io/Tintify-Colorpick/
+Truy cập bản demo tại: https://devlekimlam.github.io/Tintify-Colorpick/
 
 ## 📦 Cài đặt (nếu dùng như thư viện)
 
@@ -54,7 +54,7 @@ input[type="color"]
  Export bảng màu (.css / .json)
 
 ## 📄 License
-MIT License © Panbap
+MIT License © devlekimlam
 
 ## 📣 Góp ý & Đóng góp
 Bạn thấy Textlove hữu ích? Rất vui nếu bạn:

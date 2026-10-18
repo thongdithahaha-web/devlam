@@ -2,7 +2,7 @@
 
 > ✅ Ứng dụng quản lý công việc đơn giản, giúp bạn theo dõi và hoàn thành task mỗi ngày.
 
-🌐 **Live Demo:** https://panbap.github.io/Todo/
+🌐 **Live Demo:** https://devlekimlam.github.io/Todo/
 
 ---
 
@@ -90,7 +90,7 @@ Bạn có thể mở rộng thêm:
 Nếu bạn thấy project này hữu ích, bạn có thể ủng hộ mình một ly cà phê ☕ để mình có thêm động lực phát triển 🚀
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Panbap/Donate/refs/heads/main/bank.png" alt="Donate QR" width="200"/>
+  <img src="https://raw.githubusercontent.com/devlekimlam/Donate/refs/heads/main/bank.png" alt="Donate QR" width="200"/>
 </p>
 
 <p align="center">
@@ -129,7 +129,7 @@ MIT License
 
 ## ❤️ Credits
 
-Made with 💖 by Panbap
+Made with 💖 by devlekimlam
 
 ---
 

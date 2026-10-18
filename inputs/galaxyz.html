@@ -2,11 +2,11 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8" />
-    <meta name="author" content="Devpan">
+    <meta name="author" content="devlekimlam">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tạo Thông Điệp Vũ Trụ - Galaxy Love</title>
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Playpen+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://github.com/Panbap/anh/blob/main/icon1.png?raw=true" type="image/png">
+    <link rel="icon" href="https://github.com/devlekimlam/anh/blob/main/icon1.png?raw=true" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     <script src="../assets/keypan.js"></script>
@@ -15,7 +15,7 @@
     </style>
 </head>
 <body>
-    <div id="Devpan"></div>
+    <div id="devlekimlam"></div><div id="Devpan" style="display:none"></div>
 
 <div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h1>Tạo tinh cầu ảnh</h1><div class="instructions">Lưu ý:<br /> Nhớ ấn copy link trước khi chuyển qua tạo QR<br /> Nếu muốn tạo web riêng nhắn tin qua mình </div><div class="ringtext-section"><label style="font-weight: bold; display: block; margin-bottom: 6px;">Nhập chữ xoay quanh tinh cầu</label><div id="ring-texts-container" class="ringtext-container"></div><div class="button-wrapper"><button type="button" class="add-ring-btn" onclick="addRingTextInput()">➕ Thêm câu</button><div id="ring-texts-container"></div></div></div><label style="font-weight: bold; display: block; margin-bottom: 6px; text-align: center;"> Thêm ảnh xoay quanh tinh cầu</label><label for="upload-imgbb" class="custom-upload-button">📷 Upload ảnh</label><input type="file" id="upload-imgbb" accept="image/*" multiple hidden><textarea style="display: none;" id="image-links" rows="4" placeholder="Nhập link ảnh tại đây..."></textarea><br /><div id="preview"></div><label for="music" class="custom-label">Chọn nhạc:</label><div class="select-wrapper"><select id="music" name="music" required class="custom-select"><option value="" disabled selected>-- Chọn nhạc --</option><option value="n/a.mp3">Nhac nền</option><option value="n/k.mp3">Kho Báu</option><option value="n/e.mp3">Lễ đường</option><option value="n/c.mp3">Chạm vào mây</option><option value="n/s.mp3">Happy birthday</option><option value="n/g.mp3">Không Thời Gian</option><option value="n/t.mp3">Từng Ngày Yêu Em</option><option value="n/d.mp3">Tình Yêu Giữa Mùa Đông</option></select></div><button id="generate-link" class="btn-generate">Tạo link</button><div id="created-link"></div><div id="captcha-popup"><div><h3>Vui lòng nhập CAPTCHA</h3><div style="margin:15px 0; display: flex; align-items: center; gap: 10px;"><span id="captcha-code"></span><button id="refresh-captcha" title="Làm mới CAPTCHA">🔄</button></div><input type="text" id="captcha-input" placeholder="Nhập mã xác thực.." autocomplete="off" /><div id="captcha-error"></div><div class="button-wrapper"><button id="captcha-submit">Gửi mã</button></div></div></div></div>>
         // Loading screen fadeout

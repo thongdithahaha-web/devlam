@@ -2,7 +2,7 @@
 * ======================================
 * File: keypan.js
 * Description: Handles main user interface logic & Vietnamese Text Compression
-* Author: Devpan
+* Author: devlekimlam
 * Created: 2026-01-01
 * ======================================
 */
