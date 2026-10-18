@@ -5,29 +5,32 @@
     <meta charset="UTF-8" />
     <meta name="author" content="devlekimlam">
     <meta name="robots" content="index, follow">
-    <meta name="description" content="Lovely – nơi chia sẻ yêu thương." />
+    <meta name="description" content="lekimlamdev – nơi chia sẻ yêu thương & Source Code chất lượng cao." />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="keywords" content="lập trình, thiết kế web, javascript, html, css">
+    <meta name="keywords" content="lekimlamdev, devlekimlam, lập trình, thiết kế web, javascript, html, css, source code">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Lovely – nơi chia sẻ yêu thương.">
-    <meta property="og:description" content="Nơi lan tỏa kiến thức và tình yêu.">
+    <meta property="og:title" content="lekimlamdev – Vũ trụ tình yêu & Source Code đỉnh cao">
+    <meta property="og:description" content="Nơi lan tỏa kiến thức, tình yêu và chia sẻ Source Code hoàn toàn miễn phí.">
 
-    <title>Lovely - Vũ trụ tình yêu & Source Code</title>
+    <title>lekimlamdev - Vũ trụ tình yêu & Source Code</title>
     <link rel="icon" href="./assets/icon1.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="./assets/style.css">
 </head>
 
 <body>
+    <!-- 3D Particle Canvas Background -->
+    <canvas id="bg-canvas"></canvas>
+
     <header>
         <div class="header-content">
             <a href="#" class="logo">
                 <img src="./assets/icon1.png" alt="Logo">
-                <span>Lovely</span>
+                <span class="logo-text">lekimlamdev</span>
             </a>
             <div class="header-actions">
                 <div class="explore-dropdown-wrapper">
@@ -50,17 +53,26 @@
 
                 <div class="search-wrapper">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Tìm kiếm..." id="search-box" />
+                    <input type="text" placeholder="Tìm kiếm dự án..." id="search-box" />
                 </div>
             </div>
         </div>
     </header>
 
     <div class="hero">
-        <h1>Chào mừng bạn đến với vũ trụ tình yêu ❤️</h1>
-        <p>Web gửi gắm yêu thương và phần mềm tiện ích.</p>
+        <div class="hero-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> VŨ TRỤ SÁNG TẠO & SOURCE CODE</div>
+        <h1 class="hero-title"><span class="title-gradient">lekimlamdev</span></h1>
+        <div class="typewriter-container">
+            <span class="typewriter-text" id="typewriter-text">Vũ trụ tình yêu & Source code công nghệ độc đáo 💖</span><span class="typewriter-cursor">|</span>
+        </div>
+        <div class="hero-features">
+            <div class="feature-pill"><i class="fa-solid fa-code"></i> 50+ Source Code VIP</div>
+            <div class="feature-pill"><i class="fa-solid fa-bolt"></i> Tạo link siêu tốc</div>
+            <div class="feature-pill"><i class="fa-solid fa-heart"></i> Miễn phí 100%</div>
+            <div class="feature-pill"><i class="fa-solid fa-cube"></i> Giao diện 3D Motion</div>
+        </div>
         <div class="tab-nav">
-            <button class="tab-btn active" onclick="switchTab('web')"><i class="fa-solid fa-globe"></i> Web</button>
+            <button class="tab-btn active" onclick="switchTab('web')"><i class="fa-solid fa-globe"></i> Website</button>
             <button class="tab-btn" onclick="switchTab('app')"><i class="fa-solid fa-mobile-screen-button"></i> App / Game</button>
         </div>
     </div>
@@ -94,24 +106,23 @@
         </div>
     </div>
 
-    <!-- Floating Contact Widget -->
+    <!-- Floating Contact Widget (Khớp 100% ảnh thiết kế) -->
     <div id="contact-widget">
         <div class="widget-tooltip" id="widget-tooltip">
             <span id="tooltip-text">Nhắn cho mình nhé! 💖</span>
             <button class="tooltip-close-btn" onclick="closeTooltip(event)">&times;</button>
         </div>
         <div class="widget-menu" id="widget-menu">
-            <a href="https://zalo.me/0948339082" target="_blank" class="zalo"><i class="fa-solid fa-comment"></i><span>Zalo</span></a>
-            <a href="https://www.facebook.com/people/Dev-Lam/61571915535119/" target="_blank" class="fb"><i class="fa-brands fa-facebook-f"></i><span>Facebook</span></a>
-            <a href="https://www.tiktok.com/@devlekimlam" target="_blank"><i class="fa-brands fa-tiktok"></i> TikTok</a>
-            <a href="https://www.youtube.com/@devlekimlam/videos" target="_blank" class="yt"><i class="fa-brands fa-youtube"></i><span>YouTube</span></a>
+            <a href="https://zalo.me/0935265610" target="_blank" class="zalo"><i class="fa-solid fa-comment-dots"></i><span>Zalo</span></a>
+            <a href="https://www.facebook.com/lkimlam16511" target="_blank" class="fb"><i class="fa-brands fa-facebook-f"></i><span>Facebook</span></a>
+            <a href="https://www.tiktok.com/@lkimlam_165" target="_blank" class="tiktok"><i class="fa-brands fa-tiktok"></i><span>TikTok</span></a>
             <button class="widget-close-item" onclick="closeWidget()"><i class="fa-solid fa-xmark"></i> Tắt nút này</button>
         </div>
-        <div class="widget-btn" onclick="toggleWidgetMenu()"><i class="fa-solid fa-headset"></i></div>
+        <div class="widget-btn" onclick="toggleWidgetMenu()" title="Liên hệ"><i class="fa-solid fa-headset"></i></div>
     </div>
 
     <footer>
-        &copy; 2026 devlekimlam. Nơi hội tụ những Source Code chất lượng.
+        &copy; 2026 lekimlamdev. Nơi hội tụ những Source Code chất lượng.
     </footer>
 
     <script src="./assets/app.js"></script>

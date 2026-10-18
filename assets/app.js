@@ -168,6 +168,7 @@ function createCardHTML(product, type) {
     const priceDisplay = isGame ? 'Miễn phí' : (product.price || 'Miễn phí');
 
     card.innerHTML = `
+        <div class="card-glare"></div>
         <div class="card-img-wrapper" onclick="openDetailModal('${encodeURIComponent(product.name)}', '${type}')" style="cursor: pointer;">
             <span class="badge">${product.category || (type === 'app' ? 'App' : 'Web')}</span>
             <img src="${imageUrl}" alt="${product.name}" loading="lazy" onerror="this.src='./assets/anh/loves.jpg'" />
@@ -398,4 +399,207 @@ function closeTooltip(event) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", startAutoChangeTooltip);
+/**
+ * 3D Interactive Background Canvas
+ */
+function init3DBackground() {
+    const canvas = document.getElementById("bg-canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener("resize", () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const count = Math.min(65, Math.floor((width * height) / 18000));
+    const colors = ["rgba(236, 72, 153, ", "rgba(139, 92, 246, ", "rgba(56, 189, 248, "];
+
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: (Math.random() - 0.5) * width * 1.5,
+            y: (Math.random() - 0.5) * height * 1.5,
+            z: Math.random() * 800 + 100,
+            vz: (Math.random() * 0.4 + 0.2) * (Math.random() > 0.5 ? 1 : -1),
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            radius: Math.random() * 2 + 1,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: Math.random() * 0.5 + 0.3
+        });
+    }
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+
+    window.addEventListener("mousemove", (e) => {
+        targetX = (e.clientX - width / 2) * 0.05;
+        targetY = (e.clientY - height / 2) * 0.05;
+    });
+
+    const fov = 400;
+
+    function render() {
+        ctx.clearRect(0, 0, width, height);
+
+        mouseX += (targetX - mouseX) * 0.05;
+        mouseY += (targetY - mouseY) * 0.05;
+
+        const cx = width / 2;
+        const cy = height / 2;
+        const projected = [];
+
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.z += p.vz;
+
+            if (p.z <= 20) p.z = 900;
+            if (p.z > 900) p.z = 21;
+
+            const scale = fov / (fov + p.z);
+            const x2d = (p.x + mouseX) * scale + cx;
+            const y2d = (p.y + mouseY) * scale + cy;
+
+            projected.push({ x: x2d, y: y2d, scale, p });
+
+            if (x2d >= 0 && x2d <= width && y2d >= 0 && y2d <= height) {
+                const r = p.radius * scale * 1.8;
+                ctx.beginPath();
+                ctx.arc(x2d, y2d, Math.max(0.8, r), 0, Math.PI * 2);
+                ctx.fillStyle = p.color + (p.alpha * scale) + ")";
+                ctx.shadowBlur = 8 * scale;
+                ctx.shadowColor = p.color + "0.8)";
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // Draw distance connections in 3D projection
+        const maxDist = 110;
+        for (let i = 0; i < projected.length; i++) {
+            for (let j = i + 1; j < projected.length; j++) {
+                const p1 = projected[i];
+                const p2 = projected[j];
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < maxDist) {
+                    const depthDiff = Math.abs(p1.p.z - p2.p.z);
+                    if (depthDiff < 250) {
+                        const alpha = (1 - dist / maxDist) * 0.22 * ((p1.scale + p2.scale) / 2);
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(236, 72, 153, ${alpha})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        requestAnimationFrame(render);
+    }
+
+    render();
+}
+
+/**
+ * Animated Typewriter Effect with multi-sentence cycling
+ */
+function initTypewriterEffect() {
+    const el = document.getElementById("typewriter-text");
+    if (!el) return;
+
+    const phrases = [
+        "Vũ trụ tình yêu & Source code công nghệ độc đáo 💖",
+        "Kho giao diện Web, App, Game 3D chuyển động đỉnh cao 🚀",
+        "Tạo link tỏ tình, thiệp hoa, sinh nhật siêu nhanh & miễn phí ✨",
+        "Dev by lekimlamdev — Chia sẻ đam mê & mã nguồn mở 🔥"
+    ];
+
+    let phraseIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    let speed = 70;
+
+    function tick() {
+        const currentPhrase = phrases[phraseIdx];
+
+        if (isDeleting) {
+            el.textContent = currentPhrase.substring(0, charIdx - 1);
+            charIdx--;
+            speed = 35;
+        } else {
+            el.textContent = currentPhrase.substring(0, charIdx + 1);
+            charIdx++;
+            speed = 70;
+        }
+
+        if (!isDeleting && charIdx === currentPhrase.length) {
+            speed = 2200; // Dừng lại ở câu hoàn chỉnh
+            isDeleting = true;
+        } else if (isDeleting && charIdx === 0) {
+            isDeleting = false;
+            phraseIdx = (phraseIdx + 1) % phrases.length;
+            speed = 400; // Nghỉ trước khi gõ câu mới
+        }
+
+        setTimeout(tick, speed);
+    }
+
+    tick();
+}
+
+/**
+ * 3D Card Interactive Tilt & Glare
+ */
+function init3DCardTilt() {
+    let activeCard = null;
+
+    document.addEventListener("mousemove", (e) => {
+        const card = e.target.closest(".card");
+        if (card) {
+            activeCard = card;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const rotX = -((y - centerY) / centerY) * 12;
+            const rotY = ((x - centerX) / centerX) * 12;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale3d(1.025, 1.025, 1.025)`;
+            card.style.setProperty("--glare-x", `${((x / rect.width) * 100).toFixed(1)}%`);
+            card.style.setProperty("--glare-y", `${((y / rect.height) * 100).toFixed(1)}%`);
+        } else if (activeCard) {
+            activeCard.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+            activeCard = null;
+        }
+    });
+
+    document.addEventListener("mouseleave", () => {
+        if (activeCard) {
+            activeCard.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+            activeCard = null;
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    startAutoChangeTooltip();
+    init3DBackground();
+    initTypewriterEffect();
+    init3DCardTilt();
+});
