@@ -247,13 +247,6 @@ function openDetailModal(encodedName, type) {
         `;
     }
 
-    // Direct fast link to master zip
-    linksContainer.innerHTML += `
-        <a href="./downloads/all/devlam-all-projects.zip" download class="btn-download" style="background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.4); margin-top: 4px;">
-            <i class="fa-solid fa-file-zipper"></i> Tải Trọn Bộ Tất Cả Dự Án (ZIP)
-        </a>
-    `;
-
     document.getElementById("detail-modal").style.display = "flex";
 }
 

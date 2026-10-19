@@ -10,6 +10,34 @@
     <link rel="stylesheet" href="./assets/css/style.css">
     <script src="./assets/js/lz-string.min.js"></script>
     <script src="./assets/js/keypan.js"></script>
+    <style>
+        @keyframes floatUpMemory {
+            0% { transform: translateY(0) rotate(-10deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.95; }
+            90% { opacity: 0.95; }
+            100% { transform: translateY(-115vh) rotate(15deg) scale(1.05); opacity: 0; }
+        }
+        .floating-memory-card {
+            position: fixed;
+            bottom: -150px;
+            width: 85px;
+            height: 105px;
+            background: #fff;
+            padding: 5px 5px 18px 5px;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            z-index: 99;
+            pointer-events: none;
+            animation: floatUpMemory 10s linear forwards;
+        }
+        .floating-memory-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -250,6 +278,7 @@
         let introPrompt = 'Chạm vào hoa nhé';
         let introImage = './assets/a/anhz.png';
 
+        let memoryImages = [];
         if (encodedData && typeof LZString !== 'undefined') {
             try {
                 const decompressed = LZString.decompressFromEncodedURIComponent(encodedData);
@@ -260,8 +289,26 @@
                     if (parts[2]) letterBody = decodeKeypan(parts[2]) || letterBody;
                     if (parts[3]) letterSign = decodeKeypan(parts[3]) || '';
                     if (parts[4]) audioSrc = parts[4];
-                    if (parts[5]) introPrompt = decodeKeypan(parts[5]) || introPrompt;
-                    if (parts[6]) introImage = parts[6] || introImage;
+                    
+                    if (parts[5]) {
+                        if (parts[5].includes('~') || /\.(jpe?g|png|gif|webp|svg)/i.test(parts[5]) || /^https?:\/\//i.test(parts[5])) {
+                            memoryImages = parts[5].split('~').map(s => s.trim()).filter(Boolean).map(s => /^https?:\/\//i.test(s) ? s : 'https://' + s);
+                        } else {
+                            introPrompt = decodeKeypan(parts[5]) || introPrompt;
+                        }
+                    }
+                    if (parts[6]) {
+                        if (parts[6].includes('~') || /\.(jpe?g|png|gif|webp|svg)/i.test(parts[6]) || /^https?:\/\//i.test(parts[6])) {
+                            if (!memoryImages.length) {
+                                memoryImages = parts[6].split('~').map(s => s.trim()).filter(Boolean).map(s => /^https?:\/\//i.test(s) ? s : 'https://' + s);
+                            }
+                        } else {
+                            introImage = parts[6] || introImage;
+                        }
+                    }
+                    if (parts[7]) {
+                        introImage = parts[7] || introImage;
+                    }
                 }
             } catch (err) {
                 console.error('Lỗi giải mã payload:', err);
@@ -402,6 +449,33 @@
             // Tự động mở bức thư sau 2.6s (khi hoa nở rộ xong) để người xem đọc ngay lời chúc
             setTimeout(function () {
                 openLetter();
+            }, 2600);
+
+            // Tự động thả ảnh kỷ niệm bay lên nếu có
+            if (memoryImages && memoryImages.length) {
+                spawnMemoryPhotos(memoryImages);
+            }
+        }
+
+        function spawnMemoryPhotos(images) {
+            if (!images || !images.length) return;
+            const container = document.getElementById('wish-box') || document.body;
+            let idx = 0;
+            const interval = setInterval(function() {
+                if (!isStarted) { clearInterval(interval); return; }
+                const imgUrl = images[idx % images.length];
+                idx++;
+                const card = document.createElement('div');
+                card.className = 'floating-memory-card';
+                card.style.left = (Math.random() * 75 + 10) + '%';
+                card.style.transform = 'rotate(' + (Math.random() * 30 - 15) + 'deg)';
+                const img = document.createElement('img');
+                img.src = imgUrl;
+                card.appendChild(img);
+                container.appendChild(card);
+                setTimeout(function() {
+                    if (card.parentNode) card.parentNode.removeChild(card);
+                }, 10500);
             }, 2600);
         }
 

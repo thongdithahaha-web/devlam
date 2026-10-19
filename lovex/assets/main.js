@@ -96,39 +96,108 @@ if (encodedData && typeof LZString !== 'undefined') {
         var decompressed = LZString.decompressFromEncodedURIComponent(encodedData);
         if (decompressed) {
             var parts = decompressed.split('|');
-            var rawTitle = parts[0] || '';
-            var rawPass = parts[1] || '';
-            var rawMsg = parts[2] || '';
-            var rawImages = parts[3] || '';
-            var rawMusic = '';
 
-            // Tương thích cả định dạng 5 phần và 6 phần
-            if (parts.length >= 6) {
-                var candidate4 = (parts[4] || '').trim();
-                var candidate5 = (parts[5] || '').trim();
-                if (candidate5 && (candidate5.includes('.mp3') || candidate5.includes('.wav') || candidate5.includes('.m4a') || candidate5.startsWith('idb:') || candidate5.startsWith('n/'))) {
-                    rawMusic = candidate5;
-                } else if (candidate4 && (candidate4.includes('.mp3') || candidate4.includes('.wav') || candidate4.includes('.m4a') || candidate4.startsWith('idb:') || candidate4.startsWith('n/'))) {
-                    rawMusic = candidate4;
-                } else {
-                    rawMusic = candidate5 || candidate4;
+            // 1. Định dạng MyHeart: parts[0] là nhạc, parts[1] là mã màu hex (#ff9090)
+            if (parts[1] && /^#[0-9a-f]{3,8}$/i.test(parts[1].trim())) {
+                MUSIC = parts[0] || MUSIC;
+                if (parts[2]) {
+                    PHOTO_LIST = parts[2].split(/[,~]+/).filter(Boolean).map(fixImageUrl);
                 }
-            } else {
-                rawMusic = (parts[4] || '').trim();
+                var msgs = parts.slice(3).map(decompressText).filter(Boolean);
+                if (msgs.length) LOVE_MESSAGE = msgs.join('\n\n');
+                TITLE_TEXT = 'Gửi Người Anh Yêu';
+                PASSCODE = '';
             }
+            // 2. Định dạng Galaxy / TextLove (3 phần: ảnh | chữ | nhạc)
+            else if (parts.length === 3 && (parts[2] || '').match(/\.(mp3|wav|m4a)|idb:|n\/|a\//i)) {
+                if (parts[0]) {
+                    PHOTO_LIST = parts[0].split(/[,~]+/).filter(Boolean).map(fixImageUrl);
+                }
+                var txt = parts[1] || '';
+                var msgs = txt.split(/;;;|~/).map(decompressText).filter(Boolean);
+                if (msgs.length) LOVE_MESSAGE = msgs.join('\n\n');
+                else if (txt) LOVE_MESSAGE = decompressText(txt);
+                MUSIC = parts[2] || MUSIC;
+                TITLE_TEXT = 'Gửi Tình Yêu Của Anh';
+                PASSCODE = '';
+            }
+            // 3. Định dạng SkyGifts (3 phần: tiêu đề | ảnh | lời chúc)
+            else if (parts.length === 3 && !(/^\d{4}$/.test((parts[1] || '').trim()))) {
+                TITLE_TEXT = decompressText(parts[0]) || 'Chúc Mừng Bạn';
+                if (parts[1]) {
+                    PHOTO_LIST = parts[1].split(/[,~]+/).filter(Boolean).map(fixImageUrl);
+                }
+                var msgs = (parts[2] || '').split(/;;;|~/).map(decompressText).filter(Boolean);
+                if (msgs.length) LOVE_MESSAGE = msgs.join('\n\n');
+                else if (parts[2]) LOVE_MESSAGE = decompressText(parts[2]);
+                PASSCODE = '';
+            }
+            // 4. Định dạng Valentine chuẩn (5 hoặc 6 phần: tiêu đề | mã pass | lời chúc | ảnh | [ảnh chọn] | nhạc)
+            else {
+                var rawTitle = parts[0] || '';
+                var rawPass = parts[1] || '';
+                var rawMsg = parts[2] || '';
+                var rawImages = parts[3] || '';
+                var rawMusic = '';
 
-            if (rawTitle) TITLE_TEXT = decompressText(rawTitle);
-            PASSCODE = rawPass ? rawPass.trim() : '';
-            if (rawMsg) LOVE_MESSAGE = decompressText(rawMsg);
-            if (rawImages) {
-                PHOTO_LIST = rawImages.split('~').filter(Boolean).map(fixImageUrl);
+                if (parts.length >= 6) {
+                    var candidate4 = (parts[4] || '').trim();
+                    var candidate5 = (parts[5] || '').trim();
+                    if (candidate5 && (candidate5.includes('.mp3') || candidate5.includes('.wav') || candidate5.includes('.m4a') || candidate5.startsWith('idb:') || candidate5.startsWith('n/') || candidate5.startsWith('a/'))) {
+                        rawMusic = candidate5;
+                    } else if (candidate4 && (candidate4.includes('.mp3') || candidate4.includes('.wav') || candidate4.includes('.m4a') || candidate4.startsWith('idb:') || candidate4.startsWith('n/') || candidate4.startsWith('a/'))) {
+                        rawMusic = candidate4;
+                    } else {
+                        rawMusic = candidate5 || candidate4;
+                    }
+                } else {
+                    rawMusic = (parts[4] || '').trim();
+                }
+
+                if (rawTitle) TITLE_TEXT = decompressText(rawTitle);
+                PASSCODE = (rawPass && /^\d{4}$/.test(rawPass.trim())) ? rawPass.trim() : '';
+                if (rawMsg) LOVE_MESSAGE = decompressText(rawMsg);
+                if (rawImages) {
+                    PHOTO_LIST = rawImages.split(/[,~]+/).filter(Boolean).map(fixImageUrl);
+                }
+                if (rawMusic) {
+                    MUSIC = rawMusic;
+                }
             }
-            if (rawMusic) {
-                MUSIC = rawMusic;
-            }
+        } else if (encodedData) {
+            try {
+                var jsonStr = '';
+                try {
+                    jsonStr = decodeURIComponent(escape(atob(encodedData)));
+                } catch(e) {
+                    try {
+                        jsonStr = atob(encodedData);
+                    } catch(e2) {}
+                }
+                if (jsonStr && jsonStr.startsWith('{') && jsonStr.includes('msg')) {
+                    var rainData = JSON.parse(jsonStr);
+                    if (rainData.msg) {
+                        if (Array.isArray(rainData.msg)) {
+                            LOVE_MESSAGE = rainData.msg.join('\n\n');
+                        } else if (typeof rainData.msg === 'string') {
+                            LOVE_MESSAGE = rainData.msg.split('|').join('\n\n');
+                        }
+                    }
+                    if (rainData.gif) {
+                        PHOTO_LIST = [fixImageUrl(rainData.gif)];
+                    }
+                    if (rainData.music) {
+                        MUSIC = rainData.music;
+                    }
+                    if (rainData.rainText) {
+                        TITLE_TEXT = rainData.rainText;
+                    }
+                    PASSCODE = '';
+                }
+            } catch (errJson) {}
         }
     } catch (err) {
-        console.error('Lỗi giải mã LZString:', err);
+        console.error('Lỗi giải mã payload:', err);
     }
 }
 

@@ -206,6 +206,10 @@
     // Lưu ngay file vào IndexedDB (không lo giới hạn 5MB)
     saveAudioBlob(localId, file, file.name);
 
+    if (typeof window.updateCustomAudioOption === 'function') {
+      window.updateCustomAudioOption(localId);
+    }
+
     onPreviewReady(window.currentAudioBlobUrl);
     onStatus({
       status: 'loading',
@@ -239,6 +243,10 @@
           // Lưu thêm bản cache vào IndexedDB với key là cloudUrl
           await saveAudioBlob(cloudUrl, file, file.name);
 
+          if (typeof window.updateCustomAudioOption === 'function') {
+            window.updateCustomAudioOption(cloudUrl);
+          }
+
           window.isUploadingAudio = false;
           onStatus({
             status: 'success',
@@ -249,6 +257,9 @@
         } else {
           // Fallback offline: Giữ localId đã lưu trong IndexedDB
           window.uploadedAudioUrl = localId;
+          if (typeof window.updateCustomAudioOption === 'function') {
+            window.updateCustomAudioOption(localId);
+          }
           window.isUploadingAudio = false;
           onStatus({
             status: 'local',
@@ -419,19 +430,22 @@
     const musicSelect = document.getElementById('music') || 
                         document.getElementById('input-music') || 
                         document.getElementById('musicSelect') || 
+                        document.getElementById('musicInput') || 
+                        document.getElementById('musicSelector') || 
+                        document.getElementById('bgMusicSelect') || 
                         document.querySelector('select[name="music"]');
 
     if (musicSelect && !document.getElementById('lkl-custom-music-wrap')) {
       // Thêm option upload nhạc từ thiết bị nếu chưa có
-      let hasCustomOpt = false;
+      let customOpt = null;
       for (let i = 0; i < musicSelect.options.length; i++) {
-        if (musicSelect.options[i].value === 'custom_upload') {
-          hasCustomOpt = true;
+        if (musicSelect.options[i].value === 'custom_upload' || musicSelect.options[i].value === 'upload') {
+          customOpt = musicSelect.options[i];
           break;
         }
       }
-      if (!hasCustomOpt) {
-        const customOpt = document.createElement('option');
+      if (!customOpt) {
+        customOpt = document.createElement('option');
         customOpt.value = 'custom_upload';
         customOpt.textContent = '📁 Tải file nhạc từ thiết bị (.mp3)...';
         musicSelect.appendChild(customOpt);
@@ -464,7 +478,7 @@
 
       // Ẩn hiện box khi đổi lựa chọn
       musicSelect.addEventListener('change', () => {
-        if (musicSelect.value === 'custom_upload') {
+        if (musicSelect.value === 'custom_upload' || musicSelect.value === 'upload' || (customOpt && musicSelect.value === customOpt.value)) {
           wrap.style.display = 'block';
         } else {
           wrap.style.display = 'none';
@@ -475,7 +489,7 @@
         }
       });
 
-      if (musicSelect.value === 'custom_upload') {
+      if (musicSelect.value === 'custom_upload' || musicSelect.value === 'upload') {
         wrap.style.display = 'block';
       }
 
@@ -522,7 +536,11 @@
 
       // Cập nhật giá trị option khi upload hoàn tất
       window.updateCustomAudioOption = function(url) {
-        if (customOpt) customOpt.value = url || window.uploadedAudioUrl || 'n/c.mp3';
+        const targetUrl = url || window.uploadedAudioUrl || '';
+        if (customOpt && targetUrl) {
+          customOpt.value = targetUrl;
+          musicSelect.value = targetUrl;
+        }
       };
     }
 
@@ -532,7 +550,10 @@
                       document.querySelector('.btn-generate') || 
                       document.getElementById('btn-go') || 
                       document.getElementById('createLink') || 
+                      document.getElementById('createLinkBtn') || 
                       document.getElementById('generate-link') || 
+                      document.getElementById('generate') || 
+                      document.getElementById('createBtn') || 
                       document.querySelector('button[type="submit"]');
 
     if (createBtn && (!createBtn.dataset || !createBtn.dataset.syncHooked)) {
@@ -555,6 +576,11 @@
           createBtn.disabled = false;
           createBtn.innerHTML = origText;
 
+          // Đảm bảo musicSelect mang giá trị URL vừa tải lên
+          if (musicSelect && window.uploadedAudioUrl) {
+            window.updateCustomAudioOption(window.uploadedAudioUrl);
+          }
+
           // Sau khi upload xong, tiếp tục tạo link bình thường
           if (typeof window.generateLink === 'function') {
             window.generateLink();
@@ -571,6 +597,8 @@
           } else {
             createBtn.click();
           }
+        } else if (musicSelect && (musicSelect.value === 'custom_upload' || musicSelect.value === 'upload') && window.uploadedAudioUrl) {
+          window.updateCustomAudioOption(window.uploadedAudioUrl);
         }
       }, true);
     }
@@ -588,22 +616,30 @@
         // Chặn listener cũ (vốn dùng api.imgbb.com với key hết hạn)
         e.stopImmediatePropagation();
 
-        const imagesTextarea = document.getElementById('images') || document.getElementById('input-images');
+        const imagesTextarea = document.getElementById('images') || 
+                               document.getElementById('input-images') || 
+                               document.getElementById('imageTextarea') || 
+                               document.querySelector('textarea#image-links') || 
+                               document.querySelector('textarea');
         if (!imagesTextarea) return;
 
         for (const file of files) {
-          const currentCount = imagesTextarea.value.trim().split('\n').filter(Boolean).length;
-          if (currentCount >= 4) {
-            alert('Chỉ được upload tối đa 4 ảnh.');
+          const currentCount = imagesTextarea.value.trim().split(/[\n,]+/).filter(Boolean).length;
+          if (currentCount >= 5) {
+            alert('Chỉ được upload tối đa 5 ảnh.');
             break;
           }
 
           try {
             const uploadedUrl = await window.uploadImageFile(file);
             if (uploadedUrl) {
-              imagesTextarea.value += (imagesTextarea.value ? '\n' : '') + uploadedUrl;
+              const sep = imagesTextarea.id === 'images' && !imagesTextarea.value.includes('\n') && imagesTextarea.value.includes(',') ? ', ' : '\n';
+              imagesTextarea.value += (imagesTextarea.value ? sep : '') + uploadedUrl;
               if (typeof window.updateThumbs === 'function') {
                 window.updateThumbs();
+              }
+              if (typeof window.updatePreview === 'function') {
+                window.updatePreview();
               }
             }
           } catch (err) {

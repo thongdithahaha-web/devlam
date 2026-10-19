@@ -7,8 +7,9 @@
     <title>Chỉnh Sửa & Tạo Bó Hoa Tặng Bạn - Project 3</title>
     <link rel="icon" href="../assets/logo.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="./assets/js/lz-string.min.js"></script>
-    <script src="./assets/js/keypan.js"></script>
+    <script src="../assets/js/lz-string.min.js"></script>
+    <script src="../assets/js/keypan.js"></script>
+    <script src="../assets/upload-audio.js"></script>
     <style>
         :root {
             --primary: #ff4d79;
@@ -539,7 +540,7 @@
                 <!-- Panel 1: Ảnh mặc định -->
                 <div id="panelPhotoDefault">
                     <div class="photo-preview-wrap">
-                        <img src="./assets/a/anhz.png" class="photo-preview-img" alt="Ảnh chú thỏ">
+                        <img src="../assets/a/anhz.png" class="photo-preview-img" alt="Ảnh chú thỏ">
                         <div class="photo-preview-info">
                             <div class="photo-preview-title">Chú thỏ ôm hoa dễ thương</div>
                             <div class="photo-preview-badge">Ảnh mặc định</div>
@@ -845,71 +846,62 @@
                 return;
             }
 
-            if (file.size > 25 * 1024 * 1024) {
-                statusEl.innerHTML = '<span style="color:#e53e3e">⚠️ File nhạc quá lớn (>25MB). Vui lòng chọn file dưới 25MB nhé!</span>';
+            if (file.size > 35 * 1024 * 1024) {
+                statusEl.innerHTML = '<span style="color:#e53e3e">⚠️ File nhạc quá lớn (>35MB). Vui lòng chọn file dưới 35MB nhé!</span>';
                 return;
             }
 
-            statusEl.innerHTML = '<span style="color:#2563eb; font-weight:600;"><span class="upload-loading">⏳</span> Đang xử lý bài hát... (vui lòng chờ vài giây)</span>';
+            statusEl.innerHTML = '<span style="color:#2563eb; font-weight:600;"><span class="upload-loading">⏳</span> Đang lưu bài hát và đồng bộ lên đám mây...</span>';
             isUploadingAudio = true;
 
-            const reader = new FileReader();
-            reader.onload = async function(evt) {
-                const base64Data = evt.target.result;
-
-                try {
-                    // Thử tải lên đám mây qua API
-                    const apiUrl = getApiEndpoint('/api/upload');
-                    const res = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            filename: file.name,
-                            base64: base64Data
-                        })
-                    });
-
-                    if (res.ok) {
-                        const data = await res.json();
-                        if (data.success && data.url) {
-                            uploadedAudioUrl = data.url;
-                            isUploadingAudio = false;
-
-                            const previewAudio = document.getElementById('previewAudio');
-                            if (previewAudio) previewAudio.src = data.url;
-
-                            statusEl.innerHTML = '<span style="color:#16a34a; font-weight:700;">✅ Tải nhạc lên đám mây thành công!</span><div style="margin-top:4px; font-size:12px; color:#4a5568;">Link siêu nhẹ (' + data.url.length + ' ký tự), mượt mà không lo lag máy.</div>';
-                            showToast('Đã tải nhạc lên đám mây thành công!');
-                            return;
+            if (typeof window.handleAudioFileSelection === 'function') {
+                window.handleAudioFileSelection(file, function(state) {
+                    if (state && state.message) {
+                        statusEl.innerHTML = '<span style="color:#2563eb; font-weight:600;"><span class="upload-loading">⏳</span> ' + state.message + '</span>';
+                    }
+                }, function(cloudUrl, localId) {
+                    isUploadingAudio = false;
+                    uploadedAudioUrl = cloudUrl || localId;
+                    const previewAudio = document.getElementById('previewAudio');
+                    if (previewAudio) {
+                        if (cloudUrl) {
+                            previewAudio.src = cloudUrl;
+                        } else if (window.resolveAudioStream) {
+                            window.resolveAudioStream(localId).then(src => { previewAudio.src = src; });
+                        } else {
+                            previewAudio.src = URL.createObjectURL(file);
                         }
                     }
-                    throw new Error('Máy chủ tải lên không phản hồi');
-                } catch (err) {
-                    console.log('Chuyển sang chế độ lưu trữ trực tiếp:', err);
-                    isUploadingAudio = false;
-                    uploadedAudioUrl = base64Data;
-
-                    // Cập nhật ngay link cho trình nghe thử
-                    const previewAudio = document.getElementById('previewAudio');
-                    if (previewAudio) previewAudio.src = base64Data;
-
-                    statusEl.innerHTML = '<span style="color:#16a34a; font-weight:700;">✅ Đã nhận bài hát: ' + (file.name || 'nhạc của bạn') + ' (' + Math.round(file.size/1024) + ' KB)</span><div style="margin-top:5px; font-size:12.5px; color:#4a5568;">🎵 Đã sẵn sàng! Bạn có thể bấm <b>"Nghe thử bài hát"</b> ở trên. Khi tạo link xong, hệ thống sẽ tự động rút gọn link siêu ngắn tránh lag nhé!</div>';
+                    statusEl.innerHTML = '<span style="color:#16a34a; font-weight:700;">✅ Tải nhạc thành công: ' + (file.name || 'nhạc của bạn') + '</span><div style="margin-top:4px; font-size:12px; color:#4a5568;">🎵 Âm thanh phát mượt mà không lo lag máy!</div>';
                     showToast('Đã chọn bài hát thành công!');
-                }
-            };
-            reader.readAsDataURL(file);
+                }, function(errMsg) {
+                    isUploadingAudio = false;
+                    statusEl.innerHTML = '<span style="color:#e53e3e">⚠️ ' + (errMsg || 'Lỗi xử lý file') + '</span>';
+                });
+            } else {
+                const blobUrl = URL.createObjectURL(file);
+                uploadedAudioUrl = blobUrl;
+                isUploadingAudio = false;
+                const previewAudio = document.getElementById('previewAudio');
+                if (previewAudio) previewAudio.src = blobUrl;
+                statusEl.innerHTML = '<span style="color:#16a34a; font-weight:700;">✅ Đã nhận bài hát: ' + (file.name || '') + '</span>';
+                showToast('Đã chọn bài hát thành công!');
+            }
         }
 
-        function toggleMusicPreview() {
+        async function toggleMusicPreview() {
             const audio = document.getElementById('previewAudio');
             const btn = document.getElementById('btnPlayPreview');
-            const musicUrl = getSelectedMusicUrl();
+            let musicUrl = getSelectedMusicUrl();
 
             if (isAudioPlaying) {
                 audio.pause();
                 isAudioPlaying = false;
                 btn.innerHTML = '▶️ Nghe thử bài hát';
             } else {
+                if (window.resolveAudioStream) {
+                    musicUrl = await window.resolveAudioStream(musicUrl);
+                }
                 audio.src = musicUrl;
                 audio.currentTime = 0;
                 audio.play().then(function() {

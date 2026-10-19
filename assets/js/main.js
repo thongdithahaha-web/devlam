@@ -27,6 +27,14 @@ function getQueryParams() {
     };
 }
 
+function isMusicString(str) {
+    if (!str) return false;
+    var s = str.trim().toLowerCase();
+    return s.endsWith('.mp3') || s.endsWith('.wav') || s.endsWith('.m4a') || 
+           s.startsWith('idb:') || s.startsWith('n/') || s.startsWith('a/') || 
+           s.includes('.mp3?') || s.includes('catbox') || s.includes('pomf') || s.includes('litterbox');
+}
+
 const { data: compressedData } = getQueryParams();
 let rawMessage = 'Anh yêu em',
     rawMusic = 'n/t.mp3',
@@ -39,20 +47,61 @@ if (compressedData && typeof LZString !== 'undefined') {
         const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
         if (decompressed) {
             const parts = decompressed.split('|');
-            const compressedMsgs = parts[0] || '';
-            rawMusic = parts[1] || rawMusic;
-            const compressedImages = parts[2] || '';
-            hideHeartsFlag = parts[3] || '0';
 
-            messagesArray = compressedMsgs.split('~')
-                .map(msg => decompressText(msg).trim())
-                .filter(Boolean);
-            rawMessage = messagesArray.join(', ');
+            // 1. Định dạng LittleLove: [music, ...messages]
+            if (isMusicString(parts[0])) {
+                rawMusic = parts[0];
+                messagesArray = parts.slice(1).map(decompressText).map(s => s.trim()).filter(Boolean);
+                rawMessage = messagesArray.join(', ');
+            }
+            // 2. Định dạng TextLoveV2: [mainText, subText, music, ...messages]
+            else if (isMusicString(parts[2])) {
+                rawMusic = parts[2];
+                const mainTxt = decompressText(parts[0]).trim();
+                const subTxt = decompressText(parts[1]).trim();
+                const moreMsgs = parts.slice(3).map(decompressText).map(s => s.trim()).filter(Boolean);
+                messagesArray = [mainTxt, subTxt, ...moreMsgs].filter(Boolean);
+                rawMessage = mainTxt + (subTxt ? ' - ' + subTxt : '');
+            }
+            // 3. Định dạng TextAnim: [line1, line2, icon, music]
+            else if (isMusicString(parts[3])) {
+                rawMusic = parts[3];
+                const l1 = decompressText(parts[0]).trim();
+                const l2 = decompressText(parts[1]).trim();
+                const icon = (parts[2] || '').trim();
+                messagesArray = [l1 + ' ' + icon, l2].filter(Boolean);
+                rawMessage = l1 + ' ' + icon + ', ' + l2;
+            }
+            // 4. Định dạng LoveQuiz: [imgMain, imgSub, mainText, subText, yesText, noText]
+            else if (parts.length >= 5 && ((parts[0] && parts[0].includes('http')) || (parts[1] && parts[1].includes('http')))) {
+                imagesArray = [parts[0], parts[1]].filter(Boolean);
+                messagesArray = [
+                    decompressText(parts[2]).trim(),
+                    decompressText(parts[3]).trim(),
+                    'Yes: ' + decompressText(parts[4]).trim(),
+                    'No: ' + decompressText(parts[5]).trim()
+                ].filter(Boolean);
+                rawMessage = messagesArray.join(' | ');
+            }
+            // 5. Định dạng tiêu chuẩn (TLoves / DearText): [messagesTilde, music, imagesTilde, hideHearts]
+            else {
+                const compressedMsgs = parts[0] || '';
+                if (parts[1] && (isMusicString(parts[1]) || parts[1].startsWith('http') || parts[1].includes('.'))) {
+                    rawMusic = parts[1];
+                }
+                const compressedImages = parts[2] || '';
+                hideHeartsFlag = parts[3] || '0';
 
-            if (compressedImages) {
-                imagesArray = compressedImages.split('~')
-                    .map(img => img.trim())
+                messagesArray = compressedMsgs.split('~')
+                    .map(msg => decompressText(msg).trim())
                     .filter(Boolean);
+                rawMessage = messagesArray.join(', ');
+
+                if (compressedImages) {
+                    imagesArray = compressedImages.split('~')
+                        .map(img => img.trim())
+                        .filter(Boolean);
+                }
             }
         }
     } catch (err) {
