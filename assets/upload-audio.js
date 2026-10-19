@@ -1,0 +1,634 @@
+/**
+ * =============================================================================
+ * File: upload-audio.js
+ * Author: devlekimlam
+ * Project: lekimlamdev
+ * Description: 
+ *   - Quản lý bộ nhớ lưu trữ nhạc trực tiếp bằng IndexedDB (lkimlam_audio_db)
+ *   - Tải nhạc và stream trực tiếp lên máy chủ đám mây (Catbox / Litterbox / Pomf2)
+ *   - Đồng bộ trạng thái chờ khi bấm "Tạo Đường Link Ngay"
+ *   - Hỗ trợ giải mã và phát nhạc tức thì 100% trên cả thiết bị tạo lẫn thiết bị nhận
+ * =============================================================================
+ */
+
+(function (window) {
+  'use strict';
+
+  const DB_NAME = 'lkimlam_audio_db';
+  const DB_VERSION = 1;
+  const STORE_NAME = 'audios';
+
+  // State globals
+  window.isUploadingAudio = false;
+  window.uploadedAudioUrl = '';
+  window.currentAudioUploadPromise = null;
+  window.currentAudioBlob = null;
+  window.currentAudioBlobUrl = null;
+
+  // 1. ================= Khởi tạo & thao tác IndexedDB =================
+  function openAudioDB() {
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) {
+        console.warn('Trình duyệt không hỗ trợ IndexedDB.');
+        return resolve(null);
+      }
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
+      request.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => {
+        console.error('Lỗi mở IndexedDB:', request.error);
+        resolve(null);
+      };
+    });
+  }
+
+  async function saveAudioBlob(id, blob, filename) {
+    try {
+      const db = await openAudioDB();
+      if (!db) return false;
+      return new Promise((resolve) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        store.put({
+          id: id,
+          blob: blob,
+          name: filename || 'audio.mp3',
+          type: blob.type || 'audio/mpeg',
+          size: blob.size,
+          updatedAt: Date.now()
+        });
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => resolve(false);
+      });
+    } catch (e) {
+      console.warn('Lỗi lưu IndexedDB:', e);
+      return false;
+    }
+  }
+
+  async function getAudioBlob(id) {
+    try {
+      const db = await openAudioDB();
+      if (!db) return null;
+      return new Promise((resolve) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.get(id);
+        req.onsuccess = () => {
+          if (req.result && req.result.blob) {
+            resolve(req.result.blob);
+          } else {
+            resolve(null);
+          }
+        };
+        req.onerror = () => resolve(null);
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+
+  window.saveAudioBlob = saveAudioBlob;
+  window.getAudioBlob = getAudioBlob;
+
+  // 2. ================= Tải nhạc lên đám mây (Stream MP3 trực tiếp) =================
+  async function uploadToApiServer(file, base64Data) {
+    const endpoints = ['/api/upload-music', '/api/upload'];
+    for (const ep of endpoints) {
+      try {
+        const res = await fetch(ep, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: file.name || 'music.mp3',
+            base64: base64Data
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success && data.url) {
+            return data.url;
+          }
+        }
+      } catch (err) {
+        // Tiếp tục thử fallback tiếp theo
+      }
+    }
+    return null;
+  }
+
+  // Fallback tải trực tiếp từ Browser lên Litterbox (hỗ trợ CORS)
+  async function uploadDirectLitterbox(file) {
+    try {
+      const fd = new FormData();
+      fd.append('reqtype', 'fileupload');
+      fd.append('time', '72h');
+      fd.append('fileToUpload', file, file.name || 'music.mp3');
+
+      const res = await fetch('https://litterbox.catbox.moe/resources/internals/api.php', {
+        method: 'POST',
+        body: fd
+      });
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.startsWith('http')) {
+          return text.trim();
+        }
+      }
+    } catch (e) {
+      console.warn('Litterbox direct fallback failed:', e);
+    }
+    return null;
+  }
+
+  // Fallback tải trực tiếp từ Browser lên Pomf2
+  async function uploadDirectPomf(file) {
+    try {
+      const fd = new FormData();
+      fd.append('files[]', file, file.name || 'music.mp3');
+
+      const res = await fetch('https://pomf2.lain.la/upload.php', {
+        method: 'POST',
+        body: fd
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.files && json.files[0] && json.files[0].url) {
+          return json.files[0].url;
+        }
+      }
+    } catch (e) {
+      console.warn('Pomf2 direct fallback failed:', e);
+    }
+    return null;
+  }
+
+  /**
+   * Xử lý file nhạc người dùng chọn từ máy
+   */
+  window.handleAudioFileSelection = function (file, options) {
+    options = options || {};
+    const onStatus = options.onStatus || function () {};
+    const onPreviewReady = options.onPreviewReady || function () {};
+
+    if (!file) return;
+
+    if (!file.type.includes('audio') && !file.name.match(/\.(mp3|m4a|wav|ogg|aac|flac)$/i)) {
+      onStatus({
+        status: 'error',
+        message: '⚠️ Vui lòng chọn file âm thanh (.mp3, .m4a, .wav).'
+      });
+      return;
+    }
+
+    if (file.size > 35 * 1024 * 1024) {
+      onStatus({
+        status: 'error',
+        message: '⚠️ File nhạc quá lớn (>35MB). Vui lòng chọn file dưới 35MB.'
+      });
+      return;
+    }
+
+    // 1. Tạo local ID & Blob URL cho trải nghiệm tức thì (0ms latency)
+    const localId = 'idb:lkl_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+    window.currentAudioBlob = file;
+    if (window.currentAudioBlobUrl) {
+      URL.revokeObjectURL(window.currentAudioBlobUrl);
+    }
+    window.currentAudioBlobUrl = URL.createObjectURL(file);
+    window.uploadedAudioUrl = localId; // Gán tạm để nếu chạy offline vẫn hoạt động
+
+    // Lưu ngay file vào IndexedDB (không lo giới hạn 5MB)
+    saveAudioBlob(localId, file, file.name);
+
+    onPreviewReady(window.currentAudioBlobUrl);
+    onStatus({
+      status: 'loading',
+      message: '⏳ Đang lưu vào bộ nhớ máy và đồng bộ bài hát lên máy chủ... (' + Math.round(file.size / 1024) + ' KB)'
+    });
+
+    window.isUploadingAudio = true;
+
+    // 2. Chạy tải lên đám mây trong nền
+    window.currentAudioUploadPromise = new Promise(async (resolve) => {
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        const base64Data = evt.target.result;
+        let cloudUrl = null;
+
+        // B1: Thử API upload server (/api/upload-music)
+        cloudUrl = await uploadToApiServer(file, base64Data);
+
+        // B2: Thử Litterbox direct
+        if (!cloudUrl) {
+          cloudUrl = await uploadDirectLitterbox(file);
+        }
+
+        // B3: Thử Pomf2 direct
+        if (!cloudUrl) {
+          cloudUrl = await uploadDirectPomf(file);
+        }
+
+        if (cloudUrl) {
+          window.uploadedAudioUrl = cloudUrl;
+          // Lưu thêm bản cache vào IndexedDB với key là cloudUrl
+          await saveAudioBlob(cloudUrl, file, file.name);
+
+          window.isUploadingAudio = false;
+          onStatus({
+            status: 'success',
+            url: cloudUrl,
+            message: '✅ Đã tải nhạc lên đám mây thành công! Link stream mượt mà: ' + (file.name || 'nhạc của bạn')
+          });
+          resolve(cloudUrl);
+        } else {
+          // Fallback offline: Giữ localId đã lưu trong IndexedDB
+          window.uploadedAudioUrl = localId;
+          window.isUploadingAudio = false;
+          onStatus({
+            status: 'local',
+            url: localId,
+            message: '✅ Đã lưu nhạc trực tiếp vào IndexedDB máy (' + (file.name || 'MP3') + '). Mở máy bạn nghe mượt 100%!'
+          });
+          resolve(localId);
+        }
+      };
+      reader.onerror = () => {
+        window.isUploadingAudio = false;
+        resolve(localId);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    return window.currentAudioUploadPromise;
+  };
+
+  /**
+   * Chờ quá trình upload nhạc kết thúc trước khi sinh link
+   */
+  window.waitForAudioUpload = async function () {
+    if (window.isUploadingAudio && window.currentAudioUploadPromise) {
+      await window.currentAudioUploadPromise;
+    }
+    return window.uploadedAudioUrl;
+  };
+
+  // 3. ================= Trình giải mã nguồn phát (Dành cho trang nhận) =================
+  /**
+   * Giải mã luồng nhạc thành URL phát an toàn cho thẻ <audio>:
+   * - Nếu là idb: -> Lấy Blob từ IndexedDB -> URL.createObjectURL()
+   * - Nếu là Cloud URL (Catbox/Litterbox): Kiểm tra xem máy này có lưu Blob trong IndexedDB không; nếu có thì dùng Blob (cực nhanh), nếu không thì phát qua luồng stream internet.
+   * - Sửa tự động link tmpfiles.org sang /dl/ trực tiếp.
+   */
+  window.resolveAudioStream = async function (rawUrl) {
+    if (!rawUrl) return './n/c.mp3';
+    rawUrl = rawUrl.trim();
+
+    // 1. Trường hợp lưu trực tiếp IndexedDB
+    if (rawUrl.startsWith('idb:')) {
+      const blob = await getAudioBlob(rawUrl);
+      if (blob) {
+        return URL.createObjectURL(blob);
+      }
+    }
+
+    // 2. Trường hợp là URL đám mây
+    if (/^https?:\/\//i.test(rawUrl)) {
+      // Sửa lỗi tmpfiles.org nếu có
+      if (rawUrl.includes('tmpfiles.org/') && !rawUrl.includes('tmpfiles.org/dl/')) {
+        rawUrl = rawUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+      }
+
+      // Kiểm tra cache IndexedDB trên máy này
+      const cachedBlob = await getAudioBlob(rawUrl);
+      if (cachedBlob) {
+        return URL.createObjectURL(cachedBlob);
+      }
+      return rawUrl;
+    }
+
+    // 3. Dữ liệu base64 hoặc blob sẵn
+    if (rawUrl.startsWith('data:') || rawUrl.startsWith('blob:')) {
+      return rawUrl;
+    }
+
+    // 4. File cục bộ tương đối (vd: n/c.mp3 hoặc ./n/c.mp3)
+    if (rawUrl.startsWith('./')) {
+      return rawUrl;
+    }
+    return './' + rawUrl;
+  };
+
+  // 4. ================= Nén & Tải ảnh lên đám mây =================
+  window.compressImageToJpeg = function (file, maxDimension, quality) {
+    maxDimension = maxDimension || 800;
+    quality = quality || 0.72;
+
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDimension || h > maxDimension) {
+            if (w > h) {
+              h = Math.round((h * maxDimension) / w);
+              w = maxDimension;
+            } else {
+              w = Math.round((w * maxDimension) / h);
+              h = maxDimension;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(dataUrl);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  window.uploadImageFile = async function (file) {
+    if (!file) return null;
+    const compressedDataUrl = await window.compressImageToJpeg(file, 800, 0.72);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: file.name || 'photo.jpg',
+          base64: compressedDataUrl
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.url) {
+          return data.url;
+        }
+      }
+    } catch (e) {}
+
+    // Fallback Litterbox direct
+    try {
+      // Chuyển compressedDataUrl thành Blob
+      const byteString = atob(compressedDataUrl.split(',')[1]);
+      const mimeString = compressedDataUrl.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      const blob = new Blob([ab], { type: mimeString });
+
+      const fd = new FormData();
+      fd.append('reqtype', 'fileupload');
+      fd.append('time', '72h');
+      fd.append('fileToUpload', blob, file.name || 'image.jpg');
+
+      const res = await fetch('https://litterbox.catbox.moe/resources/internals/api.php', {
+        method: 'POST',
+        body: fd
+      });
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.startsWith('http')) {
+          return text.trim();
+        }
+      }
+    } catch (e) {}
+
+    // Fallback về base64 nén gọn
+    return compressedDataUrl;
+  };
+
+  // 5. ================= Tự động gắn UI Upload Nhạc & Ảnh cho tất cả các trang Tạo Link =================
+  function initGeneratorUI() {
+    // 1. Tìm thẻ select nhạc trong form
+    const musicSelect = document.getElementById('music') || 
+                        document.getElementById('input-music') || 
+                        document.getElementById('musicSelect') || 
+                        document.querySelector('select[name="music"]');
+
+    if (musicSelect && !document.getElementById('lkl-custom-music-wrap')) {
+      // Thêm option upload nhạc từ thiết bị nếu chưa có
+      let hasCustomOpt = false;
+      for (let i = 0; i < musicSelect.options.length; i++) {
+        if (musicSelect.options[i].value === 'custom_upload') {
+          hasCustomOpt = true;
+          break;
+        }
+      }
+      if (!hasCustomOpt) {
+        const customOpt = document.createElement('option');
+        customOpt.value = 'custom_upload';
+        customOpt.textContent = '📁 Tải file nhạc từ thiết bị (.mp3)...';
+        musicSelect.appendChild(customOpt);
+      }
+
+      // Tạo box upload nhạc tiện lợi
+      const wrap = document.createElement('div');
+      wrap.id = 'lkl-custom-music-wrap';
+      wrap.style.cssText = 'display:none; margin-top:12px; padding:14px; background:rgba(255,240,243,0.92); border:1.8px dashed #ff4d6d; border-radius:14px; text-align:center; animation:fadeIn 0.3s ease; box-shadow:0 4px 12px rgba(255,77,109,0.1);';
+      wrap.innerHTML = `
+        <label for="lkl-music-file" style="display:inline-block; padding:10px 18px; background:linear-gradient(45deg,#ff4d6d,#ff758f); color:#fff; border-radius:12px; font-weight:700; font-size:13.5px; cursor:pointer; box-shadow:0 4px 10px rgba(255,77,109,0.3); transition:0.2s;">
+          🎵 Chọn bài hát từ máy (.mp3, .m4a, .wav)
+        </label>
+        <input type="file" id="lkl-music-file" accept="audio/*" style="display:none;">
+        <div id="lkl-audio-status" style="margin-top:9px; font-size:12.5px; color:#4a5568; font-weight:500;">Chưa chọn bài hát từ thiết bị.</div>
+        <div style="display:flex; justify-content:center; gap:8px; margin-top:10px;">
+          <button type="button" id="lkl-btn-preview" style="display:none; padding:7px 16px; background:#fff; color:#ff4d6d; border:1.5px solid #ff4d6d; border-radius:10px; font-size:12.5px; font-weight:700; cursor:pointer; transition:0.2s;">
+            ▶️ Nghe thử bài hát
+          </button>
+        </div>
+        <audio id="lkl-preview-audio" style="display:none;"></audio>
+      `;
+
+      musicSelect.parentNode.insertBefore(wrap, musicSelect.nextSibling);
+
+      const fileInput = document.getElementById('lkl-music-file');
+      const statusEl = document.getElementById('lkl-audio-status');
+      const previewBtn = document.getElementById('lkl-btn-preview');
+      const previewAudio = document.getElementById('lkl-preview-audio');
+
+      // Ẩn hiện box khi đổi lựa chọn
+      musicSelect.addEventListener('change', () => {
+        if (musicSelect.value === 'custom_upload') {
+          wrap.style.display = 'block';
+        } else {
+          wrap.style.display = 'none';
+          if (previewAudio) {
+            previewAudio.pause();
+            previewBtn.textContent = '▶️ Nghe thử bài hát';
+          }
+        }
+      });
+
+      if (musicSelect.value === 'custom_upload') {
+        wrap.style.display = 'block';
+      }
+
+      // Xử lý khi chọn file nhạc từ máy
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        window.handleAudioFileSelection(file, {
+          onStatus: (info) => {
+            if (info.status === 'loading') {
+              statusEl.innerHTML = `<span style="color:#2563eb; font-weight:600;"><span style="display:inline-block;animation:spin 1s linear infinite">⏳</span> ${info.message}</span>`;
+            } else if (info.status === 'success' || info.status === 'local') {
+              statusEl.innerHTML = `<span style="color:#16a34a; font-weight:700;">${info.message}</span>`;
+              previewBtn.style.display = 'inline-block';
+            } else {
+              statusEl.innerHTML = `<span style="color:#e11d48; font-weight:600;">${info.message}</span>`;
+            }
+          },
+          onPreviewReady: (blobUrl) => {
+            if (previewAudio) previewAudio.src = blobUrl;
+            previewBtn.style.display = 'inline-block';
+          }
+        });
+      });
+
+      // Bật/tắt nghe thử
+      previewBtn.addEventListener('click', () => {
+        if (!previewAudio.src) return;
+        if (previewAudio.paused) {
+          previewAudio.play().then(() => {
+            previewBtn.textContent = '⏸️ Tạm dừng';
+          }).catch(err => {
+            console.log('Lỗi phát preview:', err);
+          });
+        } else {
+          previewAudio.pause();
+          previewBtn.textContent = '▶️ Nghe thử bài hát';
+        }
+      });
+      previewAudio.addEventListener('ended', () => {
+        previewBtn.textContent = '▶️ Nghe thử bài hát';
+      });
+
+      // Hook getter .value của musicSelect để luôn xuất URL nhạc đám mây hoặc IndexedDB
+      try {
+        const proto = HTMLSelectElement.prototype;
+        const origDesc = Object.getOwnPropertyDescriptor(proto, 'value');
+        Object.defineProperty(musicSelect, 'value', {
+          get: function () {
+            const rawVal = origDesc.get.call(this);
+            if (rawVal === 'custom_upload') {
+              return window.uploadedAudioUrl || 'n/c.mp3';
+            }
+            return rawVal;
+          },
+          set: function (newVal) {
+            return origDesc.set.call(this, newVal);
+          },
+          configurable: true
+        });
+      } catch (err) {
+        console.warn('Không thể override getter value của musicSelect:', err);
+      }
+    }
+
+    // 2. Tự động đồng bộ trạng thái chờ khi bấm "Tạo Link"
+    const createBtn = document.querySelector('.btn-create') || 
+                      document.getElementById('btn-go') || 
+                      document.querySelector('button[type="submit"]');
+
+    if (createBtn && !createBtn.dataset.syncHooked) {
+      createBtn.dataset.syncHooked = 'true';
+      const origOnclick = createBtn.onclick;
+
+      createBtn.addEventListener('click', async (e) => {
+        if (window.isUploadingAudio) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+
+          const origText = createBtn.innerHTML;
+          createBtn.disabled = true;
+          createBtn.innerHTML = '⏳ Đang đồng bộ bài hát lên máy chủ... (vui lòng đợi vài giây)';
+
+          try {
+            await window.waitForAudioUpload();
+          } catch(err) {}
+
+          createBtn.disabled = false;
+          createBtn.innerHTML = origText;
+
+          // Sau khi upload xong, tiếp tục tạo link bình thường
+          if (typeof window.generateLink === 'function') {
+            window.generateLink();
+          } else if (createBtn.form) {
+            if (createBtn.form.requestSubmit) {
+              createBtn.form.requestSubmit();
+            } else {
+              createBtn.form.submit();
+            }
+          } else if (typeof origOnclick === 'function') {
+            origOnclick.call(createBtn, e);
+          }
+        }
+      }, true);
+    }
+
+    // 3. Tự động nâng cấp trình tải ảnh lên đám mây (Canvas compress + Catbox/Litterbox)
+    const imgInput = document.getElementById('upload-imgbb') || 
+                     document.querySelector('input[type="file"][accept*="image"]');
+
+    if (imgInput && !imgInput.dataset.enhanced) {
+      imgInput.dataset.enhanced = 'true';
+      imgInput.addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
+
+        // Chặn listener cũ (vốn dùng api.imgbb.com với key hết hạn)
+        e.stopImmediatePropagation();
+
+        const imagesTextarea = document.getElementById('images') || document.getElementById('input-images');
+        if (!imagesTextarea) return;
+
+        for (const file of files) {
+          const currentCount = imagesTextarea.value.trim().split('\n').filter(Boolean).length;
+          if (currentCount >= 4) {
+            alert('Chỉ được upload tối đa 4 ảnh.');
+            break;
+          }
+
+          try {
+            const uploadedUrl = await window.uploadImageFile(file);
+            if (uploadedUrl) {
+              imagesTextarea.value += (imagesTextarea.value ? '\n' : '') + uploadedUrl;
+              if (typeof window.updateThumbs === 'function') {
+                window.updateThumbs();
+              }
+            }
+          } catch (err) {
+            console.error('Lỗi upload ảnh:', err);
+          }
+        }
+        imgInput.value = '';
+      }, true);
+    }
+  }
+
+  // Tự động kích hoạt khi DOM tải xong
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGeneratorUI);
+  } else {
+    initGeneratorUI();
+  }
+
+})(typeof window !== 'undefined' ? window : this);
+

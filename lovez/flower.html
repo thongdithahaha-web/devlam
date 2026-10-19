@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bó Hoa Tặng Bạn</title>
-    <link rel="icon" href="./assets/a/icon1.png" type="image/png">
+    <link rel="icon" href="../assets/logo.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
     <script src="./assets/js/lz-string.min.js"></script>
@@ -314,9 +314,59 @@
             letterContent.appendChild(closeBtn);
         }
 
+        function getAudioBlobFromIDB(id) {
+            return new Promise(function(resolve) {
+                if (!window.indexedDB) return resolve(null);
+                var req = indexedDB.open('lkimlam_audio_db', 1);
+                req.onerror = function() { resolve(null); };
+                req.onsuccess = function(e) {
+                    var db = e.target.result;
+                    if (!db.objectStoreNames.contains('audios')) return resolve(null);
+                    var tx = db.transaction('audios', 'readonly');
+                    var store = tx.objectStore('audios');
+                    var getReq = store.get(id);
+                    getReq.onsuccess = function() {
+                        if (getReq.result && getReq.result.blob) resolve(getReq.result.blob);
+                        else resolve(null);
+                    };
+                    getReq.onerror = function() { resolve(null); };
+                };
+            });
+        }
+
+        async function resolveAudioStream(rawUrl) {
+            if (!rawUrl) return './n/c.mp3';
+            var trimmed = rawUrl.trim();
+            if (trimmed.startsWith('idb:')) {
+                try {
+                    var blob = await getAudioBlobFromIDB(trimmed);
+                    if (blob) return URL.createObjectURL(blob);
+                } catch(e) {}
+            }
+            if (/^https?:\/\//i.test(trimmed)) {
+                if (trimmed.includes('tmpfiles.org/') && !trimmed.includes('tmpfiles.org/dl/')) {
+                    trimmed = trimmed.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                }
+                try {
+                    var cached = await getAudioBlobFromIDB(trimmed);
+                    if (cached) return URL.createObjectURL(cached);
+                } catch(e) {}
+                return trimmed;
+            }
+            if (trimmed.startsWith('data:') || trimmed.startsWith('blob:') || trimmed.startsWith('./')) return trimmed;
+            return './' + trimmed;
+        }
+
         const audioEl = document.getElementById('audio-ms');
         if (audioEl && audioSrc) {
-            audioEl.src = audioSrc;
+            resolveAudioStream(audioSrc).then(function(res) {
+                audioEl.src = res;
+            });
+            audioEl.onerror = function() {
+                if (audioEl.src !== './n/c.mp3') {
+                    audioEl.src = './n/c.mp3';
+                }
+            };
         }
 
         // Tương tác chạm vào hoa (chú thỏ)

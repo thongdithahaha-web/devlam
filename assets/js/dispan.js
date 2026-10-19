@@ -1,0 +1,2 @@
+// Cleaned
+function DisableDevtool(){}

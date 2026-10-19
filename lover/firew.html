@@ -1,4 +1,4 @@
-﻿<html lang="en">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <meta name="mobile-web-app-capable" content="yes">
   <link href="https://fonts.googleapis.com/css?family=Russo+One" rel="stylesheet">
+  <link rel="icon" href="../assets/logo.png" type="image/png">
   <link rel="stylesheet" href="./css/reset.min.css">
   <link rel="stylesheet" href="./css/style.css">
 
@@ -134,11 +135,173 @@
     </div>
   </div>
 
+  <!-- Message & Music Overlay -->
+  <div id="firew-overlay" style="position:fixed; top:25px; left:50%; transform:translateX(-50%); z-index:99999; text-align:center; max-width:92%; width:440px; pointer-events:none;">
+    <div id="firew-card" style="background:rgba(255,255,255,0.9); backdrop-filter:blur(10px); padding:16px 22px; border-radius:20px; box-shadow:0 12px 35px rgba(0,0,0,0.35); pointer-events:auto; border:1.8px solid #ff758f; animation:fadeIn 0.5s ease;">
+      <h2 id="firew-title" style="margin:0; font-family:'Mali',sans-serif; color:#ff4d6d; font-size:19px; font-weight:700;">Pháo Hoa Rực Rỡ ✨</h2>
+      <div id="firew-msg" style="margin-top:8px; font-family:'Mali',sans-serif; color:#333; font-size:14px; line-height:1.6; max-height:180px; overflow-y:auto; text-align:center;"></div>
+      <div id="firew-photos" style="display:flex; gap:8px; justify-content:center; margin-top:10px; flex-wrap:wrap;"></div>
+      <div style="margin-top:12px; display:flex; justify-content:center; gap:8px;">
+        <button id="firew-music-btn" style="background:linear-gradient(45deg,#ff4d6d,#ff758f); color:#fff; border:none; border-radius:12px; padding:7px 16px; font-size:12.5px; font-weight:700; cursor:pointer; box-shadow:0 4px 10px rgba(255,77,109,0.3); transition:0.2s;">
+          ▶️ Bật Nhạc
+        </button>
+        <button id="firew-toggle-card" style="background:#fff; color:#ff4d6d; border:1.5px solid #ff4d6d; border-radius:12px; padding:7px 14px; font-size:12.5px; font-weight:700; cursor:pointer;">
+          Ẩn bảng tin
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="firew-audio" loop preload="auto"></audio>
+
   <script src='./js/fscreen.js'></script>
   <script src="./js/Stage.js"></script>
   <script src='./js/MyMath.js'></script>
   <script src='./js/script.js'></script>
-  
+
+  <!-- URL Payload & Audio Resolver -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+  <script src="../assets/keypan.js"></script>
+  <script>
+    (function() {
+      function getAudioBlobFromIDB(id) {
+        return new Promise(function(resolve) {
+          if (!window.indexedDB) return resolve(null);
+          var req = indexedDB.open('lkimlam_audio_db', 1);
+          req.onerror = function() { resolve(null); };
+          req.onsuccess = function(e) {
+            var db = e.target.result;
+            if (!db.objectStoreNames.contains('audios')) return resolve(null);
+            var tx = db.transaction('audios', 'readonly');
+            var store = tx.objectStore('audios');
+            var getReq = store.get(id);
+            getReq.onsuccess = function() {
+              if (getReq.result && getReq.result.blob) resolve(getReq.result.blob);
+              else resolve(null);
+            };
+            getReq.onerror = function() { resolve(null); };
+          };
+        });
+      }
+
+      async function resolveAudioStream(rawUrl) {
+        if (!rawUrl) return '../n/c.mp3';
+        var trimmed = rawUrl.trim();
+        if (trimmed.startsWith('idb:')) {
+          try {
+            var blob = await getAudioBlobFromIDB(trimmed);
+            if (blob) return URL.createObjectURL(blob);
+          } catch(e) {}
+        }
+        if (/^https?:\/\//i.test(trimmed)) {
+          if (trimmed.includes('tmpfiles.org/') && !trimmed.includes('tmpfiles.org/dl/')) {
+            trimmed = trimmed.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+          }
+          try {
+            var cached = await getAudioBlobFromIDB(trimmed);
+            if (cached) return URL.createObjectURL(cached);
+          } catch(e) {}
+          return trimmed;
+        }
+        if (trimmed.startsWith('data:') || trimmed.startsWith('blob:') || trimmed.startsWith('./') || trimmed.startsWith('../')) return trimmed;
+        return '../' + trimmed;
+      }
+
+      function decompressText(text) {
+        if (!text) return '';
+        if (window.Keypans && typeof window.Keypans.decompressWithDictionary === 'function') {
+          return window.Keypans.decompressWithDictionary(text);
+        }
+        return text;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const encoded = params.get('d') || params.get('id');
+      const audioEl = document.getElementById('firew-audio');
+      const musicBtn = document.getElementById('firew-music-btn');
+      const toggleBtn = document.getElementById('firew-toggle-card');
+      const cardEl = document.getElementById('firew-card');
+      let musicUrl = '../n/c.mp3';
+
+      if (encoded && typeof LZString !== 'undefined') {
+        try {
+          const raw = LZString.decompressFromEncodedURIComponent(encoded);
+          if (raw) {
+            const parts = raw.split('|');
+            const imagesStr = parts[0] || '';
+            const messagesStr = parts[1] || '';
+            const customMusic = parts[2] || '';
+
+            if (messagesStr) {
+              const msgs = messagesStr.split(';;;').map(decompressText).filter(Boolean);
+              document.getElementById('firew-msg').innerHTML = msgs.map(m => `<p style="margin:4px 0;">${m}</p>`).join('');
+            } else {
+              document.getElementById('firew-msg').textContent = 'Chúc bạn một năm mới ngập tràn niềm vui và may mắn!';
+            }
+
+            if (imagesStr) {
+              const imgs = imagesStr.split(',').filter(Boolean);
+              const photosDiv = document.getElementById('firew-photos');
+              imgs.forEach(src => {
+                const img = document.createElement('img');
+                img.src = src.startsWith('http') ? src : 'https://' + src;
+                img.style.cssText = 'width:55px;height:55px;object-fit:cover;border-radius:10px;border:2px solid #ff758f;';
+                photosDiv.appendChild(img);
+              });
+            }
+
+            if (customMusic) {
+              musicUrl = customMusic;
+            }
+          }
+        } catch(e) {
+          console.error('Lỗi giải mã:', e);
+        }
+      }
+
+      resolveAudioStream(musicUrl).then(src => {
+        audioEl.src = src;
+      });
+
+      // Tự động phát nhạc khi chạm màn hình lần đầu
+      function autoStart() {
+        if (audioEl.paused) {
+          audioEl.play().then(() => {
+            musicBtn.textContent = '⏸️ Tạm dừng';
+          }).catch(() => {});
+        }
+        window.removeEventListener('click', autoStart);
+        window.removeEventListener('touchstart', autoStart);
+      }
+      window.addEventListener('click', autoStart, { once: true });
+      window.addEventListener('touchstart', autoStart, { once: true });
+
+      musicBtn.addEventListener('click', () => {
+        if (audioEl.paused) {
+          audioEl.play().then(() => {
+            musicBtn.textContent = '⏸️ Tạm dừng';
+          }).catch(e => console.log(e));
+        } else {
+          audioEl.pause();
+          musicBtn.textContent = '▶️ Bật Nhạc';
+        }
+      });
+
+      toggleBtn.addEventListener('click', () => {
+        const msg = document.getElementById('firew-msg');
+        const photos = document.getElementById('firew-photos');
+        if (msg.style.display === 'none') {
+          msg.style.display = 'block';
+          photos.style.display = 'flex';
+          toggleBtn.textContent = 'Ẩn bảng tin';
+        } else {
+          msg.style.display = 'none';
+          photos.style.display = 'none';
+          toggleBtn.textContent = 'Hiện bảng tin';
+        }
+      });
+    })();
+  </script>
 </body>
 
 </html>

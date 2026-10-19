@@ -39,6 +39,57 @@ function decompressText(text) {
     return text;
 }
 
+// Helper: Lấy Blob trực tiếp từ IndexedDB lkimlam_audio_db
+function getAudioBlobFromIDB(id) {
+    return new Promise(function(resolve) {
+        if (!window.indexedDB) return resolve(null);
+        var req = indexedDB.open('lkimlam_audio_db', 1);
+        req.onerror = function() { resolve(null); };
+        req.onsuccess = function(e) {
+            var db = e.target.result;
+            if (!db.objectStoreNames.contains('audios')) return resolve(null);
+            var tx = db.transaction('audios', 'readonly');
+            var store = tx.objectStore('audios');
+            var getReq = store.get(id);
+            getReq.onsuccess = function() {
+                if (getReq.result && getReq.result.blob) resolve(getReq.result.blob);
+                else resolve(null);
+            };
+            getReq.onerror = function() { resolve(null); };
+        };
+    });
+}
+
+// Giải mã URL âm thanh từ IndexedDB hoặc Cloud Stream
+async function resolveAudioStream(rawUrl) {
+    if (!rawUrl) return './n/c.mp3';
+    var trimmed = rawUrl.trim();
+
+    // 1. Khóa lưu trực tiếp IndexedDB
+    if (trimmed.startsWith('idb:')) {
+        try {
+            var blob = await getAudioBlobFromIDB(trimmed);
+            if (blob) return URL.createObjectURL(blob);
+        } catch (e) {}
+    }
+
+    // 2. URL đám mây (Catbox / Litterbox / Pomf2 / tmpfiles)
+    if (/^https?:\/\//i.test(trimmed)) {
+        if (trimmed.includes('tmpfiles.org/') && !trimmed.includes('tmpfiles.org/dl/')) {
+            trimmed = trimmed.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+        }
+        try {
+            var cached = await getAudioBlobFromIDB(trimmed);
+            if (cached) return URL.createObjectURL(cached);
+        } catch (e) {}
+        return trimmed;
+    }
+
+    if (trimmed.startsWith('data:') || trimmed.startsWith('blob:')) return trimmed;
+    if (trimmed.startsWith('./')) return trimmed;
+    return './' + trimmed;
+}
+
 // Decompress URL payload if present
 if (encodedData && typeof LZString !== 'undefined') {
     try {
@@ -49,7 +100,22 @@ if (encodedData && typeof LZString !== 'undefined') {
             var rawPass = parts[1] || '';
             var rawMsg = parts[2] || '';
             var rawImages = parts[3] || '';
-            var rawMusic = parts[4] || '';
+            var rawMusic = '';
+
+            // Tương thích cả định dạng 5 phần và 6 phần
+            if (parts.length >= 6) {
+                var candidate4 = (parts[4] || '').trim();
+                var candidate5 = (parts[5] || '').trim();
+                if (candidate5 && (candidate5.includes('.mp3') || candidate5.includes('.wav') || candidate5.includes('.m4a') || candidate5.startsWith('idb:') || candidate5.startsWith('n/'))) {
+                    rawMusic = candidate5;
+                } else if (candidate4 && (candidate4.includes('.mp3') || candidate4.includes('.wav') || candidate4.includes('.m4a') || candidate4.startsWith('idb:') || candidate4.startsWith('n/'))) {
+                    rawMusic = candidate4;
+                } else {
+                    rawMusic = candidate5 || candidate4;
+                }
+            } else {
+                rawMusic = (parts[4] || '').trim();
+            }
 
             if (rawTitle) TITLE_TEXT = decompressText(rawTitle);
             PASSCODE = rawPass ? rawPass.trim() : '';
@@ -58,14 +124,7 @@ if (encodedData && typeof LZString !== 'undefined') {
                 PHOTO_LIST = rawImages.split('~').filter(Boolean).map(fixImageUrl);
             }
             if (rawMusic) {
-                var trimmedMusic = rawMusic.trim();
-                if (/^https?:\/\//i.test(trimmedMusic) || trimmedMusic.startsWith('data:') || trimmedMusic.startsWith('blob:')) {
-                    MUSIC = trimmedMusic;
-                } else if (trimmedMusic.startsWith('./')) {
-                    MUSIC = trimmedMusic;
-                } else {
-                    MUSIC = './' + trimmedMusic;
-                }
+                MUSIC = rawMusic;
             }
         }
     } catch (err) {
@@ -111,7 +170,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (heartScreen) heartScreen.classList.remove('active');
     }
 
-    renderMusic();
+    // Tự động phân giải nhạc từ IndexedDB hoặc Cloud Stream trước khi phát
+    resolveAudioStream(MUSIC).then(function(resolvedSrc) {
+        MUSIC = resolvedSrc;
+        renderMusic();
+    });
 });
 
 // 4. Music Player Setup
@@ -124,9 +187,20 @@ function renderMusic() {
             '<div class="disk" id="music-disk"></div>' +
             '<span style="font-size: 14px; font-weight: bold;">Play Music</span>' +
         '</div>' +
-        '<audio id="bg-music" loop>' +
+        '<audio id="bg-music" loop preload="auto">' +
             '<source src="' + MUSIC + '" type="audio/mpeg">' +
         '</audio>';
+
+    var audio = document.getElementById('bg-music');
+    if (audio) {
+        audio.onerror = function() {
+            console.warn('Luồng phát lỗi, chuyển sang nhạc dự phòng');
+            if (MUSIC !== './n/c.mp3') {
+                audio.src = './n/c.mp3';
+                audio.play().catch(function() {});
+            }
+        };
+    }
 }
 
 function toggleMusic() {

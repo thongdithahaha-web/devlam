@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh Sửa & Tạo Bó Hoa Tặng Bạn - Project 3</title>
+    <link rel="icon" href="../assets/logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="./assets/js/lz-string.min.js"></script>
+    <script src="./assets/js/keypan.js"></script>
+    <style>
+        :root {
+            --primary: #ff4d79;
+            --primary-hover: #ff2d62;
+            --primary-light: #fff0f3;
+            --text-dark: #2d3748;
+            --text-muted: #718096;
+            --border: #ffd1dc;
+            --card-bg: rgba(255, 255, 255, 0.96);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Mali', cursive, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffeef2 0%, #fff6f8 50%, #fde2e8 100%);
+            min-height: 100vh;
+            padding: 24px 16px;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 32px 24px;
+            box-shadow: 0 16px 40px rgba(255, 77, 121, 0.15);
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header-icon {
+            font-size: 46px;
+            margin-bottom: 6px;
+            display: inline-block;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Banner thông báo chế độ chỉnh sửa */
+        .edit-banner {
+            display: none;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe3ea 100%);
+            border: 1.5px solid var(--primary);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
+            color: #b81d4a;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(255, 77, 121, 0.12);
+        }
+
+        .edit-banner.show {
+            display: flex;
+        }
+
+        .edit-banner a {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: underline;
+            white-space: nowrap;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            font-size: 14.5px;
+            color: #4a5568;
+        }
+
+        .form-group label span.badge {
+            font-size: 11px;
+            background: #ffe3e8;
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 400;
+            margin-left: 6px;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 11px 15px;
+            border-radius: 14px;
+            border: 1.5px solid var(--border);
+            font-size: 14.5px;
+            color: var(--text-dark);
+            background: #fff;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 77, 121, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 85px;
+            line-height: 1.5;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        /* Tabs lựa chọn nguồn ảnh / nhạc */
+        .source-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 8px 10px;
+            background: #fff0f3;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: #718096;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(255, 77, 121, 0.25);
+        }
+
+        /* Vùng kéo thả / tải ảnh */
+        .upload-dropzone {
+            border: 2px dashed #ff9ebb;
+            border-radius: 16px;
+            padding: 20px 16px;
+            text-align: center;
+            background: rgba(255, 248, 250, 0.85);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .upload-dropzone:hover {
+            border-color: var(--primary);
+            background: #fff0f5;
+        }
+
+        .upload-dropzone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Xem trước ảnh đã chọn */
+        .photo-preview-wrap {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 12px;
+            padding: 12px;
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .photo-preview-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 12px rgba(255, 77, 121, 0.25);
+        }
+
+        .photo-preview-info {
+            flex-grow: 1;
+        }
+
+        .photo-preview-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .photo-preview-badge {
+            font-size: 11.5px;
+            color: #28a745;
+            background: #eafaf1;
+            padding: 2px 8px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .btn-remove-photo {
+            background: #fff0f3;
+            color: var(--primary);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-remove-photo:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* Lời chúc mẫu gợi ý */
+        .preset-wishes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .preset-btn {
+            background: #fff0f3;
+            border: 1px solid #ffccd7;
+            color: #b81d4a;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* Nghe thử nhạc mini */
+        .music-preview-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .btn-music-preview {
+            background: #fff0f3;
+            border: 1.5px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-music-preview:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff4d79 0%, #ff2d62 100%);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-size: 16.5px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(255, 45, 98, 0.35);
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 26px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(255, 45, 98, 0.45);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        .result-box {
+            display: none;
+            margin-top: 26px;
+            padding: 20px;
+            background: #fff7f9;
+            border-radius: 18px;
+            border: 1.5px dashed var(--primary);
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box h3 {
+            color: var(--primary);
+            font-size: 17px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .link-display {
+            width: 100%;
+            background: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 13px;
+            color: #4a5568;
+            word-break: break-all;
+            margin-bottom: 14px;
+            user-select: all;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-action {
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-copy {
+            background: #fff;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+
+        .btn-copy:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-preview {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-preview:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-shorten {
+            width: 100%;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: #fff;
+            padding: 13px 16px;
+            border-radius: 14px;
+            font-size: 14.5px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
+        }
+
+        .btn-shorten:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
+            background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+        }
+
+        .btn-shorten:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .upload-loading {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #2d3748;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">💐</div>
+            <h1>Chỉnh Sửa Bó Hoa & Bức Thư</h1>
+            <p>Tự tạo bó hoa lung linh cùng bức thư gửi đến người bạn yêu thương</p>
+        </div>
+
+        <!-- Banner khi đang chỉnh sửa từ link có sẵn -->
+        <div id="editBanner" class="edit-banner">
+            <div>
+                <strong>✨ Đang ở chế độ chỉnh sửa!</strong>
+                <div>Dữ liệu từ link đã được điền sẵn vào các ô bên dưới.</div>
+            </div>
+            <a id="btnBackToFlower" href="./index.html">Xem lại ⬅️</a>
+        </div>
+
+        <form id="generatorForm" onsubmit="event.preventDefault(); generateLink();">
+            <!-- 1. Tiêu đề bó hoa -->
+            <div class="form-group">
+                <label for="flowerTitle">
+                    1. Tiêu đề bó hoa
+                    <span class="badge">Hiện trên màn đêm lung linh</span>
+                </label>
+                <input type="text" id="flowerTitle" value="Bó hoa tặng bạn" placeholder="Ví dụ: Bó hoa tặng bạn, Gửi em yêu...">
+            </div>
+
+            <!-- 2. Ảnh cảnh mở đầu (Thay ảnh chú thỏ từ điện thoại hoặc máy tính) -->
+            <div class="form-group">
+                <label>
+                    2. Ảnh cảnh mở đầu
+                    <span class="badge">Thay ảnh chú thỏ bằng ảnh bạn muốn</span>
+                </label>
+                
+                <div class="source-tabs">
+                    <div id="tabPhotoDefault" class="tab-btn active" onclick="switchPhotoTab('default')">🐰 Ảnh mẫu chú thỏ</div>
+                    <div id="tabPhotoUpload" class="tab-btn" onclick="switchPhotoTab('upload')">📱 Tải ảnh từ máy / ĐT</div>
+                    <div id="tabPhotoLink" class="tab-btn" onclick="switchPhotoTab('link')">🔗 Dán link ảnh</div>
+                </div>
+
+                <!-- Panel 1: Ảnh mặc định -->
+                <div id="panelPhotoDefault">
+                    <div class="photo-preview-wrap">
+                        <img src="./assets/a/anhz.png" class="photo-preview-img" alt="Ảnh chú thỏ">
+                        <div class="photo-preview-info">
+                            <div class="photo-preview-title">Chú thỏ ôm hoa dễ thương</div>
+                            <div class="photo-preview-badge">Ảnh mặc định</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel 2: Tải ảnh từ điện thoại / máy tính -->
+                <div id="panelPhotoUpload" style="display: none;">
+                    <div class="upload-dropzone">
+                        <input type="file" id="photoFileInput" accept="image/*" onchange="handlePhotoUpload(event)">
+                        <div style="font-size: 28px; margin-bottom: 6px;">📸</div>
+                        <div style="font-weight: 700; color: var(--primary);">Chạm để chọn ảnh từ Điện thoại / Máy tính</div>
+                        <div class="hint">Tự động nén siêu nét & tối ưu để nhúng an toàn vào link gửi tặng.</div>
+                    </div>
+
+                    <div id="uploadedPhotoPreview" class="photo-preview-wrap" style="display: none;">
+                        <img id="uploadedPhotoImg" class="photo-preview-img" alt="Ảnh của bạn">
+                        <div class="photo-preview-info">
+                            <div class="photo-preview-title" id="uploadedPhotoName">Ảnh đã chọn</div>
+                            <div class="photo-preview-badge">Đã nén tối ưu sẵn sàng</div>
+                        </div>
+                        <button type="button" class="btn-remove-photo" onclick="removeUploadedPhoto()">Đổi ảnh</button>
+                    </div>
+                </div>
+
+                <!-- Panel 3: Dán link online -->
+                <div id="panelPhotoLink" style="display: none;">
+                    <input type="text" id="photoUrlInput" placeholder="Dán link ảnh trực tiếp (https://.../anh.jpg)" oninput="handlePhotoUrlInput(this.value)">
+                    <div class="hint">Có thể lấy link ảnh từ Facebook, Pinterest, Imgur, Discord...</div>
+                    <div id="linkPhotoPreview" class="photo-preview-wrap" style="display: none;">
+                        <img id="linkPhotoImg" class="photo-preview-img" alt="Ảnh online">
+                        <div class="photo-preview-info">
+                            <div class="photo-preview-title">Ảnh từ liên kết online</div>
+                            <div class="photo-preview-badge">Đã nhận diện</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Lời nhắc màn hình đầu -->
+            <div class="form-group">
+                <label for="introPrompt">
+                    3. Lời nhắc bên dưới ảnh mở đầu
+                    <span class="badge">Gợi ý người nhận chạm vào</span>
+                </label>
+                <input type="text" id="introPrompt" value="Chạm vào hoa nhé" placeholder="Ví dụ: Chạm vào hoa nhé, Nhấn vào hoa nè, Mở quà nha em...">
+            </div>
+
+            <!-- 4. Tiêu đề thư -->
+            <div class="form-group">
+                <label for="letterTitle">
+                    4. Tiêu đề bức thư
+                    <span class="badge">Lời chào đầu thư</span>
+                </label>
+                <input type="text" id="letterTitle" value="Gửi bạn!" placeholder="Ví dụ: Gửi bạn!, Chào công chúa nhỏ, Gửi người anh thương...">
+            </div>
+
+            <!-- 5. Lời chúc trong thư -->
+            <div class="form-group">
+                <label for="letterWish">
+                    5. Nội dung lời chúc trong thư
+                </label>
+                <textarea id="letterWish" rows="3" placeholder="Nhập lời chúc chân thành của bạn...">Chúc bạn 20/10 vui vẻ</textarea>
+                
+                <div class="preset-wishes">
+                    <span style="font-size: 11.5px; color: #718096; align-self: center;">Mẫu nhanh:</span>
+                    <button type="button" class="preset-btn" onclick="applyPreset('2010')">🎉 Chúc 20/10</button>
+                    <button type="button" class="preset-btn" onclick="applyPreset('birthday')">🎂 Sinh nhật</button>
+                    <button type="button" class="preset-btn" onclick="applyPreset('love')">💖 Tỏ tình / Yêu thương</button>
+                    <button type="button" class="preset-btn" onclick="applyPreset('cheer')">🌟 Động viên vui vẻ</button>
+                </div>
+            </div>
+
+            <!-- 6. Chữ ký / Tên bạn -->
+            <div class="form-group">
+                <label for="senderSign">
+                    6. Tên người gửi / Chữ ký
+                </label>
+                <input type="text" id="senderSign" value="_lkimlam" placeholder="Ví dụ: _lkimlam, Người thương bạn, Tuấn Anh...">
+                
+                <div class="letter-tip-box" style="background:#fff0f5;border:1.5px dashed #ff8aa9;border-radius:12px;padding:10px 14px;margin-top:10px;font-size:12.5px;color:#b81d4a;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(255,77,121,0.08);">
+                    <span style="font-size:20px;">💌</span>
+                    <span><strong>Cách bức thư hiển thị:</strong> Khi người nhận chạm vào hoa, sau khi hoa nở rộ bức thư sẽ tự động mở lên lung linh. Phong bì màu hồng ở dưới chân hoa cũng có nhãn <em>"💌 Chạm để mở thư"</em> để mở lại bất cứ lúc nào!</span>
+                </div>
+            </div>
+
+            <!-- 7. Nhạc nền (Tải từ điện thoại/máy tính hoặc chọn bài có sẵn) -->
+            <div class="form-group">
+                <label for="bgMusicSelect">
+                    7. Nhạc nền lãng mạn
+                </label>
+                <select id="bgMusicSelect" onchange="handleMusicOptionChange(this.value)">
+                    <option value="n/c.mp3" selected>🎵 Nhạc mặc định: Giai điệu hoa dịu êm (n/c.mp3)</option>
+                    <option value="https://files.catbox.moe/k6x352.mp3">🎵 Until I Found You - Stephen Sanchez</option>
+                    <option value="https://files.catbox.moe/k2d194.mp3">🎵 Ánh Nắng Của Anh (Piano Cover)</option>
+                    <option value="https://files.catbox.moe/74tglj.mp3">🎵 Dịu Dàng Em Đến (Acoustic)</option>
+                    <option value="https://files.catbox.moe/p9o1v1.mp3">🎵 Canon in D (Cổ điển ấm áp)</option>
+                    <option value="upload">📁 Tải file nhạc từ điện thoại / máy tính lên</option>
+                    <option value="custom">🔗 Dán link nhạc online (MP3 URL)</option>
+                </select>
+
+                <!-- Nghe thử nhạc -->
+                <div class="music-preview-row">
+                    <button type="button" id="btnPlayPreview" class="btn-music-preview" onclick="toggleMusicPreview()">
+                        ▶️ Nghe thử bài hát
+                    </button>
+                    <audio id="previewAudio"></audio>
+                </div>
+
+                <div id="uploadMusicWrapper" style="display: none; margin-top: 10px;">
+                    <div class="upload-dropzone">
+                        <input type="file" id="musicFileInput" accept="audio/*" onchange="handleMusicUpload(event)">
+                        <div style="font-size: 26px; margin-bottom: 4px;">🎵</div>
+                        <div style="font-weight: 700; color: var(--primary);">Chọn file nhạc MP3 từ máy hoặc điện thoại</div>
+                        <div class="hint" id="uploadStatus">Hỗ trợ các file .mp3, .m4a, .wav.</div>
+                    </div>
+                </div>
+
+                <div id="customMusicInputWrapper" style="display: none; margin-top: 10px;">
+                    <input type="text" id="customMusicUrl" placeholder="Dán đường dẫn URL file mp3 trực tiếp (https://.../music.mp3)" oninput="handleCustomMusicUrl(this.value)">
+                </div>
+            </div>
+
+            <!-- Nút tạo link -->
+            <button type="submit" class="btn-generate">
+                <span>✨</span> Lưu & Tạo Link Tặng Hoa Ngay
+            </button>
+        </form>
+
+        <!-- Khung kết quả -->
+        <div id="resultBox" class="result-box">
+            <h3>🎉 Link Quà Tặng Đã Tạo Thành Công!</h3>
+            <div class="link-display" id="generatedUrl"></div>
+
+            <!-- Nút rút gọn link siêu ngắn -->
+            <button type="button" id="btnShortenLink" class="btn-shorten" onclick="shortenCurrentLink()">
+                ✂️ Rút gọn link siêu ngắn (Tránh lag & gửi tin nhắn siêu nhanh)
+            </button>
+
+            <div class="button-group">
+                <button type="button" class="btn-action btn-copy" onclick="copyLink()">
+                    📋 Sao chép link
+                </button>
+                <a href="#" target="_blank" id="previewBtn" class="btn-action btn-preview">
+                    🚀 Xem thử ngay
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Đã sao chép link thành công!</div>
+
+    <script>
+        let currentPhotoType = 'default'; // 'default' | 'upload' | 'link'
+        let currentPhotoData = ''; // Base64 or URL
+        let uploadedAudioUrl = '';
+        let isUploadingAudio = false;
+
+        // Chuyển Tab chọn ảnh
+        function switchPhotoTab(type) {
+            currentPhotoType = type;
+            document.getElementById('tabPhotoDefault').classList.toggle('active', type === 'default');
+            document.getElementById('tabPhotoUpload').classList.toggle('active', type === 'upload');
+            document.getElementById('tabPhotoLink').classList.toggle('active', type === 'link');
+
+            document.getElementById('panelPhotoDefault').style.display = type === 'default' ? 'block' : 'none';
+            document.getElementById('panelPhotoUpload').style.display = type === 'upload' ? 'block' : 'none';
+            document.getElementById('panelPhotoLink').style.display = type === 'link' ? 'block' : 'none';
+        }
+
+        // Helper lấy đường dẫn API phù hợp cho cả local file:// và online
+        function getApiEndpoint(endpoint) {
+            if (window.location.protocol === 'file:') {
+                return 'https://lekimlamdev.vercel.app' + endpoint;
+            }
+            return endpoint;
+        }
+
+        // Tải và nén ảnh qua HTML5 Canvas & Đám mây
+        function handlePhotoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = async function() {
+                    // Resize thông minh tối đa 260px
+                    const maxDim = 260;
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > h) {
+                        if (w > maxDim) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        }
+                    } else {
+                        if (h > maxDim) {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    // Nén JPEG 0.65 nhẹ gọn ~6-8KB
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.65);
+                    currentPhotoData = compressedDataUrl;
+
+                    // Hiển thị preview ngay
+                    document.getElementById('uploadedPhotoImg').src = compressedDataUrl;
+                    document.getElementById('uploadedPhotoName').textContent = file.name;
+                    document.getElementById('uploadedPhotoPreview').style.display = 'flex';
+
+                    // Thử tải lên đám mây trong nền để link siêu ngắn hơn nữa
+                    try {
+                        const apiUrl = getApiEndpoint('/api/upload');
+                        const res = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                filename: file.name || 'photo.jpg',
+                                base64: compressedDataUrl
+                            })
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data.success && data.url) {
+                                currentPhotoData = data.url;
+                                showToast('Đã nén & tải ảnh lên đám mây siêu nhẹ!');
+                                return;
+                            }
+                        }
+                    } catch(e) {}
+                    showToast('Đã nén ảnh tối ưu sẵn sàng!');
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeUploadedPhoto() {
+            currentPhotoData = '';
+            document.getElementById('photoFileInput').value = '';
+            document.getElementById('uploadedPhotoPreview').style.display = 'none';
+        }
+
+        function handlePhotoUrlInput(val) {
+            val = val.trim();
+            const previewWrap = document.getElementById('linkPhotoPreview');
+            const previewImg = document.getElementById('linkPhotoImg');
+            if (val && val.startsWith('http')) {
+                previewImg.src = val;
+                previewWrap.style.display = 'flex';
+                currentPhotoData = val;
+            } else {
+                previewWrap.style.display = 'none';
+                currentPhotoData = '';
+            }
+        }
+
+        // Nhạc nền & nghe thử
+        let isAudioPlaying = false;
+        function getSelectedMusicUrl() {
+            const selectVal = document.getElementById('bgMusicSelect').value;
+            if (selectVal === 'custom') {
+                return document.getElementById('customMusicUrl').value.trim() || 'n/c.mp3';
+            }
+            if (selectVal === 'upload') {
+                return uploadedAudioUrl || 'n/c.mp3';
+            }
+            return selectVal;
+        }
+
+        function handleMusicOptionChange(val) {
+            const customWrapper = document.getElementById('customMusicInputWrapper');
+            const uploadWrapper = document.getElementById('uploadMusicWrapper');
+
+            customWrapper.style.display = val === 'custom' ? 'block' : 'none';
+            uploadWrapper.style.display = val === 'upload' ? 'block' : 'none';
+
+            stopMusicPreview();
+        }
+
+        function handleCustomMusicUrl(val) {
+            stopMusicPreview();
+        }
+
+        async function handleMusicUpload(e) {
+            const file = e.target.files[0];
+            const statusEl = document.getElementById('uploadStatus');
+            if (!file) return;
+
+            stopMusicPreview();
+
+            if (!file.type.includes('audio') && !file.name.match(/\.(mp3|m4a|wav|ogg|aac|flac)$/i)) {
+                statusEl.innerHTML = '<span style="color:#e53e3e">⚠️ Vui lòng chọn file âm thanh (.mp3, .m4a, .wav).</span>';
+                return;
+            }
+
+            if (file.size > 25 * 1024 * 1024) {
+                statusEl.innerHTML = '<span style="color:#e53e3e">⚠️ File nhạc quá lớn (>25MB). Vui lòng chọn file dưới 25MB nhé!</span>';
+                return;
+            }
+
+            statusEl.innerHTML = '<span style="color:#2563eb; font-weight:600;"><span class="upload-loading">⏳</span> Đang xử lý bài hát... (vui lòng chờ vài giây)</span>';
+            isUploadingAudio = true;
+
+            const reader = new FileReader();
+            reader.onload = async function(evt) {
+                const base64Data = evt.target.result;
+
+                try {
+                    // Thử tải lên đám mây qua API
+                    const apiUrl = getApiEndpoint('/api/upload');
+                    const res = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            filename: file.name,
+                            base64: base64Data
+                        })
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.success && data.url) {
+                            uploadedAudioUrl = data.url;
+                            isUploadingAudio = false;
+
+                            const previewAudio = document.getElementById('previewAudio');
+                            if (previewAudio) previewAudio.src = data.url;
+
+                            statusEl.innerHTML = '<span style="color:#16a34a; font-weight:700;">✅ Tải nhạc lên đám mây thành công!</span><div style="margin-top:4px; font-size:12px; color:#4a5568;">Link siêu nhẹ (' + data.url.length + ' ký tự), mượt mà không lo lag máy.</div>';
+                            showToast('Đã tải nhạc lên đám mây thành công!');
+                            return;
+                        }
+                    }
+                    throw new Error('Máy chủ tải lên không phản hồi');
+                } catch (err) {
+                    console.log('Chuyển sang chế độ lưu trữ trực tiếp:', err);
+                    isUploadingAudio = false;
+                    uploadedAudioUrl = base64Data;
+
+                    // Cập nhật ngay link cho trình nghe thử
+                    const previewAudio = document.getElementById('previewAudio');
+                    if (previewAudio) previewAudio.src = base64Data;
+
+                    statusEl.innerHTML = '<span style="color:#16a34a; font-weight:700;">✅ Đã nhận bài hát: ' + (file.name || 'nhạc của bạn') + ' (' + Math.round(file.size/1024) + ' KB)</span><div style="margin-top:5px; font-size:12.5px; color:#4a5568;">🎵 Đã sẵn sàng! Bạn có thể bấm <b>"Nghe thử bài hát"</b> ở trên. Khi tạo link xong, hệ thống sẽ tự động rút gọn link siêu ngắn tránh lag nhé!</div>';
+                    showToast('Đã chọn bài hát thành công!');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function toggleMusicPreview() {
+            const audio = document.getElementById('previewAudio');
+            const btn = document.getElementById('btnPlayPreview');
+            const musicUrl = getSelectedMusicUrl();
+
+            if (isAudioPlaying) {
+                audio.pause();
+                isAudioPlaying = false;
+                btn.innerHTML = '▶️ Nghe thử bài hát';
+            } else {
+                audio.src = musicUrl;
+                audio.currentTime = 0;
+                audio.play().then(function() {
+                    isAudioPlaying = true;
+                    btn.innerHTML = '⏸️ Tạm dừng';
+                }).catch(function(err) {
+                    console.log('Không thể phát nhạc preview:', err);
+                    showToast('Không thể phát thử link nhạc này.');
+                });
+            }
+        }
+
+        function stopMusicPreview() {
+            const audio = document.getElementById('previewAudio');
+            const btn = document.getElementById('btnPlayPreview');
+            if (audio) audio.pause();
+            isAudioPlaying = false;
+            if (btn) btn.innerHTML = '▶️ Nghe thử bài hát';
+        }
+
+        // Lời chúc mẫu nhanh
+        function applyPreset(type) {
+            const letterWish = document.getElementById('letterWish');
+            const letterTitle = document.getElementById('letterTitle');
+            const flowerTitle = document.getElementById('flowerTitle');
+
+            if (type === '2010') {
+                flowerTitle.value = 'Bó hoa tặng bạn 20/10 🌸';
+                letterTitle.value = 'Gửi bạn yêu quý! 🌷';
+                letterWish.value = 'Chúc bạn ngày 20/10 ngập tràn niềm vui, luôn xinh đẹp rạng rỡ và nhận được thật nhiều yêu thương!';
+            } else if (type === 'birthday') {
+                flowerTitle.value = 'Happy Birthday! 🎂💐';
+                letterTitle.value = 'Chúc mừng sinh nhật! 🎁';
+                letterWish.value = 'Chúc bạn bước sang tuổi mới luôn bình an, hạnh phúc, mọi dự định đều thành công rực rỡ nhé!';
+            } else if (type === 'love') {
+                flowerTitle.value = 'Tặng em một bó hoa 💖';
+                letterTitle.value = 'Gửi em người anh yêu 🌹';
+                letterWish.value = 'Cảm ơn em đã xuất hiện và làm thế giới của anh trở nên dịu dàng hơn. Yêu em rất nhiều!';
+            } else if (type === 'cheer') {
+                flowerTitle.value = 'Bó hoa tiếp thêm năng lượng ✨';
+                letterTitle.value = 'Gửi bạn! 🌼';
+                letterWish.value = 'Dù ngày hôm nay có vất vả thế nào, bạn cũng đã làm rất tốt rồi! Luôn mỉm cười và tự tin nhé!';
+            }
+        }
+
+        // Tự động giải mã tham số URL nếu đang ở chế độ chỉnh sửa
+        window.addEventListener('DOMContentLoaded', function() {
+            function decodeKeypan(val) {
+                if (!val) return val;
+                if (typeof decompressWithDictionary === 'function') {
+                    return decompressWithDictionary(val);
+                }
+                if (typeof Keypans !== 'undefined' && typeof Keypans.decompressWithDictionary === 'function') {
+                    return Keypans.decompressWithDictionary(val);
+                }
+                return val;
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const encoded = params.get('d') || params.get('id');
+
+            if (encoded && typeof LZString !== 'undefined') {
+                try {
+                    const decompressed = LZString.decompressFromEncodedURIComponent(encoded);
+                    if (decompressed) {
+                        const parts = decompressed.split('|');
+                        if (parts[0]) document.getElementById('flowerTitle').value = decodeKeypan(parts[0]);
+                        if (parts[1]) document.getElementById('letterTitle').value = decodeKeypan(parts[1]);
+                        if (parts[2]) document.getElementById('letterWish').value = decodeKeypan(parts[2]);
+                        if (parts[3]) document.getElementById('senderSign').value = decodeKeypan(parts[3]);
+                        
+                        if (parts[4]) {
+                            const musicVal = parts[4];
+                            const selectEl = document.getElementById('bgMusicSelect');
+                            let found = false;
+                            for (let i = 0; i < selectEl.options.length; i++) {
+                                if (selectEl.options[i].value === musicVal) {
+                                    selectEl.selectedIndex = i;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                selectEl.value = 'custom';
+                                document.getElementById('customMusicInputWrapper').style.display = 'block';
+                                document.getElementById('customMusicUrl').value = musicVal;
+                            }
+                        }
+
+                        if (parts[5]) {
+                            document.getElementById('introPrompt').value = decodeKeypan(parts[5]);
+                        }
+
+                        // Xử lý ảnh mở đầu nếu có trong link
+                        if (parts[6]) {
+                            const imgVal = parts[6];
+                            if (imgVal && imgVal !== './assets/a/anhz.png') {
+                                currentPhotoData = imgVal;
+                                if (imgVal.startsWith('data:image')) {
+                                    switchPhotoTab('upload');
+                                    document.getElementById('uploadedPhotoImg').src = imgVal;
+                                    document.getElementById('uploadedPhotoPreview').style.display = 'flex';
+                                    document.getElementById('uploadedPhotoName').textContent = 'Ảnh tùy chỉnh đã lưu';
+                                } else if (imgVal.startsWith('http')) {
+                                    switchPhotoTab('link');
+                                    document.getElementById('photoUrlInput').value = imgVal;
+                                    document.getElementById('linkPhotoImg').src = imgVal;
+                                    document.getElementById('linkPhotoPreview').style.display = 'flex';
+                                }
+                            }
+                        }
+
+                        // Hiện banner chỉnh sửa
+                        const editBanner = document.getElementById('editBanner');
+                        if (editBanner) {
+                            editBanner.classList.add('show');
+                            const backBtn = document.getElementById('btnBackToFlower');
+                            if (backBtn) backBtn.href = './index.html?d=' + encoded;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Lỗi phân tích tham số chỉnh sửa:', e);
+                }
+            }
+        });
+
+        // Tạo link quà tặng
+        function generateLink() {
+            if (isUploadingAudio) {
+                showToast('Đang tải bài hát lên đám mây, vui lòng đợi trong giây lát...');
+                return;
+            }
+
+            const title = document.getElementById('flowerTitle').value.trim() || 'Bó hoa tặng bạn';
+            const introPrompt = document.getElementById('introPrompt').value.trim() || 'Chạm vào hoa nhé';
+            const letterTitle = document.getElementById('letterTitle').value.trim() || 'Gửi bạn!';
+            const letterWish = document.getElementById('letterWish').value.trim() || 'Chúc bạn một ngày thật vui vẻ!';
+            const senderSign = document.getElementById('senderSign').value.trim();
+
+            const finalMusic = getSelectedMusicUrl();
+
+            // Xác định ảnh cảnh mở đầu
+            let finalImage = '';
+            if (currentPhotoType === 'upload' && currentPhotoData) {
+                finalImage = currentPhotoData;
+            } else if (currentPhotoType === 'link' && currentPhotoData) {
+                finalImage = currentPhotoData;
+            } else {
+                finalImage = './assets/a/anhz.png';
+            }
+
+            // Nén tiếng Việt bằng Keypans
+            function compress(str) {
+                if (!str) return '';
+                if (typeof Keypans !== 'undefined' && typeof Keypans.compressWithDictionary === 'function') {
+                    return Keypans.compressWithDictionary(str);
+                }
+                return str;
+            }
+
+            const cTitle = compress(title);
+            const cLetterTitle = compress(letterTitle);
+            const cLetterWish = compress(letterWish);
+            const cSign = compress(senderSign);
+            const cIntro = compress(introPrompt);
+
+            // Payload: cTitle | cLetterTitle | cLetterWish | cSign | finalMusic | cIntro | finalImage
+            const rawPayload = `${cTitle}|${cLetterTitle}|${cLetterWish}|${cSign}|${finalMusic}|${cIntro}|${finalImage}`;
+            const encodedPayload = LZString.compressToEncodedURIComponent(rawPayload);
+
+            // Tạo link chuẩn
+            var baseUrl = '';
+            if (window.location.protocol === 'file:') {
+                var cleanPath = window.location.href.split('?')[0].split('#')[0];
+                baseUrl = cleanPath.replace(/(generator|lekimlam)(\.html|\/index\.html|\/)?$/, 'index.html');
+                if (!baseUrl.endsWith('index.html')) {
+                    baseUrl = baseUrl.replace(/\/[^\/]*$/, '/index.html');
+                }
+            } else {
+                var origin = window.location.origin;
+                var path = window.location.pathname;
+                var segments = path.split('/').filter(Boolean);
+                if (window.location.hostname.endsWith('github.io') && segments.length > 0) {
+                    baseUrl = origin + '/' + segments[0] + '/';
+                } else {
+                    baseUrl = origin + '/';
+                }
+            }
+            const fullUrl = baseUrl + '?d=' + encodedPayload;
+
+            document.getElementById('generatedUrl').textContent = fullUrl;
+            document.getElementById('previewBtn').href = fullUrl;
+
+            // Đặt lại trạng thái nút rút gọn link
+            const btnShorten = document.getElementById('btnShortenLink');
+            if (btnShorten) {
+                btnShorten.disabled = false;
+                btnShorten.innerHTML = '✂️ Rút gọn link siêu ngắn (Tránh lag & gửi tin nhắn siêu nhanh)';
+            }
+
+            const resultBox = document.getElementById('resultBox');
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+
+            // Tự động rút gọn link nếu link dài để tránh lag
+            if (fullUrl.length > 250) {
+                setTimeout(() => {
+                    shortenCurrentLink(true);
+                }, 250);
+            }
+        }
+
+        // Rút gọn link siêu ngắn
+        async function shortenCurrentLink(isAuto = false) {
+            const btn = document.getElementById('btnShortenLink');
+            const displayEl = document.getElementById('generatedUrl');
+            const previewBtn = document.getElementById('previewBtn');
+            const currentUrl = (displayEl.textContent || '').trim();
+            if (!currentUrl) return;
+
+            // Nếu đã là link ngắn rồi
+            if (currentUrl.includes('spoo.me/') || currentUrl.includes('tinyurl.com/') || currentUrl.length < 35) {
+                if (!isAuto) {
+                    copyLink();
+                    showToast('Link này đã được rút gọn siêu ngắn rồi!');
+                }
+                return;
+            }
+
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="upload-loading">⏳</span> Đang tự động rút gọn link...';
+
+            try {
+                let shortUrl = '';
+
+                // 1. Thử gọi API serverless /api/shorten
+                try {
+                    const apiUrl = getApiEndpoint('/api/shorten');
+                    const res = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: currentUrl })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.success && data.shortUrl && data.shortUrl.startsWith('http')) {
+                            shortUrl = data.shortUrl;
+                        }
+                    }
+                } catch(e) {
+                    console.log('Thử tiếp qua spoo.me trực tiếp...');
+                }
+
+                // 2. Fallback trực tiếp phía client qua Spoo.me (hỗ trợ CORS: *)
+                if (!shortUrl) {
+                    try {
+                        const spooRes = await fetch('https://spoo.me/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Accept': 'application/json'
+                            },
+                            body: 'url=' + encodeURIComponent(currentUrl)
+                        });
+                        if (spooRes.ok) {
+                            const spooData = await spooRes.json();
+                            if (spooData.short_url) {
+                                shortUrl = spooData.short_url;
+                            }
+                        }
+                    } catch(e2) {
+                        console.log('Spoo.me lỗi:', e2);
+                    }
+                }
+
+                if (shortUrl) {
+                    displayEl.textContent = shortUrl;
+                    previewBtn.href = shortUrl;
+                    btn.innerHTML = '✨ Link đã rút gọn siêu ngắn thành công!';
+                    if (!isAuto) {
+                        copyLink();
+                        showToast('✂️ Đã rút gọn link siêu ngắn và sao chép vào bộ nhớ tạm!');
+                    } else {
+                        showToast('✨ Đã tự động rút gọn link siêu ngắn tránh lag!');
+                    }
+                } else {
+                    btn.innerHTML = originalText;
+                    if (!isAuto) {
+                        showToast('Không thể kết nối máy chủ rút gọn link. Bạn vẫn có thể gửi link gốc nhé!');
+                    }
+                }
+            } catch(err) {
+                btn.innerHTML = originalText;
+                if (!isAuto) {
+                    showToast('Lỗi khi rút gọn: ' + err.message);
+                }
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function copyLink() {
+            const urlText = document.getElementById('generatedUrl').textContent;
+            if (!urlText) return;
+
+            navigator.clipboard.writeText(urlText).then(function() {
+                showToast('Đã sao chép link quà tặng vào bộ nhớ tạm!');
+            }).catch(function() {
+                const ta = document.createElement('textarea');
+                ta.value = urlText;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast('Đã sao chép link quà tặng vào bộ nhớ tạm!');
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+
+</html>
