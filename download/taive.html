@@ -300,31 +300,86 @@
                     tutorialContainer.appendChild(textPara);
                 }
 
-                // 3. Hiển thị nút tải về
-                const finalDownloadLink = (selectedData.downloadLink && selectedData.downloadLink !== '#') 
-                    ? selectedData.downloadLink 
-                    : '../downloads/all/devlam-all-projects.zip';
-                let btnText = selectedData.buttonText || "Tải về Source Code";
-                if (btnText === 'Update') btnText = 'Tải Source Code (Miễn phí)';
+                // 3. Hiển thị nút Sử dụng trực tiếp (Không cần ZIP) và Xem Source Code
+                const cleanKey = (dataId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                const directPathMap = {
+                    '2048': '../projects/2048/index.html',
+                    'biensoan': '../projects/Biensoan/index.html',
+                    'calculator': '../projects/Calculator/index.html',
+                    'caro': '../projects/Caro/index.html',
+                    'checkdulieu': '../projects/Checkdulieu/index.html',
+                    'fireworks': '../projects/Fireworks/index.html',
+                    'flappybird': '../projects/Flappy-Bird/index.html',
+                    'heartbeat': '../projects/HeartBeat/boity.html',
+                    'homnayangi': '../projects/Homnayangi/index.html',
+                    'keobuabao': '../projects/keobuabao/index.html',
+                    'lichviet': '../projects/Lichviet/index.html',
+                    'merrychristmas': '../projects/merrychristmas/index.html',
+                    'photobooth': '../projects/Photobooth/index.html',
+                    'sinhnhat': '../projects/Sinhnhat/index.html',
+                    'spinning3dcube': '../projects/spinning3Dcube/index.html',
+                    'tictactoe': '../projects/Tic-Tac-Toe/index.html',
+                    'tintifycolorpick': '../projects/Tintify-Colorpick/index.html',
+                    'todo': '../projects/Todo/index.html',
+                    'trungthu3d': '../projects/Trungthu3D/index.html',
+                    'ttcanhan': '../projects/ttcanhan/index.html',
+                    'ubuntu': '../projects/ubuntu/index.html',
+                    'flower': '../inputs/flower.html',
+                    'skygifts': '../inputs/skygifts.html',
+                    'firework': '../inputs/firework.html',
+                    'galaxyz': '../inputs/galaxyz.html',
+                    'myheart': '../inputs/myheart.html',
+                    'rainlove': '../inputs/rainlove.html',
+                    'textlove': '../inputs/textlove.html',
+                    'valentine': '../inputs/valentine.html',
+                    'valentinex': '../inputs/valentinex.html',
+                    'valentinez': '../inputs/valentinez.html',
+                    'deartext': '../input/deartext.html',
+                    'gacha': '../input/gacha.html',
+                    'littlelove': '../input/littlelove.html',
+                    'lovequiz': '../input/lovequiz.html',
+                    'lovequiz2': '../input/lovequiz2.html',
+                    'textanim': '../input/textanim.html',
+                    'textlovev2': '../input/textlovev2.html',
+                    'botcode': '../pages/botcode.html',
+                    'demngayyeu': '../pages/demngayyeu.html',
+                    'digitalclock': '../pages/digitalclock.html',
+                    'genpassword': '../pages/genpassword.html',
+                    'heartlove': '../pages/heartlove.html',
+                    'nenfile': '../pages/nenfile.html',
+                    'removebg': '../pages/removebg.html',
+                    'vongquay': '../pages/vongquay.html'
+                };
 
-                const downloadButton = document.createElement('a');
-                downloadButton.innerText = '📥 ' + btnText;
-                downloadButton.className = "donate-nhantin";
-                downloadButton.href = finalDownloadLink;
-                if (!finalDownloadLink.startsWith('http')) {
-                    downloadButton.setAttribute('download', '');
-                }
-                downloadButton.target = "_blank";
-                downloadContainer.appendChild(downloadButton);
+                const directUrl = directPathMap[cleanKey] || '../index.html';
+                
+                // Nút Sử dụng ngay trực tiếp (Không cần ZIP)
+                const directBtn = document.createElement('a');
+                directBtn.innerText = '🚀 Mở & Sử Dụng Trực Tiếp (Không Cần ZIP)';
+                directBtn.className = "donate-nhantin";
+                directBtn.style.background = "linear-gradient(90deg, #10b981, #059669)";
+                directBtn.style.marginBottom = "10px";
+                directBtn.href = directUrl;
+                downloadContainer.appendChild(directBtn);
+
+                // Nút xem mã nguồn trên GitHub
+                const githubBtn = document.createElement('a');
+                githubBtn.innerText = '💻 Xem Source Code (GitHub)';
+                githubBtn.className = "donate-nhantin";
+                githubBtn.style.background = "linear-gradient(90deg, #3b82f6, #1d4ed8)";
+                githubBtn.style.marginBottom = "10px";
+                githubBtn.target = "_blank";
+                githubBtn.href = "https://github.com/thongdithahaha-web/devlam";
+                downloadContainer.appendChild(githubBtn);
             })
             .catch(err => {
                 console.error('Lỗi khi load download.json:', err);
                 const container = document.getElementById('downloadButtonContainer');
                 const fbBtn = document.createElement('a');
                 fbBtn.className = 'donate-nhantin';
-                fbBtn.href = '../downloads/all/devlam-all-projects.zip';
-                fbBtn.download = '';
-                fbBtn.innerText = '📥 Tải trọn bộ Source Code (ZIP)';
+                fbBtn.href = '../index.html';
+                fbBtn.innerText = '🚀 Sử Dụng Dự Án Trực Tiếp';
+                fbBtn.style.background = 'linear-gradient(90deg, #10b981, #059669)';
                 container.appendChild(fbBtn);
             });
     </script>
