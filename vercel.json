@@ -1,7 +1,24 @@
 {
-  "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/giftz(.*)", "destination": "/lovex/giftz.html$1" },
+    { "source": "/valenx(.*)", "destination": "/lovex/valenx.html$1" },
+    { "source": "/valen(.*)", "destination": "/lovex/valen.html$1" },
+    { "source": "/valenz(.*)", "destination": "/lovex/valenz.html$1" },
+    { "source": "/rainz(.*)", "destination": "/lovex/rainz.html$1" },
+    { "source": "/heartz(.*)", "destination": "/lovex/heartz.html$1" },
+    { "source": "/textlove(.*)", "destination": "/lovex/textlove.html$1" },
+    { "source": "/firew(.*)", "destination": "/lover/firew.html$1" },
+    { "source": "/galaxyz(.*)", "destination": "/lover/galaxyz.html$1" },
+    { "source": "/flower(.*)", "destination": "/lovez/flower.html$1" },
+    { "source": "/tloves(.*)", "destination": "/lovez/tloves.html$1" },
+    { "source": "/littles(.*)", "destination": "/loves/littles.html$1" },
+    { "source": "/quiz(.*)", "destination": "/loves/quiz.html$1" },
+    { "source": "/quiz2(.*)", "destination": "/loves/quiz2.html$1" },
+    { "source": "/animz(.*)", "destination": "/loves/animz.html$1" },
+    { "source": "/tlove2(.*)", "destination": "/loves/tlove2.html$1" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
