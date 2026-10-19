@@ -370,58 +370,134 @@
     });
   };
 
+  window.isUploadingPhoto = false;
+  window.uploadedPhotoUrl = '';
+  window.currentPhotoUploadPromise = null;
+  window.waitForPhotoUpload = async function () {
+    if (window.isUploadingPhoto && window.currentPhotoUploadPromise) {
+      await window.currentPhotoUploadPromise;
+    }
+    return window.uploadedPhotoUrl;
+  };
+
   window.uploadImageFile = async function (file) {
     if (!file) return null;
+    window.isUploadingPhoto = true;
+
+    // 1. Nén ảnh bằng Canvas sang JPEG gọn gàng
     const compressedDataUrl = await window.compressImageToJpeg(file, 800, 0.72);
 
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filename: file.name || 'photo.jpg',
-          base64: compressedDataUrl
-        })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && data.url) {
-          return data.url;
+    // 2. Chuyển thành Blob & tạo key IndexedDB ngắn gọn (~22 ký tự)
+    const byteString = atob(compressedDataUrl.split(',')[1]);
+    const mimeString = compressedDataUrl.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([ab], { type: mimeString });
+    const localImgId = 'idb:img_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+
+    // Lưu ngay Blob vào IndexedDB để làm local fallback an toàn
+    await saveAudioBlob(localImgId, blob, file.name || 'image.jpg');
+    window.uploadedPhotoUrl = localImgId;
+
+    // 3. Tiến hành tải lên đám mây trong nền (API Server -> Pomf2 direct -> Litterbox direct)
+    window.currentPhotoUploadPromise = (async () => {
+      let cloudUrl = null;
+
+      // Bước A: Thử API Server (/api/upload)
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: file.name || 'photo.jpg',
+            base64: compressedDataUrl
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success && data.url) {
+            cloudUrl = data.url;
+          }
         }
+      } catch (e) {}
+
+      // Bước B: Thử Pomf2 direct (CORS mở, upload trực tiếp cực nhanh)
+      if (!cloudUrl) {
+        try {
+          const fd = new FormData();
+          fd.append('files[]', blob, file.name || 'photo.jpg');
+          const res = await fetch('https://pomf2.lain.la/upload.php', {
+            method: 'POST',
+            body: fd
+          });
+          if (res.ok) {
+            const json = await res.json();
+            if (json && json.success && json.files && json.files[0] && json.files[0].url) {
+              cloudUrl = json.files[0].url;
+            }
+          }
+        } catch (e) {}
       }
-    } catch (e) {}
 
-    // Fallback Litterbox direct
-    try {
-      // Chuyển compressedDataUrl thành Blob
-      const byteString = atob(compressedDataUrl.split(',')[1]);
-      const mimeString = compressedDataUrl.split(',')[0].split(':')[1].split(';')[0];
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
+      // Bước C: Thử Litterbox direct
+      if (!cloudUrl) {
+        try {
+          const fd = new FormData();
+          fd.append('reqtype', 'fileupload');
+          fd.append('time', '72h');
+          fd.append('fileToUpload', blob, file.name || 'image.jpg');
+          const res = await fetch('https://litterbox.catbox.moe/resources/internals/api.php', {
+            method: 'POST',
+            body: fd
+          });
+          if (res.ok) {
+            const text = await res.text();
+            if (text && text.startsWith('http')) {
+              cloudUrl = text.trim();
+            }
+          }
+        } catch (e) {}
       }
-      const blob = new Blob([ab], { type: mimeString });
 
-      const fd = new FormData();
-      fd.append('reqtype', 'fileupload');
-      fd.append('time', '72h');
-      fd.append('fileToUpload', blob, file.name || 'image.jpg');
-
-      const res = await fetch('https://litterbox.catbox.moe/resources/internals/api.php', {
-        method: 'POST',
-        body: fd
-      });
-      if (res.ok) {
-        const text = await res.text();
-        if (text && text.startsWith('http')) {
-          return text.trim();
-        }
+      if (cloudUrl) {
+        window.uploadedPhotoUrl = cloudUrl;
+        await saveAudioBlob(cloudUrl, blob, file.name || 'image.jpg');
+        return cloudUrl;
       }
-    } catch (e) {}
 
-    // Fallback về base64 nén gọn
-    return compressedDataUrl;
+      // Fallback an toàn: Trả về localImgId (22 ký tự). Tuyệt đối không trả về chuỗi Base64 khổng lồ gây HTTP 414!
+      return localImgId;
+    })().finally(() => {
+      window.isUploadingPhoto = false;
+    });
+
+    return window.currentPhotoUploadPromise;
+  };
+
+  /**
+   * Phân giải nguồn ảnh an toàn: IDB blob, cloud link, hoặc data URL
+   */
+  window.resolveImageSource = async function (rawUrl) {
+    if (!rawUrl) return '';
+    const trimmed = rawUrl.trim();
+    if (trimmed.startsWith('idb:')) {
+      const blob = await getAudioBlob(trimmed);
+      if (blob) {
+        return URL.createObjectURL(blob);
+      }
+    }
+    if (/^https?:\/\//i.test(trimmed)) {
+      const cached = await getAudioBlob(trimmed);
+      if (cached) return URL.createObjectURL(cached);
+      return trimmed;
+    }
+    if (trimmed.startsWith('data:') || trimmed.startsWith('blob:') || trimmed.startsWith('./') || trimmed.startsWith('../')) {
+      return trimmed;
+    }
+    return './' + trimmed;
   };
 
   // 5. ================= Tự động gắn UI Upload Nhạc & Ảnh cho tất cả các trang Tạo Link =================
@@ -561,16 +637,19 @@
       const origOnclick = createBtn.onclick;
 
       createBtn.addEventListener('click', async (e) => {
-        if (window.isUploadingAudio) {
+        if (window.isUploadingAudio || window.isUploadingPhoto) {
           e.preventDefault();
           e.stopImmediatePropagation();
 
           const origText = createBtn.innerHTML;
           createBtn.disabled = true;
-          createBtn.innerHTML = '⏳ Đang đồng bộ bài hát lên máy chủ... (vui lòng đợi vài giây)';
+          createBtn.innerHTML = '⏳ Đang đồng bộ ảnh & bài hát lên máy chủ... (vui lòng đợi vài giây)';
 
           try {
-            await window.waitForAudioUpload();
+            await Promise.all([
+              window.waitForAudioUpload ? window.waitForAudioUpload() : Promise.resolve(),
+              window.waitForPhotoUpload ? window.waitForPhotoUpload() : Promise.resolve()
+            ]);
           } catch(err) {}
 
           createBtn.disabled = false;
@@ -649,6 +728,64 @@
         imgInput.value = '';
       }, true);
     }
+
+    // 4. Tự động bảo vệ chống lỗi HTTP 414 URI Too Long trên toàn bộ form
+    function sanitizePageLinks() {
+      const selectors = [
+        '#output-link', '#finalLink', '.created-link-input', '#generatedUrl',
+        '#link-output', '#outputLink', 'input[id*="link"]', 'input[id*="output"]'
+      ];
+      selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+          let val = (el.value || '').trim();
+          if (val && val.length > 1500) {
+            if (val.includes('?d=')) {
+              el.value = val.replace('?d=', '#d=');
+            } else if (val.includes('?id=')) {
+              el.value = val.replace('?id=', '#id=');
+            }
+          }
+          let txt = (el.textContent || '').trim();
+          if (txt && txt.length > 1500) {
+            if (txt.includes('?d=')) {
+              el.textContent = txt.replace('?d=', '#d=');
+            } else if (txt.includes('?id=')) {
+              el.textContent = txt.replace('?id=', '#id=');
+            }
+          }
+        });
+      });
+
+      const btnSelectors = [
+        '#btn-view', '#viewBtn', '#previewBtn', 'a[id*="view"]', 'a[id*="preview"]'
+      ];
+      btnSelectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(btn => {
+          let href = (btn.getAttribute('href') || '').trim();
+          if (href && href.length > 1500) {
+            if (href.includes('?d=')) {
+              btn.setAttribute('href', href.replace('?d=', '#d='));
+            } else if (href.includes('?id=')) {
+              btn.setAttribute('href', href.replace('?id=', '#id='));
+            }
+          }
+        });
+      });
+    }
+
+    if (typeof window.open === 'function' && !window.__lklOpenHooked) {
+      window.__lklOpenHooked = true;
+      const origOpen = window.open;
+      window.open = function(url, target, features) {
+        if (typeof url === 'string' && url.length > 1500) {
+          if (url.includes('?d=')) url = url.replace('?d=', '#d=');
+          else if (url.includes('?id=')) url = url.replace('?id=', '#id=');
+        }
+        return origOpen.call(window, url, target, features);
+      };
+    }
+
+    setInterval(sanitizePageLinks, 300);
   }
 
   // Tự động kích hoạt khi DOM tải xong

@@ -22,8 +22,14 @@ function decompressText(text) {
 
 function getQueryParams() {
     const params = new URLSearchParams(window.location.search);
+    let d = params.get('d') || params.get('id');
+    if (!d && window.location.hash) {
+        const hashStr = window.location.hash.replace(/^#/, '');
+        const hashParams = new URLSearchParams(hashStr);
+        d = hashParams.get('d') || hashParams.get('id') || (!hashStr.includes('=') ? hashStr : null);
+    }
     return {
-        'data': params.get('d') || params.get('id') || null
+        'data': d || null
     };
 }
 

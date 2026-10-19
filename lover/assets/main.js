@@ -12,9 +12,18 @@
  * =============================================================================
  */
 
-// 1. URL Query Extraction & Global States
-var params = new URLSearchParams(window.location.search);
-var encodedData = params.get('d') || params.get('id');
+// 1. URL Query & Hash Extraction & Global States
+function extractPayload() {
+    var params = new URLSearchParams(window.location.search);
+    var d = params.get('d') || params.get('id');
+    if (!d && window.location.hash) {
+        var hashStr = window.location.hash.replace(/^#/, '');
+        var hashParams = new URLSearchParams(hashStr);
+        d = hashParams.get('d') || hashParams.get('id') || (!hashStr.includes('=') ? hashStr : '');
+    }
+    return d || '';
+}
+var encodedData = extractPayload();
 
 var PASSCODE = '';
 var TITLE_TEXT = 'Chào Công Chúa';
@@ -25,10 +34,21 @@ var MUSIC = './n/c.mp3';
 function fixImageUrl(url) {
     if (!url) return '';
     var trimmed = url.trim();
-    if (trimmed.startsWith('assets/') || trimmed.startsWith('./') || trimmed.startsWith('data:') || trimmed.startsWith('blob:') || /^https?:\/\//i.test(trimmed)) {
+    if (trimmed.startsWith('idb:') || trimmed.startsWith('assets/') || trimmed.startsWith('./') || trimmed.startsWith('../') || trimmed.startsWith('data:') || trimmed.startsWith('blob:') || /^https?:\/\//i.test(trimmed)) {
         return trimmed;
     }
     return 'https://' + trimmed;
+}
+
+function resolveImageSource(url) {
+    if (!url) return Promise.resolve('assets/a/anhz.png');
+    var fixed = fixImageUrl(url);
+    if (fixed.startsWith('idb:')) {
+        return getAudioBlobFromIDB(fixed).then(function(blob) {
+            return blob ? URL.createObjectURL(blob) : 'assets/a/anhz.png';
+        });
+    }
+    return Promise.resolve(fixed);
 }
 
 function decompressText(text) {
@@ -237,6 +257,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Passcode configured -> show lock screen first
         if (lockScreen) lockScreen.classList.add('active');
         if (heartScreen) heartScreen.classList.remove('active');
+    }
+
+    // Tự động phân giải ảnh từ IndexedDB nếu có
+    if (Array.isArray(PHOTO_LIST) && PHOTO_LIST.length) {
+        Promise.all(PHOTO_LIST.map(resolveImageSource)).then(function(resolved) {
+            PHOTO_LIST = resolved;
+        });
     }
 
     // Tự động phân giải nhạc từ IndexedDB hoặc Cloud Stream trước khi phát

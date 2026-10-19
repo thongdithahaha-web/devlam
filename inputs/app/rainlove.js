@@ -1,4 +1,4 @@
-﻿//======Data=====
+//======Data=====
 const messagesContainer = document.getElementById("messagesContainer");
 const addMessageBtn = document.getElementById("addMessageBtn");
 
@@ -311,14 +311,9 @@ function generateLink() {
     rainColor,
   };
 
-  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-  if (encoded.length > 1800) {
-    alert("❗ Dữ liệu quá dài, vui lòng rút gọn lại một chút!");
-    return;
-  }
-
   const baseURL = "https://lekimlamdev.vercel.app/lovex";
-  const fullURL = `${baseURL}/rainz.html?id=${encodeURIComponent(encoded)}`;
+  const sep = encoded.length > 1500 ? '#id=' : '?id=';
+  const fullURL = `${baseURL}/rainz.html${sep}${encodeURIComponent(encoded)}`;
   const linkOutput = document.getElementById("linkOutput");
   const qrBox = document.getElementById("qrBox");
   const qrContainer = document.getElementById("qrcode");

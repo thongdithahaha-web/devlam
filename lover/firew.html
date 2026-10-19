@@ -216,7 +216,12 @@
       }
 
       const params = new URLSearchParams(window.location.search);
-      const encoded = params.get('d') || params.get('id');
+      let encoded = params.get('d') || params.get('id');
+      if (!encoded && window.location.hash) {
+        const hashStr = window.location.hash.replace(/^#/, '');
+        const hashParams = new URLSearchParams(hashStr);
+        encoded = hashParams.get('d') || hashParams.get('id') || (!hashStr.includes('=') ? hashStr : '');
+      }
       const audioEl = document.getElementById('firew-audio');
       const musicBtn = document.getElementById('firew-music-btn');
       const toggleBtn = document.getElementById('firew-toggle-card');

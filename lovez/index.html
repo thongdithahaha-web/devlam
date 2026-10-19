@@ -8,8 +8,12 @@
     <link rel="icon" href="../assets/logo.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="../assets/js/lz-string.min.js"></script>
     <script src="./assets/js/lz-string.min.js"></script>
+    <script src="../assets/js/keypan.js"></script>
     <script src="./assets/js/keypan.js"></script>
+    <script src="../assets/upload-audio.js"></script>
+    <script src="./assets/js/upload-audio.js"></script>
     <style>
         @keyframes floatUpMemory {
             0% { transform: translateY(0) rotate(-10deg) scale(0.8); opacity: 0; }
@@ -267,8 +271,18 @@
             return val;
         }
 
-        const params = new URLSearchParams(window.location.search);
-        const encodedData = params.get('d') || params.get('id');
+        function extractPayload() {
+            const params = new URLSearchParams(window.location.search);
+            let d = params.get('d') || params.get('id');
+            if (!d && window.location.hash) {
+                const hashStr = window.location.hash.replace(/^#/, '');
+                const hashParams = new URLSearchParams(hashStr);
+                d = hashParams.get('d') || hashParams.get('id') || (!hashStr.includes('=') ? hashStr : '');
+            }
+            return d || '';
+        }
+
+        const encodedData = extractPayload();
 
         let titleText = 'Bó hoa tặng bạn';
         let letterHeading = 'Gửi bạn!';
@@ -323,7 +337,11 @@
         if (instructionTextEl) instructionTextEl.textContent = introPrompt;
 
         const giftImageEl = document.getElementById('btn-devpan');
-        if (giftImageEl && introImage) giftImageEl.src = introImage;
+        if (giftImageEl && introImage) {
+            resolveImageSource(introImage).then(function(src) {
+                giftImageEl.src = src;
+            });
+        }
 
         const letterContent = document.getElementById('letter-content');
         if (letterContent) {
@@ -379,6 +397,22 @@
                     getReq.onerror = function() { resolve(null); };
                 };
             });
+        }
+
+        async function resolveImageSource(rawUrl) {
+            if (!rawUrl) return './assets/a/anhz.png';
+            var trimmed = rawUrl.trim();
+            if (trimmed.startsWith('idb:')) {
+                try {
+                    var blob = await getAudioBlobFromIDB(trimmed);
+                    if (blob) return URL.createObjectURL(blob);
+                } catch(e) {}
+            }
+            if (/^https?:\/\//i.test(trimmed)) return trimmed;
+            if (trimmed.startsWith('data:') || trimmed.startsWith('blob:') || trimmed.startsWith('./') || trimmed.startsWith('../')) {
+                return trimmed;
+            }
+            return './' + trimmed;
         }
 
         async function resolveAudioStream(rawUrl) {
@@ -457,13 +491,19 @@
             }
         }
 
-        function spawnMemoryPhotos(images) {
+        async function spawnMemoryPhotos(images) {
             if (!images || !images.length) return;
             const container = document.getElementById('wish-box') || document.body;
+            let resolvedImages = [];
+            try {
+                resolvedImages = await Promise.all(images.map(resolveImageSource));
+            } catch(e) {
+                resolvedImages = images;
+            }
             let idx = 0;
             const interval = setInterval(function() {
                 if (!isStarted) { clearInterval(interval); return; }
-                const imgUrl = images[idx % images.length];
+                const imgUrl = resolvedImages[idx % resolvedImages.length];
                 idx++;
                 const card = document.createElement('div');
                 card.className = 'floating-memory-card';

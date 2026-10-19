@@ -751,36 +751,42 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, w, h);
 
-                    // Nén JPEG 0.65 nhẹ gọn ~6-8KB
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.65);
-                    currentPhotoData = compressedDataUrl;
+                    // Nén JPEG chất lượng tối ưu
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.72);
 
-                    // Hiển thị preview ngay
+                    // Hiển thị preview ngay lập tức
                     document.getElementById('uploadedPhotoImg').src = compressedDataUrl;
                     document.getElementById('uploadedPhotoName').textContent = file.name;
                     document.getElementById('uploadedPhotoPreview').style.display = 'flex';
 
-                    // Thử tải lên đám mây trong nền để link siêu ngắn hơn nữa
-                    try {
-                        const apiUrl = getApiEndpoint('/api/upload');
-                        const res = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                filename: file.name || 'photo.jpg',
-                                base64: compressedDataUrl
-                            })
-                        });
-                        if (res.ok) {
-                            const data = await res.json();
-                            if (data.success && data.url) {
-                                currentPhotoData = data.url;
-                                showToast('Đã nén & tải ảnh lên đám mây siêu nhẹ!');
-                                return;
-                            }
+                    // Lưu ngay Blob vào IndexedDB để làm local fallback siêu ngắn (~22 ký tự)
+                    const localImgKey = 'idb:img_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+                    currentPhotoData = localImgKey;
+                    window.isUploadingPhoto = true;
+
+                    fetch(compressedDataUrl).then(r => r.blob()).then(blob => {
+                        if (typeof saveAudioBlob === 'function') {
+                            saveAudioBlob(localImgKey, blob, file.name);
                         }
-                    } catch(e) {}
-                    showToast('Đã nén ảnh tối ưu sẵn sàng!');
+                    });
+
+                    // Tải ảnh lên đám mây trong nền (API Server -> Pomf2 -> Litterbox)
+                    window.currentPhotoUploadPromise = (async () => {
+                        try {
+                            if (typeof window.uploadImageFile === 'function') {
+                                const cloudUrl = await window.uploadImageFile(file);
+                                if (cloudUrl && cloudUrl.startsWith('http')) {
+                                    currentPhotoData = cloudUrl;
+                                    showToast('Đã nén & tải ảnh lên đám mây siêu nhẹ!');
+                                    return cloudUrl;
+                                }
+                            }
+                        } catch(e) {}
+                        showToast('Đã lưu ảnh an toàn vào bộ nhớ máy!');
+                        return currentPhotoData;
+                    })().finally(() => {
+                        window.isUploadingPhoto = false;
+                    });
                 };
                 img.src = evt.target.result;
             };
@@ -960,8 +966,18 @@
                 return val;
             }
 
-            const params = new URLSearchParams(window.location.search);
-            const encoded = params.get('d') || params.get('id');
+            function extractEditPayload() {
+                const params = new URLSearchParams(window.location.search);
+                let val = params.get('d') || params.get('id');
+                if (!val && window.location.hash) {
+                    const hashStr = window.location.hash.replace(/^#/, '');
+                    const hashParams = new URLSearchParams(hashStr);
+                    val = hashParams.get('d') || hashParams.get('id') || (!hashStr.includes('=') ? hashStr : '');
+                }
+                return val || '';
+            }
+
+            const encoded = extractEditPayload();
 
             if (encoded && typeof LZString !== 'undefined') {
                 try {
@@ -998,9 +1014,21 @@
                         // Xử lý ảnh mở đầu nếu có trong link
                         if (parts[6]) {
                             const imgVal = parts[6];
-                            if (imgVal && imgVal !== './assets/a/anhz.png') {
+                            if (imgVal && imgVal !== './assets/a/anhz.png' && imgVal !== '../assets/a/anhz.png') {
                                 currentPhotoData = imgVal;
-                                if (imgVal.startsWith('data:image')) {
+                                if (imgVal.startsWith('idb:')) {
+                                    if (typeof getAudioBlob === 'function') {
+                                        getAudioBlob(imgVal).then(blob => {
+                                            if (blob) {
+                                                const blobUrl = URL.createObjectURL(blob);
+                                                switchPhotoTab('upload');
+                                                document.getElementById('uploadedPhotoImg').src = blobUrl;
+                                                document.getElementById('uploadedPhotoPreview').style.display = 'flex';
+                                                document.getElementById('uploadedPhotoName').textContent = 'Ảnh tùy chỉnh đã lưu';
+                                            }
+                                        });
+                                    }
+                                } else if (imgVal.startsWith('data:image')) {
                                     switchPhotoTab('upload');
                                     document.getElementById('uploadedPhotoImg').src = imgVal;
                                     document.getElementById('uploadedPhotoPreview').style.display = 'flex';
@@ -1029,10 +1057,11 @@
         });
 
         // Tạo link quà tặng
-        function generateLink() {
-            if (isUploadingAudio) {
-                showToast('Đang tải bài hát lên đám mây, vui lòng đợi trong giây lát...');
-                return;
+        async function generateLink() {
+            if (isUploadingAudio || window.isUploadingPhoto) {
+                showToast('Đang đồng bộ ảnh & bài hát lên máy chủ...');
+                if (window.waitForPhotoUpload) await window.waitForPhotoUpload();
+                if (window.waitForAudioUpload) await window.waitForAudioUpload();
             }
 
             const title = document.getElementById('flowerTitle').value.trim() || 'Bó hoa tặng bạn';
@@ -1080,7 +1109,8 @@
             } else if (window.location && window.location.origin && window.location.origin !== 'null') {
                 baseUrl = window.location.origin + '/lovez/flower.html';
             }
-            const fullUrl = baseUrl + '?d=' + encodedPayload;
+            const sep = encodedPayload.length > 1500 ? '#d=' : '?d=';
+            const fullUrl = baseUrl + sep + encodedPayload;
 
             document.getElementById('generatedUrl').textContent = fullUrl;
             document.getElementById('previewBtn').href = fullUrl;
