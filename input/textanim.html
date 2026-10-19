@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="author" content="devlekimlam">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>T?o Hi?u ?ng Ch? �?ng Tr�i Tim</title>
+    <title>Tạo Hiệu Ứng Chữ Động Trái Tim</title>
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Playpen+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="../assets/logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,7 +18,7 @@ body{font-family:'Playpen Sans',cursive;background:linear-gradient(135deg,#fff9f
 <body>
     <div id="devlekimlam"></div><div id="Devpan" style="display:none"></div>
 
-<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h2>Nh?p l?i ch�c</h2><form id="textForm"><label>Th�ng di?p</label><input type="text" id="line1Input" placeholder="Ch�c m?ng sinh nh?t"><input type="text" id="line2Input" placeholder="B?n y�u"><label>Bi?u tu?ng/icon:</label><select id="heartInput"><option value="??">??</option><option value="??">??</option><option value="????">????</option><option value="??">??</option><option value="??">??</option><option value="??">??</option><option value="??">??</option><option value="??">??</option></select><label>Ch?n nh?c n?n:</label><select id="musicInput"><option value="">-- Kh�ng ch?n --</option><option value="a/1.mp3">Happy birthday</option><option value="a/2.mp3">Ph�p m�u</option><option value="a/3.mp3">L? du?ng</option><option value="a/4.mp3">T?ng ng�y y�u em</option></select><button type="submit" class="btn">T?o link</button></form><div id="generatedLink" style="display: none;"><div class="link-container"><input type="text" id="generatedURL" readonly><div class="button-group"><a id="viewBtn" href="#" target="_blank">Xem trang</a><button id="copyBtn" onclick="copyLink(this)">Copy</button></div></div></div></div>
+<div id="loading-screen"><div class="spinner"></div><div id="loading-text">Loading</div></div><div class="container"><h2>Nhập lời chúc</h2><form id="textForm"><label>Thông điệp</label><input type="text" id="line1Input" placeholder="Chúc mừng sinh nhật"><input type="text" id="line2Input" placeholder="Bạn yêu"><label>Biểu tượng/icon:</label><select id="heartInput"><option value="😘">😘</option><option value="❤️">❤️</option><option value="🇻🇳">🇻🇳</option><option value="🎂">🎂</option><option value="🎉">🎉</option><option value="💝">💝</option><option value="😍">😍</option><option value="💗">💗</option></select><label>Chọn nhạc nền:</label><select id="musicInput"><option value="">-- Không chọn --</option><option value="a/1.mp3">Happy birthday</option><option value="a/2.mp3">Phép màu</option><option value="a/3.mp3">Lễ đường</option><option value="a/4.mp3">Từng ngày yêu em</option></select><button type="submit" class="btn">Tạo link</button></form><div id="generatedLink" style="display: none;"><div class="link-container"><input type="text" id="generatedURL" readonly><div class="button-group"><a id="viewBtn" href="#" target="_blank">Xem trang</a><button id="copyBtn" onclick="copyLink(this)">Copy</button></div></div></div></div>
     <script>
         // Loading screen fadeout
         window.addEventListener('load', () => {
