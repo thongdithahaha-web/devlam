@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <base href="./">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>lekimlamdev</title>
+    <link rel="icon" href="../assets/logo.png" type="image/png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="./assets/style.css">
+
+    <!-- Libraries -->
+    <script src="./assets/three.min.js"></script>
+    <script src="./assets/lz-string.min.js"></script>
+    <script src="./assets/keypan.js"></script>
+</head>
+
+<body>
+    <!-- Loading Spinner / Preloader -->
+    <div id="loader-wrapper">
+        <div class="loader-spinner">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <p class="loader-text">Đang tải yêu thương...</p>
+    </div>
+
+    <!-- Particle Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Music Player Container -->
+    <div id="music-container"></div>
+
+    <!-- Passcode Lock Screen -->
+    <div id="lock-screen" class="screen">
+        <div class="lock-container">
+            <h1 class="title">Nhập pass nha</h1>
+            <div class="pass-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="numpad">
+                <button class="num-btn" onclick="press(1)">1</button>
+                <button class="num-btn" onclick="press(2)">2</button>
+                <button class="num-btn" onclick="press(3)">3</button>
+                <button class="num-btn" onclick="press(4)">4</button>
+                <button class="num-btn" onclick="press(5)">5</button>
+                <button class="num-btn" onclick="press(6)">6</button>
+                <button class="num-btn" onclick="press(7)">7</button>
+                <button class="num-btn" onclick="press(8)">8</button>
+                <button class="num-btn" onclick="press(9)">9</button>
+                <button class="num-btn" style="background:none; border:none; box-shadow:none;"></button>
+                <button class="num-btn" onclick="press(0)">0</button>
+                <button class="num-btn" onclick="clearInput()">❌</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3D Flower Bouquet Screen -->
+    <div id="heart-screen" class="screen active">
+        <div class="heart-glow"></div>
+        <canvas id="heart-canvas"></canvas>
+        <button class="heart-fallback" id="heart-fallback" aria-label="Mở lời nhắn">
+            <span aria-hidden="true">🌷</span>
+        </button>
+        <p class="heart-hint" id="heart-hint">Chạm vào hoa nhé 🌷</p>
+    </div>
+
+    <!-- 3D Floating Photo Sky -->
+    <div id="photo-sky"></div>
+
+    <!-- Love Letter Modal Dialog -->
+    <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="main-title">
+        <div class="modal-card">
+            <h1 id="main-title" class="main-title"></h1>
+            <div class="typing-text" id="typewriter"></div>
+            <button class="close-btn" id="close-btn">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Controller Scripts -->
+    <script src="./assets/main.js"></script>
+    <script src="./assets/bouquet.js"></script>
+</body>
+
+</html>
+

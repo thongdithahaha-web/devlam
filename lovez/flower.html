@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bó Hoa Tặng Bạn</title>
+    <link rel="icon" href="./assets/a/icon1.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="./assets/js/lz-string.min.js"></script>
+    <script src="./assets/js/keypan.js"></script>
+</head>
+
+<body>
+    <!-- Màn hình mở đầu (chú thỏ cầm hoa) -->
+    <div id="pantalla-inicial">
+        <div class="header-text"></div>
+        <div class="image-container">
+            <img id="btn-devpan" src="./assets/a/anhz.png" alt="Ảnh tặng em" class="gift-image">
+            <div class="instruction-text">Chạm vào hoa nhé</div>
+        </div>
+        <audio id="audio-ms" src="n/c.mp3" preload="auto"></audio>
+    </div>
+
+    <!-- Màn hình chính (Bó hoa và hiệu ứng phát sáng đêm) -->
+    <div id="contenido-principal" style="display:none;">
+        <div class="night"></div>
+        <div class="special-text" id="special-text">Bó hoa tặng bạn</div>
+        <div class="flowers">
+            <div class="flower flower--1">
+                <div class="flower__leafs flower__leafs--1">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    <div class="flower__leaf flower__leaf--5"></div>
+                    <div class="flower__leaf flower__leaf--6"></div>
+                    <div class="flower__center"></div>
+                    <div class="flower__light flower__light--1"></div>
+                    <div class="flower__light flower__light--2"></div>
+                    <div class="flower__light flower__light--3"></div>
+                    <div class="flower__light flower__light--4"></div>
+                    <div class="flower__light flower__light--5"></div>
+                    <div class="flower__light flower__light--6"></div>
+                    <div class="flower__light flower__light--7"></div>
+                    <div class="flower__light flower__light--8"></div>
+                </div>
+                <div class="flower__line">
+                    <div class="flower__line__leaf flower__line__leaf--1"></div>
+                    <div class="flower__line__leaf flower__line__leaf--2"></div>
+                    <div class="flower__line__leaf flower__line__leaf--3"></div>
+                    <div class="flower__line__leaf flower__line__leaf--4"></div>
+                </div>
+            </div>
+            <div class="flower flower--2">
+                <div class="flower__leafs flower__leafs--2">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    <div class="flower__leaf flower__leaf--5"></div>
+                    <div class="flower__leaf flower__leaf--6"></div>
+                    <div class="flower__center"></div>
+                    <div class="flower__light flower__light--1"></div>
+                    <div class="flower__light flower__light--2"></div>
+                    <div class="flower__light flower__light--3"></div>
+                    <div class="flower__light flower__light--4"></div>
+                    <div class="flower__light flower__light--5"></div>
+                    <div class="flower__light flower__light--6"></div>
+                    <div class="flower__light flower__light--7"></div>
+                    <div class="flower__light flower__light--8"></div>
+                </div>
+                <div class="flower__line">
+                    <div class="flower__line__leaf flower__line__leaf--1"></div>
+                    <div class="flower__line__leaf flower__line__leaf--2"></div>
+                    <div class="flower__line__leaf flower__line__leaf--3"></div>
+                    <div class="flower__line__leaf flower__line__leaf--4"></div>
+                </div>
+            </div>
+            <div class="flower flower--3">
+                <div class="flower__leafs flower__leafs--3">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    <div class="flower__leaf flower__leaf--5"></div>
+                    <div class="flower__leaf flower__leaf--6"></div>
+                    <div class="flower__center"></div>
+                    <div class="flower__light flower__light--1"></div>
+                    <div class="flower__light flower__light--2"></div>
+                    <div class="flower__light flower__light--3"></div>
+                    <div class="flower__light flower__light--4"></div>
+                    <div class="flower__light flower__light--5"></div>
+                    <div class="flower__light flower__light--6"></div>
+                    <div class="flower__light flower__light--7"></div>
+                    <div class="flower__light flower__light--8"></div>
+                </div>
+                <div class="flower__line">
+                    <div class="flower__line__leaf flower__line__leaf--1"></div>
+                    <div class="flower__line__leaf flower__line__leaf--2"></div>
+                    <div class="flower__line__leaf flower__line__leaf--3"></div>
+                    <div class="flower__line__leaf flower__line__leaf--4"></div>
+                </div>
+            </div>
+            <div class="flower flower--4">
+                <div class="flower__leafs flower__leafs--4">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    <div class="flower__leaf flower__leaf--5"></div>
+                    <div class="flower__leaf flower__leaf--6"></div>
+                    <div class="flower__center"></div>
+                    <div class="flower__light flower__light--1"></div>
+                    <div class="flower__light flower__light--2"></div>
+                    <div class="flower__light flower__light--3"></div>
+                    <div class="flower__light flower__light--4"></div>
+                    <div class="flower__light flower__light--5"></div>
+                    <div class="flower__light flower__light--6"></div>
+                    <div class="flower__light flower__light--7"></div>
+                    <div class="flower__light flower__light--8"></div>
+                </div>
+                <div class="flower__line">
+                    <div class="flower__line__leaf flower__line__leaf--1"></div>
+                    <div class="flower__line__leaf flower__line__leaf--2"></div>
+                    <div class="flower__line__leaf flower__line__leaf--3"></div>
+                    <div class="flower__line__leaf flower__line__leaf--4"></div>
+                </div>
+            </div>
+            <div class="flower flower--5">
+                <div class="flower__leafs flower__leafs--5">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    <div class="flower__leaf flower__leaf--5"></div>
+                    <div class="flower__leaf flower__leaf--6"></div>
+                    <div class="flower__center"></div>
+                    <div class="flower__light flower__light--1"></div>
+                    <div class="flower__light flower__light--2"></div>
+                    <div class="flower__light flower__light--3"></div>
+                    <div class="flower__light flower__light--4"></div>
+                    <div class="flower__light flower__light--5"></div>
+                    <div class="flower__light flower__light--6"></div>
+                    <div class="flower__light flower__light--7"></div>
+                    <div class="flower__light flower__light--8"></div>
+                </div>
+                <div class="flower__line">
+                    <div class="flower__line__leaf flower__line__leaf--1"></div>
+                    <div class="flower__line__leaf flower__line__leaf--2"></div>
+                    <div class="flower__line__leaf flower__line__leaf--3"></div>
+                    <div class="flower__line__leaf flower__line__leaf--4"></div>
+                </div>
+            </div>
+            <!-- Cành hoa phụ -->
+            <div class="flower flower--6" style="left:20%;transform:rotate(-10deg);z-index:40;">
+                <div class="flower__leafs flower__leafs--6">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    <div class="flower__leaf flower__leaf--5"></div>
+                    <div class="flower__leaf flower__leaf--6"></div>
+                    <div class="flower__center"></div>
+                </div>
+                <div class="flower__line"></div>
+            </div>
+            <div class="flower flower--7" style="left:80%;transform:rotate(15deg);z-index:40;">
+                <div class="flower__leafs flower__leafs--7">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    <div class="flower__leaf flower__leaf--5"></div>
+                    <div class="flower__leaf flower__leaf--6"></div>
+                    <div class="flower__center"></div>
+                </div>
+                <div class="flower__line"></div>
+            </div>
+            <div class="flower flower--8" style="left:35%;transform:rotate(-25deg);z-index:30;">
+                <div class="flower__leafs flower__leafs--8">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    <div class="flower__leaf flower__leaf--5"></div>
+                    <div class="flower__leaf flower__leaf--6"></div>
+                    <div class="flower__center"></div>
+                </div>
+                <div class="flower__line"></div>
+            </div>
+            <div class="flower flower--9" style="left:65%;transform:rotate(25deg);z-index:30;">
+                <div class="flower__leafs flower__leafs--9">
+                    <div class="flower__leaf flower__leaf--1"></div>
+                    <div class="flower__leaf flower__leaf--2"></div>
+                    <div class="flower__leaf flower__leaf--3"></div>
+                    <div class="flower__leaf flower__leaf--4"></div>
+                    <div class="flower__leaf flower__leaf--5"></div>
+                    <div class="flower__leaf flower__leaf--6"></div>
+                    <div class="flower__center"></div>
+                </div>
+                <div class="flower__line"></div>
+            </div>
+        </div>
+        <div class="ramo">
+            <img src="./assets/a/bhoa.png" alt="Ramo de flores">
+        </div>
+    </div>
+
+    <!-- Nút mở thư kèm hiệu ứng đập nhịp và nhãn hướng dẫn -->
+    <div id="letter-btn-wrap" class="letter-btn-wrap">
+        <button id="btn-letter" class="btn-letter" title="Chạm để mở thư" aria-label="Mở thư"></button>
+        <div class="letter-hint">💌 Chạm để mở thư</div>
+    </div>
+
+    <!-- Hộp thư -->
+    <div id="letter-box" class="letter-box">
+        <div id="letter-content" class="letter-content">
+            <h2 class="fade-in">Gửi bạn!</h2>
+            <p class="fade-in">Chúc bạn 20/10 vui vẻ</p>
+            <div class="letter-sign fade-in">_lkimlam</div>
+            <button id="close-letter" class="close-letter-btn fade-in">✕ Đóng thư</button>
+        </div>
+    </div>
+
+    <div id="wish-box"></div>
+
+    <script>
+    (function () {
+        function decodeKeypan(val) {
+            if (!val) return val;
+            if (typeof decompressWithDictionary === 'function') {
+                return decompressWithDictionary(val);
+            }
+            if (typeof Keypans !== 'undefined' && typeof Keypans.decompressWithDictionary === 'function') {
+                return Keypans.decompressWithDictionary(val);
+            }
+            return val;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const encodedData = params.get('d') || params.get('id');
+
+        let titleText = 'Bó hoa tặng bạn';
+        let letterHeading = 'Gửi bạn!';
+        let letterBody = 'Chúc bạn một ngày thật vui vẻ và hạnh phúc!';
+        let letterSign = '';
+        let audioSrc = 'n/c.mp3';
+        let introPrompt = 'Chạm vào hoa nhé';
+        let introImage = './assets/a/anhz.png';
+
+        if (encodedData && typeof LZString !== 'undefined') {
+            try {
+                const decompressed = LZString.decompressFromEncodedURIComponent(encodedData);
+                if (decompressed) {
+                    const parts = decompressed.split('|');
+                    if (parts[0]) titleText = decodeKeypan(parts[0]) || titleText;
+                    if (parts[1]) letterHeading = decodeKeypan(parts[1]) || letterHeading;
+                    if (parts[2]) letterBody = decodeKeypan(parts[2]) || letterBody;
+                    if (parts[3]) letterSign = decodeKeypan(parts[3]) || '';
+                    if (parts[4]) audioSrc = parts[4];
+                    if (parts[5]) introPrompt = decodeKeypan(parts[5]) || introPrompt;
+                    if (parts[6]) introImage = parts[6] || introImage;
+                }
+            } catch (err) {
+                console.error('Lỗi giải mã payload:', err);
+            }
+        }
+
+        // Cập nhật DOM
+        const specialTextEl = document.getElementById('special-text');
+        if (specialTextEl) specialTextEl.textContent = titleText;
+
+        const instructionTextEl = document.querySelector('.instruction-text');
+        if (instructionTextEl) instructionTextEl.textContent = introPrompt;
+
+        const giftImageEl = document.getElementById('btn-devpan');
+        if (giftImageEl && introImage) giftImageEl.src = introImage;
+
+        const letterContent = document.getElementById('letter-content');
+        if (letterContent) {
+            letterContent.innerHTML = '';
+            const h2 = document.createElement('h2');
+            h2.className = 'fade-in';
+            h2.textContent = letterHeading;
+            letterContent.appendChild(h2);
+
+            const p = document.createElement('p');
+            p.className = 'fade-in';
+            p.textContent = letterBody;
+            letterContent.appendChild(p);
+
+            if (letterSign) {
+                const signEl = document.createElement('div');
+                signEl.className = 'letter-sign fade-in';
+                signEl.textContent = letterSign;
+                letterContent.appendChild(signEl);
+            }
+
+            const closeBtn = document.createElement('button');
+            closeBtn.id = 'close-letter';
+            closeBtn.className = 'close-letter-btn fade-in';
+            closeBtn.textContent = '✕ Đóng thư';
+            closeBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                closeLetter();
+            });
+            closeBtn.addEventListener('touchstart', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                closeLetter();
+            }, { passive: false });
+            letterContent.appendChild(closeBtn);
+        }
+
+        const audioEl = document.getElementById('audio-ms');
+        if (audioEl && audioSrc) {
+            audioEl.src = audioSrc;
+        }
+
+        // Tương tác chạm vào hoa (chú thỏ)
+        const btnDevpan = document.getElementById('btn-devpan');
+        let isStarted = false;
+
+        function startExperience() {
+            if (isStarted) return;
+            isStarted = true;
+
+            if (audioEl) {
+                audioEl.currentTime = 0;
+                audioEl.play().catch(function (e) {
+                    console.log('Trình duyệt chặn tự động phát âm thanh:', e);
+                });
+            }
+
+            const pantalla = document.getElementById('pantalla-inicial');
+            if (pantalla) pantalla.style.display = 'none';
+
+            const contenido = document.getElementById('contenido-principal');
+            if (contenido) contenido.style.display = 'block';
+
+            const ramo = document.querySelector('.ramo');
+            if (ramo) ramo.classList.add('ramo--visible');
+
+            const letterWrap = document.getElementById('letter-btn-wrap');
+            if (letterWrap) letterWrap.style.display = 'flex';
+
+            const btnLetter = document.getElementById('btn-letter');
+            if (btnLetter) btnLetter.style.display = 'block';
+
+            // Tự động mở bức thư sau 2.6s (khi hoa nở rộ xong) để người xem đọc ngay lời chúc
+            setTimeout(function () {
+                openLetter();
+            }, 2600);
+        }
+
+        if (btnDevpan) {
+            btnDevpan.addEventListener('click', startExperience);
+            btnDevpan.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                startExperience();
+            }, { passive: false });
+        }
+
+        // Mở & Đóng thư
+        const btnLetter = document.getElementById('btn-letter');
+        const letterWrap = document.getElementById('letter-btn-wrap');
+        const letterBox = document.getElementById('letter-box');
+
+        function openLetter() {
+            if (letterBox) {
+                letterBox.style.display = 'flex';
+            }
+        }
+
+        function closeLetter() {
+            if (letterBox) {
+                letterBox.style.display = 'none';
+            }
+        }
+
+        if (btnLetter) {
+            btnLetter.addEventListener('click', openLetter);
+            btnLetter.addEventListener('touchstart', function (e) {
+                e.preventDefault();
+                openLetter();
+            }, { passive: false });
+        }
+
+        if (letterWrap) {
+            letterWrap.addEventListener('click', openLetter);
+            letterWrap.addEventListener('touchstart', function (e) {
+                e.preventDefault();
+                openLetter();
+            }, { passive: false });
+        }
+
+        // Đóng thư khi nhấp ra ngoài hộp thư
+        if (letterBox) {
+            letterBox.addEventListener('click', closeLetter);
+        }
+
+        if (letterContent) {
+            letterContent.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+            letterContent.addEventListener('touchstart', function (e) {
+                e.stopPropagation();
+            }, { passive: true });
+        }
+    })();
+    </script>
+</body>
+
+</html>

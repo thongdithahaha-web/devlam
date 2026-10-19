@@ -1,4 +1,4 @@
-//======Data=====
+﻿//======Data=====
 const messagesContainer = document.getElementById("messagesContainer");
 const addMessageBtn = document.getElementById("addMessageBtn");
 
@@ -317,7 +317,7 @@ function generateLink() {
     return;
   }
 
-  const baseURL = "https://lovecodes2.vercel.app/lovex";
+  const baseURL = "https://lekimlamdev.vercel.app/lovex";
   const fullURL = `${baseURL}/rainz.html?id=${encodeURIComponent(encoded)}`;
   const linkOutput = document.getElementById("linkOutput");
   const qrBox = document.getElementById("qrBox");

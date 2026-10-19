@@ -28,7 +28,7 @@ function getItemDownloadLink(item) {
 }
 
 function getItemImage(item) {
-    return item.image || item.img || './assets/anh/loves.jpg';
+    return item.image || item.img || './assets/logo.png';
 }
 
 function switchTab(tab) {
@@ -171,7 +171,7 @@ function createCardHTML(product, type) {
         <div class="card-glare"></div>
         <div class="card-img-wrapper" onclick="openDetailModal('${encodeURIComponent(product.name)}', '${type}')" style="cursor: pointer;">
             <span class="badge">${product.category || (type === 'app' ? 'App' : 'Web')}</span>
-            <img src="${imageUrl}" alt="${product.name}" loading="lazy" onerror="this.src='./assets/anh/loves.jpg'" />
+            <img src="${imageUrl}" alt="${product.name}" loading="lazy" onerror="this.src='./assets/logo.png'" />
         </div>
         <h3 onclick="openDetailModal('${encodeURIComponent(product.name)}', '${type}')" style="cursor: pointer;" title="${product.name}">${product.name}</h3>
         <p>${description}</p>
