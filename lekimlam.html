@@ -1080,23 +1080,13 @@
             const rawPayload = `${cTitle}|${cLetterTitle}|${cLetterWish}|${cSign}|${finalMusic}|${cIntro}|${finalImage}`;
             const encodedPayload = LZString.compressToEncodedURIComponent(rawPayload);
 
-            // Tạo link chuẩn
-            var baseUrl = '';
-            if (window.location.protocol === 'file:') {
-                var cleanPath = window.location.href.split('?')[0].split('#')[0];
-                baseUrl = cleanPath.replace(/(generator|lekimlam)(\.html|\/index\.html|\/)?$/, 'index.html');
-                if (!baseUrl.endsWith('index.html')) {
-                    baseUrl = baseUrl.replace(/\/[^\/]*$/, '/index.html');
-                }
-            } else {
-                var origin = window.location.origin;
-                var path = window.location.pathname;
-                var segments = path.split('/').filter(Boolean);
-                if (window.location.hostname.endsWith('github.io') && segments.length > 0) {
-                    baseUrl = origin + '/' + segments[0] + '/';
-                } else {
-                    baseUrl = origin + '/';
-                }
+            // Tạo link chuẩn đến trang nhận quà Bó hoa 3D
+            let baseUrl = 'https://lekimlamdev.vercel.app/lovez/flower.html';
+            if (window.location && window.location.protocol === 'file:') {
+                const cleanPath = window.location.href.split('?')[0].split('#')[0];
+                baseUrl = cleanPath.replace(/lekimlam(\.html|\/index\.html|\/)?$/, 'lovez/flower.html');
+            } else if (window.location && window.location.origin && window.location.origin !== 'null') {
+                baseUrl = window.location.origin + '/lovez/flower.html';
             }
             const fullUrl = baseUrl + '?d=' + encodedPayload;
 

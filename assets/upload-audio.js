@@ -520,35 +520,23 @@
         previewBtn.textContent = '▶️ Nghe thử bài hát';
       });
 
-      // Hook getter .value của musicSelect để luôn xuất URL nhạc đám mây hoặc IndexedDB
-      try {
-        const proto = HTMLSelectElement.prototype;
-        const origDesc = Object.getOwnPropertyDescriptor(proto, 'value');
-        Object.defineProperty(musicSelect, 'value', {
-          get: function () {
-            const rawVal = origDesc.get.call(this);
-            if (rawVal === 'custom_upload') {
-              return window.uploadedAudioUrl || 'n/c.mp3';
-            }
-            return rawVal;
-          },
-          set: function (newVal) {
-            return origDesc.set.call(this, newVal);
-          },
-          configurable: true
-        });
-      } catch (err) {
-        console.warn('Không thể override getter value của musicSelect:', err);
-      }
+      // Cập nhật giá trị option khi upload hoàn tất
+      window.updateCustomAudioOption = function(url) {
+        if (customOpt) customOpt.value = url || window.uploadedAudioUrl || 'n/c.mp3';
+      };
     }
 
     // 2. Tự động đồng bộ trạng thái chờ khi bấm "Tạo Link"
     const createBtn = document.querySelector('.btn-create') || 
+                      document.querySelector('.generate-btn') || 
+                      document.querySelector('.btn-generate') || 
                       document.getElementById('btn-go') || 
+                      document.getElementById('createLink') || 
+                      document.getElementById('generate-link') || 
                       document.querySelector('button[type="submit"]');
 
-    if (createBtn && !createBtn.dataset.syncHooked) {
-      createBtn.dataset.syncHooked = 'true';
+    if (createBtn && (!createBtn.dataset || !createBtn.dataset.syncHooked)) {
+      if (createBtn.dataset) createBtn.dataset.syncHooked = 'true';
       const origOnclick = createBtn.onclick;
 
       createBtn.addEventListener('click', async (e) => {
@@ -570,14 +558,18 @@
           // Sau khi upload xong, tiếp tục tạo link bình thường
           if (typeof window.generateLink === 'function') {
             window.generateLink();
+          } else if (typeof window.createLink === 'function') {
+            window.createLink();
+          } else if (typeof origOnclick === 'function') {
+            origOnclick.call(createBtn, e);
           } else if (createBtn.form) {
             if (createBtn.form.requestSubmit) {
               createBtn.form.requestSubmit();
             } else {
               createBtn.form.submit();
             }
-          } else if (typeof origOnclick === 'function') {
-            origOnclick.call(createBtn, e);
+          } else {
+            createBtn.click();
           }
         }
       }, true);
@@ -587,8 +579,8 @@
     const imgInput = document.getElementById('upload-imgbb') || 
                      document.querySelector('input[type="file"][accept*="image"]');
 
-    if (imgInput && !imgInput.dataset.enhanced) {
-      imgInput.dataset.enhanced = 'true';
+    if (imgInput && (!imgInput.dataset || !imgInput.dataset.enhanced)) {
+      if (imgInput.dataset) imgInput.dataset.enhanced = 'true';
       imgInput.addEventListener('change', async (e) => {
         const files = Array.from(e.target.files || []);
         if (!files.length) return;
