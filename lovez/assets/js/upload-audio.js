@@ -777,13 +777,35 @@
       window.__lklOpenHooked = true;
       const origOpen = window.open;
       window.open = function(url, target, features) {
-        if (typeof url === 'string' && url.length > 1500) {
-          if (url.includes('?d=')) url = url.replace('?d=', '#d=');
-          else if (url.includes('?id=')) url = url.replace('?id=', '#id=');
+        if (typeof url === 'string') {
+          if (url.length > 1500) {
+            if (url.includes('?d=')) url = url.replace('?d=', '#d=');
+            else if (url.includes('?id=')) url = url.replace('?id=', '#id=');
+          }
+          const isLocal = window.location.protocol === 'file:' || 
+                          window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1';
+          if (isLocal && url.startsWith('https://lekimlamdev.vercel.app/')) {
+            url = '../' + url.replace('https://lekimlamdev.vercel.app/', '');
+          }
         }
         return origOpen.call(window, url, target, features);
       };
     }
+
+    // Tự động chuyển hướng xem trước mượt mà khi người dùng chạy cục bộ hoặc Live Server
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest && e.target.closest('.btn-view, #btnView, #viewBtn, #viewButton, #viewLink, a[href*="giftz.html"], a[href*="flower.html"], a[href*="valen"], a[href*="firew"], a[href*="galaxyz"], a[href*="rainz"]');
+      if (!btn) return;
+      const isLocal = window.location.protocol === 'file:' || 
+                      window.location.hostname === 'localhost' || 
+                      window.location.hostname === '127.0.0.1';
+      let href = (btn.getAttribute('href') || '').trim();
+      if (isLocal && href.startsWith('https://lekimlamdev.vercel.app/')) {
+        const localRel = '../' + href.replace('https://lekimlamdev.vercel.app/', '');
+        btn.setAttribute('href', localRel);
+      }
+    }, true);
 
     setInterval(sanitizePageLinks, 300);
   }
